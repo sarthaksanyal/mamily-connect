@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HR Manager Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-shell">
+      <aside class="dashboard-sidebar manager-sidebar">
+        <div class="brand-block">
+          <img src="logo.png" alt="Mamily logo" class="brand-logo" />
+          <div class="brand-name">Mamily - Connect</div>
+        </div>
+        <nav class="sidebar-nav" aria-label="HR/Manager Navigation">
+          <a href="#" class="nav-item active">Dashboard</a>
+          <a href="#" class="nav-item">Employees</a>
+          <a href="#" class="nav-item">Teams</a>
+          <a href="#" class="nav-item">Attendance</a>
+          <a href="#" class="nav-item">Leave Requests</a>
+          <a href="#" class="nav-item">Tasks</a>
+          <a href="#" class="nav-item">Performance</a>
+          <a href="#" class="nav-item">Analytics</a>
+          <a href="#" class="nav-item">Feedback</a>
+          <a href="#" class="nav-item">Meetings</a>
+          <a href="#" class="nav-item">Announcements</a>
+          <a href="#" class="nav-item">Notifications</a>
+        </nav>
+        <a href="index.html" class="logout-button">Sign Out</a>
+      </aside>
+
+      <main class="dashboard-main">
+        <header class="topbar-dashboard">
+          <div>
+            <p class="dashboard-kicker">Welcome Back</p>
+            <h1>HR & Manager Dashboard</h1>
+          </div>
+
+          <div class="user-chip manager-chip">
+            <span class="user-avatar">HR</span>
+            <div>
+              <strong>ABCD</strong>
+              <small>HR Manager</small>
+            </div>
+          </div>
+        </header>
+        <section class="stats-grid" aria-label="Manager overview stats">
+          <article class="stat-card highlight">
+            <span>Total Employees</span>
+            <strong>248</strong>
+            <small>+12 this quarter</small>
+          </article>
+          <article class="stat-card">
+            <span>Pending Requests</span>
+            <strong>21</strong>
+            <small>8 urgent</small>
+          </article>
+          <article class="stat-card">
+            <span>Team Attendance</span>
+            <strong>94%</strong>
+            <small>2 absences today</small>
+          </article>
+          <article class="stat-card">
+            <span>Open Positions</span>
+            <strong>5</strong>
+            <small>2 interviews booked</small>
+          </article>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
