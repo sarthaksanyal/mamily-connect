@@ -40,47 +40,68 @@ function updateRoleUI(role) {
   loginButtonText.textContent = config.buttonText;
 }
 
-roleButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    updateRoleUI(button.dataset.role);
+if (roleButtons.length > 0) {
+  roleButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      updateRoleUI(button.dataset.role);
+    });
+  });
+
+  passwordToggle.addEventListener("click", () => {
+    const isPassword = passwordInput.type === "password";
+    passwordInput.type = isPassword ? "text" : "password";
+    passwordToggle.textContent = isPassword ? "Hide" : "Show";
+    passwordToggle.setAttribute(
+      "aria-label",
+      isPassword ? "Hide password" : "Show password",
+    );
+  });
+
+  loginForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!email || !password) {
+      alert("Please enter both your email and password.");
+      return;
+    }
+
+    if (activeRole === "employee") {
+      window.location.href = "employeedashboard.html";
+      return;
+    }
+
+    window.location.href = "hr-managerdashboard.html";
+  });
+
+  submitButton.addEventListener("mouseenter", () => {
+    submitButton.style.transform = "translateY(-1px)";
+  });
+
+  submitButton.addEventListener("mouseleave", () => {
+    submitButton.style.transform = "";
+  });
+
+  updateRoleUI(activeRole);
+}
+
+const navigationItems = document.querySelectorAll(".nav-item[data-view]");
+const dashboardViews = document.querySelectorAll(
+  ".dashboard-view, .team-members-view, .employees-view",
+);
+const dashboardHeading = document.querySelector(".topbar-dashboard h1");
+navigationItems.forEach((item) => {
+  item.addEventListener("click", (event) => {
+    event.preventDefault();
+    const selectedView = document.getElementById(item.dataset.view);
+    navigationItems.forEach((navigationItem) => {
+      navigationItem.classList.toggle("active", navigationItem === item);
+    });
+    dashboardViews.forEach((view) => {
+      view.hidden = view !== selectedView;
+    });
+    dashboardHeading.textContent = item.dataset.title || "Dashboard";
   });
 });
-
-passwordToggle.addEventListener("click", () => {
-  const isPassword = passwordInput.type === "password";
-  passwordInput.type = isPassword ? "text" : "password";
-  passwordToggle.textContent = isPassword ? "Hide" : "Show";
-  passwordToggle.setAttribute(
-    "aria-label",
-    isPassword ? "Hide password" : "Show password",
-  );
-});
-
-loginForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const email = document.getElementById("email").value.trim();
-  const password = passwordInput.value.trim();
-
-  if (!email || !password) {
-    alert("Please enter both your email and password.");
-    return;
-  }
-
-  if (activeRole === "employee") {
-    window.location.href = "employeedashboard.html";
-    return;
-  }
-
-  window.location.href = "hr-managerdashboard.html";
-});
-
-submitButton.addEventListener("mouseenter", () => {
-  submitButton.style.transform = "translateY(-1px)";
-});
-
-submitButton.addEventListener("mouseleave", () => {
-  submitButton.style.transform = "";
-});
-
-updateRoleUI(activeRole);

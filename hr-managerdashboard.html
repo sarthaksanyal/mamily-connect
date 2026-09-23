@@ -14,8 +14,20 @@
           <div class="brand-name">Mamily - Connect</div>
         </div>
         <nav class="sidebar-nav" aria-label="HR/Manager Navigation">
-          <a href="#" class="nav-item active">Dashboard</a>
-          <a href="#" class="nav-item">Employees</a>
+          <a
+            href="#dashboard"
+            class="nav-item active"
+            data-view="dashboard-view"
+            data-title="HR & Manager Dashboard"
+            >Dashboard</a
+          >
+          <a
+            href="#employees"
+            class="nav-item"
+            data-view="employees-view"
+            data-title="Employees"
+            >Employees</a
+          >
           <a href="#" class="nav-item">Teams</a>
           <a href="#" class="nav-item">Attendance</a>
           <a href="#" class="nav-item">Leave Requests</a>
@@ -45,29 +57,141 @@
             </div>
           </div>
         </header>
-        <section class="stats-grid" aria-label="Manager overview stats">
-          <article class="stat-card highlight">
-            <span>Total Employees</span>
-            <strong>248</strong>
-            <small>+12 this quarter</small>
-          </article>
-          <article class="stat-card">
-            <span>Pending Requests</span>
-            <strong>21</strong>
-            <small>8 urgent</small>
-          </article>
-          <article class="stat-card">
-            <span>Team Attendance</span>
-            <strong>94%</strong>
-            <small>2 absences today</small>
-          </article>
-          <article class="stat-card">
-            <span>Open Positions</span>
-            <strong>5</strong>
-            <small>2 interviews booked</small>
-          </article>
+        <div id="dashboard-view" class="dashboard-view">
+          <section class="stats-grid" aria-label="Manager overview stats">
+            <article class="stat-card highlight">
+              <span>Total Employees</span>
+              <strong>248</strong>
+              <small>+12 this quarter</small>
+            </article>
+            <article class="stat-card">
+              <span>Pending Requests</span>
+              <strong>21</strong>
+              <small>8 urgent</small>
+            </article>
+            <article class="stat-card">
+              <span>Overall Performance</span>
+              <strong>92%</strong>
+              <small>+2% than last quarter</small>
+            </article>
+            <article class="stat-card">
+              <span>Team Attendance</span>
+              <strong>94%</strong>
+              <small>2 absences today</small>
+            </article>
+            <article class="stat-card">
+              <span>Open Positions</span>
+              <strong>5</strong>
+              <small>2 interviews booked</small>
+            </article>
+          </section>
+          <section class="content-grid">
+            <article class="panel">
+              <div class="panel-header">
+                <h2>Approval Queue</h2>
+                <a href="#">View All</a>
+              </div>
+
+              <ul class="schedule-list">
+                <li>
+                  <span class="time">Pending</span>
+                  <div>
+                    <strong>Annual Leave</strong>
+                    <small>3 employees waiting for approval</small>
+                  </div>
+                </li>
+                <li>
+                  <span class="time">Review</span>
+                  <div>
+                    <strong>Performance Review</strong>
+                    <small>2 employees due this week</small>
+                  </div>
+                </li>
+                <li>
+                  <span class="time">Action</span>
+                  <div>
+                    <strong>Hiring Pipeline</strong>
+                    <small>Candidates shortlisted</small>
+                  </div>
+                </li>
+              </ul>
+            </article>
+
+            <article class="panel highlight-panel manager-panel">
+              <div class="panel-header">
+                <h2>Manager Tools</h2>
+              </div>
+
+              <div class="quick-actions">
+                <button type="button">Create Announcement</button>
+                <button type="button">Review Attendance</button>
+                <button type="button">Approve Leaves</button>
+              </div>
+            </article>
+          </section>
+        </div>
+        <section id="employees-view" class="employees-view" hidden>
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">People Directory</p>
+
+              <p>Employees and the team they belong to.</p>
+            </div>
+            <span class="team-count">6 employees</span>
+          </div>
+          <div class="employee-directory">
+            <article class="employee-row">
+              <span class="member-avatar">SS</span>
+              <div class="employee-details">
+                <h3>Sarthak Sanyal</h3>
+                <p>Software Intern</p>
+              </div>
+              <span class="employee-team">Software Support</span>
+            </article>
+            <article class="employee-row">
+              <span class="member-avatar avatar-pink">AR</span>
+              <div class="employee-details">
+                <h3>Ananya Roy</h3>
+                <p>Support Team Lead</p>
+              </div>
+              <span class="employee-team">Software Support</span>
+            </article>
+            <article class="employee-row">
+              <span class="member-avatar avatar-green">MK</span>
+              <div class="employee-details">
+                <h3>Michael Kim</h3>
+                <p>Customer Support Specialist</p>
+              </div>
+              <span class="employee-team">Customer Success</span>
+            </article>
+            <article class="employee-row">
+              <span class="member-avatar avatar-gold">JP</span>
+              <div class="employee-details">
+                <h3>Jaya Patel</h3>
+                <p>Customer Support Specialist</p>
+              </div>
+              <span class="employee-team">Customer Success</span>
+            </article>
+            <article class="employee-row">
+              <span class="member-avatar avatar-purple">NK</span>
+              <div class="employee-details">
+                <h3>Neha Kapoor</h3>
+                <p>People Operations Associate</p>
+              </div>
+              <span class="employee-team">People Operations</span>
+            </article>
+            <article class="employee-row">
+              <span class="member-avatar avatar-teal">DO</span>
+              <div class="employee-details">
+                <h3>David Okafor</h3>
+                <p>Finance Analyst</p>
+              </div>
+              <span class="employee-team">Finance</span>
+            </article>
+          </div>
         </section>
       </main>
     </div>
+    <script src="script.js"></script>
   </body>
 </html>

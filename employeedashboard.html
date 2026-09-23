@@ -14,8 +14,20 @@
           <div class="brand-name">Mamily - Connect</div>
         </div>
         <nav class="sidebar-nav" aria-label="Employee Navigation">
-          <a href="#" class="nav-item active">Dashboard</a>
-          <a href="#" class="nav-item">Teams</a>
+          <a
+            href="#dashboard"
+            class="nav-item active"
+            data-view="dashboard-view"
+            data-title="Employee Dashboard"
+            >Dashboard</a
+          >
+          <a
+            href="#team-members"
+            class="nav-item"
+            data-view="team-members-view"
+            data-title="Team Members"
+            >Team Members</a
+          >
           <a href="#" class="nav-item">Notifications</a>
           <a href="#" class="nav-item">Performance</a>
           <a href="#" class="nav-item">Attendance</a>
@@ -41,29 +53,130 @@
             </div>
           </div>
         </header>
-        <section class="stats-grid" aria-label="Overview stats">
-          <article class="stat-card highlight">
-            <span>Attendance</span>
-            <strong>96%</strong>
-            <small>+4% this month</small>
-          </article>
-          <article class="stat-card">
-            <span>Tasks Done</span>
-            <strong>18</strong>
-            <small>5 pending</small>
-          </article>
-          <article class="stat-card">
-            <span>Leave Balance</span>
-            <strong>12 Days</strong>
-            <small>6 approved</small>
-          </article>
-          <article class="stat-card">
-            <span>Performance</span>
-            <strong>Excellent</strong>
-            <small>Top 10% team</small>
-          </article>
+        <div id="dashboard-view" class="dashboard-view">
+          <section class="stats-grid" aria-label="Overview stats">
+            <article class="stat-card highlight">
+              <span>Attendance</span>
+              <strong>96%</strong>
+              <small>+4% this month</small>
+            </article>
+            <article class="stat-card">
+              <span>Tasks Done</span>
+              <strong>18</strong>
+              <small>5 pending</small>
+            </article>
+            <article class="stat-card">
+              <span>Leave Balance</span>
+              <strong>12 Days</strong>
+              <small>6 approved</small>
+            </article>
+            <article class="stat-card">
+              <span>Performance</span>
+              <strong>Excellent</strong>
+              <small>Top 10% team</small>
+            </article>
+            <article class="stat-card">
+              <span>Notifications</span>
+              <strong>5</strong>
+              <small>From Manager</small>
+            </article>
+          </section>
+          <section class="content-grid">
+            <article class="panel">
+              <div class="panel-header">
+                <h2>Today's Schedule</h2>
+                <a href="#">View All</a>
+              </div>
+              <ul class="schedule-list">
+                <li>
+                  <span class="time">9:00</span>
+                  <div>
+                    <strong>Team Meeting</strong>
+                    <small>Operations HUb</small>
+                  </div>
+                </li>
+                <li>
+                  <span class="time">11:30</span>
+                  <div>
+                    <strong>Client Follow-up</strong>
+                    <small>Priority Support Queue</small>
+                  </div>
+                </li>
+                <li>
+                  <span class="time">14:00</span>
+                  <div>
+                    <strong>Training Sessions</strong>
+                    <small>Front Office</small>
+                  </div>
+                </li>
+              </ul>
+            </article>
+            <article class="panel highlight-panel">
+              <div class="panel-header">
+                <h2>Quick Actions</h2>
+              </div>
+              <div class="quick-actions">
+                <button type="button">Leave Request</button>
+                <button type="button">Submit WorkLog</button>
+                <button type="button">Update Profile</button>
+              </div>
+            </article>
+          </section>
+        </div>
+        <section id="team-members-view" class="team-members-view" hidden>
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Software Support Team</p>
+
+              <p>People working with you in the Software Support team.</p>
+            </div>
+            <span class="team-count">4 members</span>
+          </div>
+          <div class="team-grid">
+            <article class="team-member-card current-user">
+              <span class="member-avatar">SS</span>
+              <div>
+                <h3>Sarthak Sanyal</h3>
+                <p>Software Intern</p>
+                <small>You</small>
+              </div>
+            </article>
+            <article class="team-member-card">
+              <span class="member-avatar avatar-pink">AR</span>
+              <div>
+                <h3>Ananya Roy</h3>
+                <p>Support Team Lead</p>
+                <small>Online</small>
+              </div>
+            </article>
+            <article class="team-member-card">
+              <span class="member-avatar avatar-pink">MS</span>
+              <div>
+                <h3>Maheep Singh</h3>
+                <p>Support Team Lead</p>
+                <small>Online</small>
+              </div>
+            </article>
+            <article class="team-member-card">
+              <span class="member-avatar avatar-green">MK</span>
+              <div>
+                <h3>Michael Kim</h3>
+                <p>Customer Support Specialist</p>
+                <small>In a meeting</small>
+              </div>
+            </article>
+            <article class="team-member-card">
+              <span class="member-avatar avatar-gold">JP</span>
+              <div>
+                <h3>Jaya Patel</h3>
+                <p>Customer Support Specialist</p>
+                <small>Online</small>
+              </div>
+            </article>
+          </div>
         </section>
       </main>
     </div>
+    <script src="script.js"></script>
   </body>
 </html>
