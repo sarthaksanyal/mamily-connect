@@ -61,8 +61,8 @@
           <section class="stats-grid" aria-label="Manager overview stats">
             <article class="stat-card highlight">
               <span>Total Employees</span>
-              <strong>248</strong>
-              <small>+12 this quarter</small>
+              <strong>6</strong>
+              <small>+2 this quarter</small>
             </article>
             <article class="stat-card">
               <span>Pending Requests</span>
@@ -133,13 +133,150 @@
         <section id="employees-view" class="employees-view" hidden>
           <div class="page-section-header">
             <div>
-              <p class="dashboard-kicker">People Directory</p>
-
+              <p class="dashboard-kicker">Employee Directory</p>
               <p>Employees and the team they belong to.</p>
             </div>
-            <span class="team-count">6 employees</span>
+            <div class="page-section-actions">
+              <span class="team-count" id="employee-count">6 employees</span>
+              <button
+                type="button"
+                class="add-employee-button"
+                id="show-add-employee"
+              >
+                <span aria-hidden="true">+</span> Add Employee
+              </button>
+            </div>
           </div>
-          <div class="employee-directory">
+          <div class="employee-directory-toolbar">
+            <label class="employee-search" for="employee-search">
+              <span>Search employees</span>
+              <input
+                type="search"
+                id="employee-search"
+                placeholder="Search by Name, Role or Team Name"
+                autocomplete="off"
+              />
+            </label>
+          </div>
+          <form class="add-employee-form" id="add-employee-form" hidden>
+            <div class="form-heading">
+              <h3>Add Employee</h3>
+              <button
+                type="button"
+                class="close-form-button"
+                id="cancel-add-employee"
+                aria-label="Close add employee form"
+              >
+                —
+              </button>
+            </div>
+            <div class="employee-form-grid">
+              <label>
+                Employee ID
+                <input
+                  type="text"
+                  id="employee-id"
+                  required
+                  placeholder="Enter Employee ID"
+                />
+              </label>
+              <label>
+                Employee Name
+                <input
+                  type="text"
+                  id="new-employee-name"
+                  required
+                  placeholder="Enter Full Name"
+                />
+              </label>
+              <label
+                >Job Title
+                <input
+                  type="text"
+                  id="new-employee-role"
+                  required
+                  placeholder="Enter Job Title"
+                />
+              </label>
+              <label>
+                Team
+                <select id="new-employee-team" required>
+                  <option value="">Select a team</option>
+                  <option>Tech Team</option>
+                  <option>Operations</option>
+                  <option>Marketing</option>
+                  <option>Finance</option>
+                </select>
+              </label>
+              <label>
+                Email
+                <input
+                  type="email"
+                  id="email-id"
+                  required
+                  placeholder="Enter Email Id"
+                />
+              </label>
+              <label>
+                Contact Number
+                <input
+                  type="number"
+                  id="contact-number"
+                  required
+                  placeholder="Enter Contact Number"
+                />
+              </label>
+              <label>
+                Job Location
+                <input
+                  type="text"
+                  id="job-location"
+                  required
+                  placeholder="Enter Job Location"
+                />
+              </label>
+              <label>
+                Bank Details
+                <input
+                  type="text"
+                  id="bank-account"
+                  required
+                  placeholder="Enter Account Number"
+                />
+              </label>
+              <label>
+                Joining Date
+                <input
+                  type="date"
+                  id="joining-date"
+                  required
+                  placeholder="Select Date"
+                />
+              </label>
+              <label>
+                Shift Start Time
+                <input
+                  type="time"
+                  id="shift-timing"
+                  required
+                  placeholder="Enter Shift Start TIme"
+                />
+              </label>
+              <label>
+                Shift End Time
+                <input
+                  type="time"
+                  id="shift-end-time"
+                  required
+                  placeholder="Enter Shift End TIme"
+                />
+              </label>
+            </div>
+            <button type="submit" class="save-employee-button">
+              Add Employee
+            </button>
+          </form>
+          <div class="employee-directory" id="employee-directory">
             <article class="employee-row">
               <span class="member-avatar">SS</span>
               <div class="employee-details">
@@ -189,6 +326,81 @@
               <span class="employee-team">Finance</span>
             </article>
           </div>
+          <dialog class="employee-profile-dialog" id="employee-profile-dialog">
+            <div class="profile-dialog-header">
+              <div>
+                <p class="dashboard-kicker">Employee Profile</p>
+                <h2 id="profile-dialog-title">Employee Profile</h2>
+              </div>
+              <button
+                type="button"
+                class="close-form-button"
+                id="close-profile-dialog"
+                aria-label="Close employee profile"
+              >
+                —
+              </button>
+            </div>
+            <div class="profile-view" id="profile-view">
+              <dl class="profile-details" id="profile-details"></dl>
+            </div>
+            <form class="profile-edit-form" id="profile-edit-form" hidden>
+              <div class="employee-form-grid">
+                <label>
+                  Employee Name
+                  <input type="text" id="profile-name" required />
+                </label>
+                <label>
+                  Job Title
+                  <input type="text" id="profile-role" required />
+                </label>
+                <label>
+                  Team
+                  <input type="text" id="profile-team" required />
+                </label>
+                <label>
+                  Email
+                  <input type="email" id="profile-email" />
+                </label>
+                <label>
+                  Contact Number
+                  <input type="tel" id="profile-contact" />
+                </label>
+                <label>
+                  Job Location
+                  <input type="text" id="profile-location" />
+                </label>
+                <label>
+                  Bank Details
+                  <input type="text" id="profile-bank" />
+                </label>
+                <label>
+                  Joining Date
+                  <input type="date" id="profile-joining-date" />
+                </label>
+                <label>
+                  Shift Start Time
+                  <input type="time" id="profile-shift-start" />
+                </label>
+                <label>
+                  Shift End Time
+                  <input type="time" id="profile-shift-end" />
+                </label>
+              </div>
+              <div class="profile-dialog-actions">
+                <button
+                  type="button"
+                  class="secondary-button"
+                  id="cancel-profile-edit"
+                >
+                  Cancel
+                </button>
+                <button type="submit" class="save-employee-button">
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </dialog>
         </section>
       </main>
     </div>
