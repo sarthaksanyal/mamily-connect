@@ -1124,6 +1124,24 @@ img {
     grid-template-columns: 1fr;
   }
 
+  .team-create-form {
+    padding: 18px;
+  }
+
+  .team-create-form .form-heading {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .team-member {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .team-member .employee-action-button {
+    grid-column: 2;
+    justify-self: start;
+  }
+
   .employee-row {
     grid-template-columns: auto minmax(0, 1fr);
   }

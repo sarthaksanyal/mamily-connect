@@ -28,16 +28,72 @@
             data-title="Employees"
             >Employees</a
           >
-          <a href="#" class="nav-item">Teams</a>
-          <a href="#" class="nav-item">Attendance</a>
-          <a href="#" class="nav-item">Leave Requests</a>
-          <a href="#" class="nav-item">Tasks</a>
-          <a href="#" class="nav-item">Performance</a>
-          <a href="#" class="nav-item">Analytics</a>
-          <a href="#" class="nav-item">Feedback</a>
-          <a href="#" class="nav-item">Meetings</a>
-          <a href="#" class="nav-item">Announcements</a>
-          <a href="#" class="nav-item">Notifications</a>
+          <a
+            href="#teams"
+            class="nav-item"
+            data-view="teams-view"
+            data-title="Teams"
+            >Teams</a
+          >
+          <a
+            href="#"
+            class="nav-item"
+            data-view="attendance"
+            data-title="Attendance"
+            >Attendance</a
+          >
+          <a
+            href="#"
+            class="nav-item"
+            data-view="leave-requests"
+            data-title="Leave Requests"
+            >Leave Requests</a
+          >
+          <a href="#" class="nav-item" data-view="taska" data-title="Tasks"
+            >Tasks</a
+          >
+          <a
+            href="#"
+            class="nav-item"
+            data-view="performance"
+            data-title="Performance"
+            >Performance</a
+          >
+          <a
+            href="#"
+            class="nav-item"
+            data-view="analytics"
+            data-title="Analytics"
+            >Analytics</a
+          >
+          <a
+            href="#"
+            class="nav-item"
+            data-view="feedback"
+            data-title="Feedback"
+            >Feedback</a
+          >
+          <a
+            href="#"
+            class="nav-item"
+            data-view="meetings"
+            data-title="Meetings"
+            >Meetings</a
+          >
+          <a
+            href="#"
+            class="nav-item"
+            data-view="announcements"
+            data-title="Announcements"
+            >Announcements</a
+          >
+          <a
+            href="#"
+            class="nav-item"
+            data-view="notifications"
+            data-title="Notifications"
+            >Notifications</a
+          >
         </nav>
         <a href="index.html" class="logout-button">Sign Out</a>
       </aside>
@@ -401,6 +457,224 @@
               </div>
             </form>
           </dialog>
+        </section>
+
+        <section id="teams-view" class="employees-view teams-view" hidden>
+          <div class="page-section-header teams-page-header">
+            <div>
+              <p class="dashboard-kicker">Team Directory</p>
+              <p>Organize people into focused teams and manage membership.</p>
+            </div>
+            <div class="page-section-actions">
+              <span class="team-count">4 teams</span>
+              <a href="#create-team" class="add-employee-button"
+                ><span aria-hidden="true">+</span> Add Team</a
+              >
+            </div>
+          </div>
+
+          <form class="add-employee-form team-create-form" id="create-team">
+            <div class="form-heading">
+              <div>
+                <p class="dashboard-kicker">New Team</p>
+                <h3>Create a team</h3>
+              </div>
+              <span class="team-form-note">Select one or more employees</span>
+            </div>
+            <div class="employee-form-grid">
+              <label>
+                Team name
+                <input
+                  type="text"
+                  name="team-name"
+                  required
+                  placeholder="e.g. Product Design"
+                />
+              </label>
+              <label>
+                Team lead
+                <select name="team-lead">
+                  <option value="">Select a team lead</option>
+                  <option>Sarthak Sanyal</option>
+                  <option>Ananya Roy</option>
+                  <option>Michael Kim</option>
+                  <option>Neha Kapoor</option>
+                  <option>David Okafor</option>
+                </select>
+              </label>
+              <label>
+                Add employees
+                <select name="team-employees" multiple size="4">
+                  <option>Sarthak Sanyal</option>
+                  <option>Ananya Roy</option>
+                  <option>Michael Kim</option>
+                  <option>Jaya Patel</option>
+                  <option>Neha Kapoor</option>
+                  <option>David Okafor</option>
+                </select>
+              </label>
+            </div>
+            <button type="submit" class="save-employee-button">
+              Create Team
+            </button>
+          </form>
+
+          <div class="team-grid" aria-label="Company teams">
+            <article class="team-card">
+              <div class="team-card-header">
+                <div>
+                  <h2>Software Support</h2>
+                  <p>Led by Ananya Roy</p>
+                </div>
+                <span class="team-count">2 members</span>
+              </div>
+              <div class="team-members-list">
+                <div class="team-member">
+                  <span class="member-avatar">SS</span>
+                  <div class="team-member-details">
+                    <strong>Sarthak Sanyal</strong><span>Software Intern</span>
+                  </div>
+                  <button type="button" class="employee-action-button">
+                    Remove
+                  </button>
+                </div>
+                <div class="team-member">
+                  <span class="member-avatar avatar-pink">AR</span>
+                  <div class="team-member-details">
+                    <strong>Ananya Roy</strong><span>Support Team Lead</span>
+                  </div>
+                  <button type="button" class="employee-action-button">
+                    Remove
+                  </button>
+                </div>
+              </div>
+              <form class="team-member-form">
+                <label for="software-support-member">Add a member</label>
+                <div>
+                  <select id="software-support-member">
+                    <option>Select an employee</option>
+                    <option>Michael Kim</option>
+                    <option>Jaya Patel</option>
+                    <option>Neha Kapoor</option>
+                    <option>David Okafor</option></select
+                  ><button type="submit" class="secondary-button">Add</button>
+                </div>
+              </form>
+            </article>
+
+            <article class="team-card">
+              <div class="team-card-header">
+                <div>
+                  <h2>Customer Success</h2>
+                  <p>Led by Michael Kim</p>
+                </div>
+                <span class="team-count">2 members</span>
+              </div>
+              <div class="team-members-list">
+                <div class="team-member">
+                  <span class="member-avatar avatar-green">MK</span>
+                  <div class="team-member-details">
+                    <strong>Michael Kim</strong
+                    ><span>Customer Support Specialist</span>
+                  </div>
+                  <button type="button" class="employee-action-button">
+                    Remove
+                  </button>
+                </div>
+                <div class="team-member">
+                  <span class="member-avatar avatar-gold">JP</span>
+                  <div class="team-member-details">
+                    <strong>Jaya Patel</strong
+                    ><span>Customer Support Specialist</span>
+                  </div>
+                  <button type="button" class="employee-action-button">
+                    Remove
+                  </button>
+                </div>
+              </div>
+              <form class="team-member-form">
+                <label for="customer-success-member">Add a member</label>
+                <div>
+                  <select id="customer-success-member">
+                    <option>Select an employee</option>
+                    <option>Sarthak Sanyal</option>
+                    <option>Ananya Roy</option>
+                    <option>Neha Kapoor</option>
+                    <option>David Okafor</option></select
+                  ><button type="submit" class="secondary-button">Add</button>
+                </div>
+              </form>
+            </article>
+
+            <article class="team-card">
+              <div class="team-card-header">
+                <div>
+                  <h2>People Operations</h2>
+                  <p>Led by Neha Kapoor</p>
+                </div>
+                <span class="team-count">1 member</span>
+              </div>
+              <div class="team-members-list">
+                <div class="team-member">
+                  <span class="member-avatar avatar-purple">NK</span>
+                  <div class="team-member-details">
+                    <strong>Neha Kapoor</strong
+                    ><span>People Operations Associate</span>
+                  </div>
+                  <button type="button" class="employee-action-button">
+                    Remove
+                  </button>
+                </div>
+              </div>
+              <form class="team-member-form">
+                <label for="people-operations-member">Add a member</label>
+                <div>
+                  <select id="people-operations-member">
+                    <option>Select an employee</option>
+                    <option>Sarthak Sanyal</option>
+                    <option>Ananya Roy</option>
+                    <option>Michael Kim</option>
+                    <option>Jaya Patel</option>
+                    <option>David Okafor</option></select
+                  ><button type="submit" class="secondary-button">Add</button>
+                </div>
+              </form>
+            </article>
+
+            <article class="team-card">
+              <div class="team-card-header">
+                <div>
+                  <h2>Finance</h2>
+                  <p>Led by David Okafor</p>
+                </div>
+                <span class="team-count">1 member</span>
+              </div>
+              <div class="team-members-list">
+                <div class="team-member">
+                  <span class="member-avatar avatar-teal">DO</span>
+                  <div class="team-member-details">
+                    <strong>David Okafor</strong><span>Finance Analyst</span>
+                  </div>
+                  <button type="button" class="employee-action-button">
+                    Remove
+                  </button>
+                </div>
+              </div>
+              <form class="team-member-form">
+                <label for="finance-member">Add a member</label>
+                <div>
+                  <select id="finance-member">
+                    <option>Select an employee</option>
+                    <option>Sarthak Sanyal</option>
+                    <option>Ananya Roy</option>
+                    <option>Michael Kim</option>
+                    <option>Jaya Patel</option>
+                    <option>Neha Kapoor</option></select
+                  ><button type="submit" class="secondary-button">Add</button>
+                </div>
+              </form>
+            </article>
+          </div>
         </section>
       </main>
     </div>
