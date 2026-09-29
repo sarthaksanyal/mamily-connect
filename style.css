@@ -10,6 +10,10 @@
   --text-light: #6d7d90;
   --line: #dfe7f2;
   --shadow: 0 24px 50px rgba(27, 52, 89, 0.12);
+  --green: #45a66b;
+  --red: #d84a4a;
+  --dark-green: #18713b;
+  --dark-red: #b42323;
 }
 
 * {
@@ -740,7 +744,8 @@ img {
 
 .dashboard-view[hidden],
 .team-members-view[hidden],
-.employees-view[hidden] {
+.employees-view[hidden],
+.attendance-view[hidden] {
   display: none;
 }
 
@@ -1360,6 +1365,43 @@ img {
     grid-column: 2;
     justify-self: start;
   }
+
+  .manager-attendance-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .attendance-employee-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .attendance-calendar-panel {
+    padding: 12px 10px;
+  }
+
+  .attendance-weekdays,
+  .attendance-calendar {
+    gap: 3px;
+  }
+
+  .attendance-weekdays span {
+    font-size: 0.62rem;
+  }
+
+  .attendance-day {
+    min-height: 96px;
+    padding: 6px;
+  }
+
+  .attendance-day small {
+    font-size: 0.55rem;
+  }
+
+  .attendance-metric {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px;
+  }
 }
 
 @media (max-width: 980px) {
@@ -1430,5 +1472,311 @@ img {
 
   .auth-head h2 {
     font-size: 2.2rem;
+  }
+}
+
+.attendance-view {
+  width: 100%;
+  max-width: 1320px;
+}
+
+.attendance-view .page-section-header {
+  margin-bottom: 20px;
+}
+
+.attendance-view .page-section-header > div > p:last-child {
+  color: var(--text-mid);
+  font-size: 0.9rem;
+}
+
+.attendance-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.attendance-metric {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 68px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+}
+
+.attendance-metric span {
+  color: var(--text-mid);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.attendance-metric strong {
+  color: var(--text-dark);
+  font-size: 1.25rem;
+}
+
+.attendance-calendar-panel {
+  width: 100%;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 8px 18px rgba(18, 42, 71, 0.04);
+}
+
+.attendance-calendar-toolbar {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.attendance-calendar-toolbar h2 {
+  color: var(--text-dark);
+  font-size: 1.15rem;
+  text-align: center;
+}
+
+.calendar-month-button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--blue);
+  font-size: 1.1rem;
+}
+
+.calendar-month-button:hover,
+.calendar-month-button:focus-visible {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.attendance-weekdays,
+.attendance-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.attendance-weekdays {
+  margin-bottom: 6px;
+}
+
+.attendance-weekdays span {
+  padding: 8px 2px;
+  color: var(--text-light);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.attendance-day {
+  display: flex;
+  min-width: 0;
+  min-height: 112px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 9px;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.attendance-day.empty-day {
+  border-color: transparent;
+  background: transparent;
+}
+
+.attendance-day.present-day {
+  border-color: #b5dfc6;
+  background: #eaf7ef;
+}
+
+.attendance-day.absent-day {
+  border-color: #f0b8b8;
+  background: #fff0f0;
+}
+
+.attendance-day.weekend-day,
+.attendance-day.upcoming-day {
+  background: #f6f8fb;
+  color: var(--text-light);
+}
+
+.attendance-date-number {
+  color: var(--text-dark);
+  font-size: 0.85rem;
+}
+
+.attendance-status {
+  font-size: 0.67rem;
+  font-weight: 800;
+}
+
+.present-day .attendance-status {
+  color: var(--dark-green);
+}
+
+.absent-day .attendance-status {
+  color: var(--dark-red);
+}
+
+.weekend-day .attendance-status,
+.upcoming-day .attendance-status {
+  color: var(--text-light);
+}
+
+.attendance-day small {
+  color: var(--text-mid);
+  font-size: 0.65rem;
+  line-height: 1.2;
+}
+
+.attendance-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+  color: var(--text-mid);
+  font-size: 0.76rem;
+}
+
+.attendance-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.status-sign {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 11px;
+  border-radius: 3px;
+  background: #dfe5ec;
+}
+
+.status-sign.present {
+  background: var(--green);
+}
+
+.status-sign.absent {
+  background: var(--red);
+}
+
+.attendance-note {
+  margin-top: 12px;
+  color: var(--text-light);
+  font-size: 0.75rem;
+}
+
+.manager-attendance-layout {
+  display: grid;
+  grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.attendance-employee-list {
+  display: grid;
+  gap: 8px;
+}
+
+.attendance-employee-button {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  min-height: 60px;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--text-dark);
+  text-align: left;
+}
+
+.attendance-employee-button[aria-pressed="true"] {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.attendance-employee-button strong {
+  font-size: 0.84rem;
+}
+
+.attendance-employee-button small {
+  color: var(--text-light);
+  font-size: 0.72rem;
+}
+
+.attendance-detail {
+  min-width: 0;
+}
+
+@media (max-width: 980px) {
+  .manager-attendance-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .attendance-employee-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .attendance-summary {
+    gap: 7px;
+  }
+
+  .attendance-metric {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 72px;
+    padding: 10px;
+  }
+
+  .attendance-metric span {
+    font-size: 0.68rem;
+  }
+
+  .attendance-calendar-panel {
+    padding: 12px 9px;
+  }
+
+  .attendance-weekdays,
+  .attendance-calendar {
+    gap: 3px;
+  }
+
+  .attendance-weekdays span {
+    padding: 6px 0;
+    font-size: 0.62rem;
+  }
+
+  .attendance-day {
+    min-height: 98px;
+    gap: 4px;
+    padding: 5px 4px;
+  }
+
+  .attendance-day small {
+    font-size: 0.55rem;
+  }
+
+  .attendance-status {
+    font-size: 0.6rem;
+  }
+
+  .attendance-employee-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

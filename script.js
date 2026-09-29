@@ -89,7 +89,7 @@ if (roleButtons.length > 0) {
 
 const navigationItems = document.querySelectorAll(".nav-item[data-view]");
 const dashboardViews = document.querySelectorAll(
-  ".dashboard-view, .team-members-view, .employees-view",
+  ".dashboard-view, .team-members-view, .employees-view, .attendance-view",
 );
 const dashboardHeading = document.querySelector(".topbar-dashboard h1");
 navigationItems.forEach((item) => {
@@ -374,6 +374,7 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     );
     addEmployeeActions(employeeRow);
     employeeDirectory.append(employeeRow);
+    window.refreshAttendanceEmployeeList?.();
 
     updateEmployeeCount();
     addEmployeeForm.reset();
@@ -589,5 +590,217 @@ if (teamView && createTeamForm && showCreateTeamButton) {
     removeButton.closest(".team-member").remove();
     updateTeamCount(teamCard);
     refreshMemberSelect(teamCard);
+  });
+}
+
+const attendanceView = document.querySelector(".attendance-view");
+if (attendanceView) {
+  const monthLabel = attendanceView.querySelector("[data-month-label]");
+  const calendar = attendanceView.querySelector("[data-attendance-calendar]");
+  const summary = attendanceView.querySelector("[data-attendance-summary]");
+  const previousMonthButton = attendanceView.querySelector("[data-month-prev]");
+  const nextMonthButton = attendanceView.querySelector("[data-month-next]");
+  const employeeList = attendanceView.querySelector(
+    "[data-attendance-employees]",
+  );
+  const today = new Date();
+  let displayedMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  let selectedEmployeeIndex = 0;
+
+  function getAttendanceStatus(date, employeeIndex) {
+    if (date > today) {
+      return "upcoming";
+    }
+    if (date.getDay() === 0 || date.getDay() === 6) {
+      return "weekend";
+    }
+    return (date.getDate() + employeeIndex) % 9 === 0 ? "absent" : "present";
+  }
+
+  function getAttendanceTimes(date, employeeIndex) {
+    const minuteOffset = (date.getDate() * 7 + employeeIndex * 11) % 50;
+    const checkIn = new Date(2000, 0, 1, 9, minuteOffset);
+    const checkOut = new Date(2000, 0, 1, 17, (minuteOffset + 25) % 60);
+    return {
+      checkIn: checkIn.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23",
+      }),
+      checkOut: checkOut.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23",
+      }),
+    };
+  }
+
+  function renderAttendanceCalendar(employeeIndex) {
+    const year = displayedMonth.getFullYear();
+    const month = displayedMonth.getMonth();
+    const firstDayOffset = (new Date(year, month, 1).getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const counts = { present: 0, absent: 0 };
+    const cells = [];
+
+    monthLabel.textContent = displayedMonth.toLocaleDateString([], {
+      month: "long",
+      year: "numeric",
+    });
+
+    for (let blankDay = 0; blankDay < firstDayOffset; blankDay += 1) {
+      const emptyCell = document.createElement("div");
+      emptyCell.className = "attendance-day empty-day";
+      emptyCell.setAttribute("aria-hidden", "true");
+      cells.push(emptyCell);
+    }
+
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      const date = new Date(year, month, day);
+      const status = getAttendanceStatus(date, employeeIndex);
+      const cell = document.createElement("article");
+      cell.className = `attendance-day ${status}-day`;
+      cell.setAttribute("role", "gridcell");
+
+      const dateNumber = document.createElement("strong");
+      dateNumber.className = "attendance-date-number";
+      dateNumber.textContent = String(day);
+      cell.append(dateNumber);
+
+      const statusLabel = document.createElement("span");
+      statusLabel.className = "attendance-status";
+      statusLabel.textContent = status[0].toUpperCase() + status.slice(1);
+      cell.append(statusLabel);
+
+      if (status === "present") {
+        counts.present += 1;
+        const times = getAttendanceTimes(date, employeeIndex);
+        const checkIn = document.createElement("small");
+        checkIn.textContent = `In ${times.checkIn}`;
+        const checkOut = document.createElement("small");
+        checkOut.textContent = `Out ${times.checkOut}`;
+        cell.append(checkIn, checkOut);
+      } else if (status === "absent") {
+        counts.absent += 1;
+        ["In --", "Out --"].forEach((punchLabel) => {
+          const punch = document.createElement("small");
+          punch.textContent = punchLabel;
+          cell.append(punch);
+        });
+      }
+      cells.push(cell);
+    }
+
+    calendar.replaceChildren(...cells);
+    const trackedDays = counts.present + counts.absent;
+    const rate = trackedDays
+      ? Math.round((counts.present / trackedDays) * 100)
+      : 0;
+    summary.replaceChildren();
+    [
+      ["Present", counts.present],
+      ["Absent", counts.absent],
+      ["Attendance rate", `${rate}%`],
+    ].forEach(([label, value]) => {
+      const metric = document.createElement("div");
+      metric.className = "attendance-metric";
+      const metricLabel = document.createElement("span");
+      metricLabel.textContent = label;
+      const metricValue = document.createElement("strong");
+      metricValue.textContent = String(value);
+      metric.append(metricLabel, metricValue);
+      summary.append(metric);
+    });
+  }
+
+  if (employeeList) {
+    function renderEmployeeList() {
+      const employeeRows = document.querySelectorAll(
+        "#employee-directory .employee-row",
+      );
+      employeeList.replaceChildren();
+
+      employeeRows.forEach((row, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "attendance-employee-button";
+        button.dataset.employeeIndex = String(index);
+        const name = document.createElement("strong");
+        name.textContent = row.querySelector(
+          ".employee-details h3",
+        ).textContent;
+        const role = document.createElement("small");
+        role.textContent = row.querySelector(".employee-details p").textContent;
+        button.append(name, role);
+        button.setAttribute(
+          "aria-pressed",
+          String(index === selectedEmployeeIndex),
+        );
+        employeeList.append(button);
+      });
+
+      if (employeeRows.length) {
+        selectedEmployeeIndex = Math.min(
+          selectedEmployeeIndex,
+          employeeRows.length - 1,
+        );
+        employeeList
+          .querySelectorAll(".attendance-employee-button")
+          .forEach((button) => {
+            button.setAttribute(
+              "aria-pressed",
+              String(
+                Number(button.dataset.employeeIndex) === selectedEmployeeIndex,
+              ),
+            );
+          });
+        renderAttendanceCalendar(selectedEmployeeIndex);
+      } else {
+        employeeList.textContent = "No employees to display.";
+        calendar.replaceChildren();
+        summary.replaceChildren();
+        monthLabel.textContent = "";
+      }
+    }
+
+    employeeList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-employee-index]");
+      if (!button) {
+        return;
+      }
+      selectedEmployeeIndex = Number(button.dataset.employeeIndex);
+      renderEmployeeList();
+    });
+
+    window.refreshAttendanceEmployeeList = renderEmployeeList;
+    renderEmployeeList();
+  } else {
+    renderAttendanceCalendar(selectedEmployeeIndex);
+  }
+
+  previousMonthButton.addEventListener("click", () => {
+    displayedMonth = new Date(
+      displayedMonth.getFullYear(),
+      displayedMonth.getMonth() - 1,
+      1,
+    );
+    if (employeeList) {
+      renderEmployeeList();
+    } else {
+      renderAttendanceCalendar(selectedEmployeeIndex);
+    }
+  });
+
+  nextMonthButton.addEventListener("click", () => {
+    displayedMonth = new Date(
+      displayedMonth.getFullYear(),
+      displayedMonth.getMonth() + 1,
+      1,
+    );
+    if (employeeList) {
+      renderEmployeeList();
+    } else {
+      renderAttendanceCalendar(selectedEmployeeIndex);
+    }
   });
 }

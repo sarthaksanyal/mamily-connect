@@ -31,6 +31,13 @@
           <a
             href="#"
             class="nav-item"
+            data-view="attendance"
+            data-title="Attendance"
+            >Attendance</a
+          >
+          <a
+            href="#"
+            class="nav-item"
             data-view="notifications"
             data-title="Notifications"
             >Notifications</a
@@ -41,13 +48,6 @@
             data-view="performance"
             data-title="Performance"
             >Performance</a
-          >
-          <a
-            href="#"
-            class="nav-item"
-            data-view="attendance"
-            data-title="Attendance"
-            >Attendance</a
           >
           <a href="#" class="nav-item" data-view="leaves" data-title="Leaves"
             >Leave</a
@@ -210,6 +210,61 @@
               </div>
             </article>
           </div>
+        </section>
+        <section id="attendance" class="attendance-view" hidden>
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Attendance Record</p>
+              <p>Your Daily Attendance & Check-in and Check-out Time</p>
+            </div>
+          </div>
+          <div
+            class="attendance-summary"
+            data-attendance-summary
+            aria-live="polite"
+          ></div>
+          <section
+            class="attendance-calendar-panel"
+            aria-label="Monthly Attendance Calendar"
+          >
+            <div class="attendance-calendar-toolbar">
+              <button
+                type="button"
+                class="calendar-month-button"
+                data-month-prev
+                aria-label="Previous Month"
+              >
+                &larr;
+              </button>
+              <h2 data-month-label></h2>
+              <button
+                type="button"
+                class="calendar-month-button"
+                data-month-next
+                aria-label="Next Month"
+              >
+                &rarr;
+              </button>
+            </div>
+            <div class="attendance-weekdays" aria-hidden="true">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thurs</span
+              ><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div
+              class="attendance-calendar"
+              data-attendance-calendar
+              role="grid"
+            ></div>
+            <div
+              class="attendance-legend"
+              aria-label="Attendance Status Legend"
+            >
+              <span><i class="status-sign present"></i>Present</span>
+              <span><i class="status-sign absent"></i>Absent</span>
+              <span> <i class="status-sign neutral"></i>Weekend/Upcoming </span>
+            </div>
+          </section>
+          <p class="attendance-note">Attendance Records</p>
         </section>
       </main>
     </div>

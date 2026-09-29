@@ -696,6 +696,73 @@
             </article>
           </div>
         </section>
+        <section
+          id="attendance"
+          class="attendance-view manager-attendance-view"
+          hidden
+        >
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Team Attendance</p>
+              <p>Select Employee to view their Monthly Attendance</p>
+            </div>
+          </div>
+          <div class="manager-attendance-layout">
+            <nav
+              class="attendance-employee-list"
+              data-attendance-employees
+              aria-label="Employees"
+            ></nav>
+            <div class="attendance-detail" aria-live="polite">
+              <div class="attendance-summary" data-attendance-summary></div>
+              <section
+                class="attendance-calendar-panel"
+                aria-label="Employee monthly attendance calendar"
+              >
+                <div class="attendance-calendar-toolbar">
+                  <button
+                    type="button"
+                    class="calendar-month-button"
+                    data-month-prev
+                    aria-label="Previous Month"
+                  >
+                    &larr;
+                  </button>
+                  <h2 data-month-label></h2>
+                  <button
+                    type="button"
+                    class="calendar-month-button"
+                    data-month-next
+                    aria-label="Next Month"
+                  >
+                    &rarr;
+                  </button>
+                </div>
+                <div class="attendance-weekdays" aria-hidden="true">
+                  <span>Mon</span><span>Tue</span><span>Wed</span
+                  ><span>Thurs</span><span>Fri</span><span>Sat</span
+                  ><span>Sun</span>
+                </div>
+                <div
+                  class="attendance-calendar"
+                  data-attendance-calendar
+                  role="grid"
+                ></div>
+                <div
+                  class="attendance-legend"
+                  aria-label="Attendance Status Legend"
+                >
+                  <span><i class="status-sign present"></i>Present</span>
+                  <span><i class="status-sign absent"></i>Absent</span>
+                  <span>
+                    <i class="status-sign neutral"></i>Weekend/Upcoming
+                  </span>
+                </div>
+              </section>
+              <p class="attendance-note">Attendance Records</p>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
     <script src="script.js"></script>
