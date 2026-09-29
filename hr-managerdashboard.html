@@ -463,23 +463,43 @@
           <div class="page-section-header teams-page-header">
             <div>
               <p class="dashboard-kicker">Team Directory</p>
-              <p>Organize people into focused teams and manage membership.</p>
+              <p>Manage and Create Teams</p>
             </div>
             <div class="page-section-actions">
               <span class="team-count">4 teams</span>
-              <a href="#create-team" class="add-employee-button"
-                ><span aria-hidden="true">+</span> Add Team</a
+              <button
+                type="button"
+                class="add-employee-button"
+                id="show-create-team"
+                aria-controls="create-team"
+                aria-expanded="false"
               >
+                <span aria-hidden="true">+</span> Add Team
+              </button>
             </div>
           </div>
 
-          <form class="add-employee-form team-create-form" id="create-team">
+          <form
+            class="add-employee-form team-create-form"
+            id="create-team"
+            hidden
+          >
             <div class="form-heading">
               <div>
                 <p class="dashboard-kicker">New Team</p>
                 <h3>Create a team</h3>
               </div>
-              <span class="team-form-note">Select one or more employees</span>
+              <div class="team-form-actions">
+                <span class="team-form-note">Select one or more employees</span>
+                <button
+                  type="button"
+                  class="close-form-button"
+                  id="cancel-create-team"
+                  aria-label="Close create team form"
+                >
+                  —
+                </button>
+              </div>
             </div>
             <div class="employee-form-grid">
               <label>
@@ -609,7 +629,7 @@
             <article class="team-card">
               <div class="team-card-header">
                 <div>
-                  <h2>People Operations</h2>
+                  <h2>Operations</h2>
                   <p>Led by Neha Kapoor</p>
                 </div>
                 <span class="team-count">1 member</span>

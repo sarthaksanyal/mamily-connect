@@ -1045,6 +1045,176 @@ img {
   gap: 18px;
 }
 
+.teams-view {
+  width: 100%;
+}
+
+.team-create-form {
+  margin-bottom: 24px;
+  padding: 22px 24px 24px;
+  border: 1px solid #c8d8ee;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f5f9ff, #edf5ff);
+}
+
+.team-create-form .form-heading {
+  align-items: flex-start;
+}
+
+.team-create-form .dashboard-kicker {
+  margin-bottom: 5px;
+}
+
+.team-create-form h3 {
+  color: var(--text-dark);
+  font-size: 1.2rem;
+}
+
+.team-form-note {
+  color: var(--text-light);
+  font-size: 0.78rem;
+}
+
+.team-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.team-form-actions .close-form-button {
+  padding: 2px 5px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--white);
+  font-size: 1.25rem;
+}
+
+.team-create-form select[multiple] {
+  min-height: 112px;
+  padding: 8px 11px;
+}
+
+.team-card {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: 0 10px 24px rgba(18, 42, 71, 0.06);
+}
+
+.team-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.team-card-header h2 {
+  color: var(--text-dark);
+  font-size: 1.08rem;
+}
+
+.team-card-header p {
+  margin-top: 5px;
+  color: var(--text-light);
+  font-size: 0.78rem;
+}
+
+.team-members-list {
+  display: grid;
+  gap: 9px;
+}
+
+.team-member {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #e5ebf4;
+  border-radius: 12px;
+  background: #fbfcfe;
+}
+
+.team-member .member-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  font-size: 0.72rem;
+}
+
+.team-member-details {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.team-member-details strong,
+.team-member-details span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-member-details strong {
+  color: var(--text-dark);
+  font-size: 0.82rem;
+}
+
+.team-member-details span {
+  color: var(--text-light);
+  font-size: 0.72rem;
+}
+
+.team-member .employee-action-button {
+  padding: 6px 8px;
+  font-size: 0.68rem;
+}
+
+.team-member-form {
+  display: grid;
+  gap: 7px;
+  margin-top: 16px;
+}
+
+.team-member-form label {
+  color: var(--text-mid);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.team-member-form > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.team-member-form > div,
+.team-member-form select {
+  min-width: 0;
+}
+
+.team-member-form select {
+  min-width: 0;
+  min-height: 34px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--text-dark);
+  font-size: 0.75rem;
+}
+
+.team-member-form .secondary-button {
+  padding: 7px 11px;
+  background: var(--blue);
+  color: var(--white);
+}
+
 .team-member-card {
   display: flex;
   align-items: center;
@@ -1140,6 +1310,33 @@ img {
   .team-member .employee-action-button {
     grid-column: 2;
     justify-self: start;
+  }
+
+  .teams-page-header .page-section-actions {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .teams-page-header .add-employee-button {
+    flex: 1 1 150px;
+  }
+
+  .team-card {
+    padding: 16px;
+  }
+
+  .team-member-form > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .team-member-form .secondary-button {
+    width: 100%;
+  }
+
+  .team-create-form .form-heading {
+    flex-direction: column;
+    gap: 8px;
   }
 
   .employee-row {

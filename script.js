@@ -363,7 +363,7 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     employeeDetails.append(employeeName, employeeRole);
 
     const employeeTeam = document.createElement("span");
-    employeeTeam.className = "employee-team";
+    employeelassName = "employee-team";
     employeeTeam.textContent = team;
 
     employeeRow.append(avatar, employeeDetails, employeeTeam);
@@ -379,5 +379,215 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     addEmployeeForm.reset();
     addEmployeeForm.hidden = true;
     showAddEmployeeButton.hidden = false;
+  });
+}
+
+const teamView = document.getElementById("teams-view");
+const createTeamForm = document.getElementById("create-team");
+const showCreateTeamButton = document.getElementById("show-create-team");
+const cancelCreateTeamButton = document.getElementById("cancel-create-team");
+const employeeRoster = new Map();
+
+if (teamView && createTeamForm && showCreateTeamButton) {
+  document
+    .querySelectorAll("#employee-directory .employee-row")
+    .forEach((row) => {
+      const name = row
+        .querySelector(".employee-details h3")
+        ?.textContent.trim();
+      const role = row.querySelector(".employee-details p")?.textContent.trim();
+      if (name) {
+        employeeRoster.set(name, role || "Employee");
+      }
+    });
+
+  createTeamForm
+    .querySelectorAll("select[name='team-employees'] option")
+    .forEach((option) => {
+      if (!employeeRoster.has(option.value)) {
+        employeeRoster.set(option.value, "Employee");
+      }
+    });
+
+  function getInitials(name) {
+    return name
+      .split(/\s+/)
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  }
+
+  function getTeamMembers(teamCard) {
+    return [...teamCard.querySelectorAll(".team-member-details strong")].map(
+      (member) => member.textContent.trim(),
+    );
+  }
+
+  function updateTeamCount(teamCard) {
+    const count = teamCard.querySelectorAll(".team-member").length;
+    const countLabel = teamCard.querySelector(".team-card-header .team-count");
+    if (countLabel) {
+      countLabel.textContent = `${count} member${count === 1 ? "" : "s"}`;
+    }
+  }
+
+  function refreshMemberSelect(teamCard) {
+    const select = teamCard.querySelector(".team-member-form select");
+    if (!select) {
+      return;
+    }
+    const currentMembers = new Set(getTeamMembers(teamCard));
+    select.replaceChildren(new Option("Select an employee", ""));
+    employeeRoster.forEach((role, name) => {
+      if (!currentMembers.has(name)) {
+        select.append(new Option(name, name));
+      }
+    });
+  }
+
+  function createMember(name) {
+    const member = document.createElement("div");
+    member.className = "team-member";
+
+    const avatar = document.createElement("span");
+    avatar.className = "member-avatar";
+    avatar.textContent = getInitials(name);
+
+    const details = document.createElement("div");
+    details.className = "team-member-details";
+    const employeeName = document.createElement("strong");
+    employeeName.textContent = name;
+    const employeeRole = document.createElement("span");
+    employeeRole.textContent = employeeRoster.get(name) || "Employee";
+    details.append(employeeName, employeeRole);
+
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "employee-action-button";
+    removeButton.textContent = "Remove";
+    removeButton.setAttribute("aria-label", `Remove ${name} from team`);
+
+    member.append(avatar, details, removeButton);
+    return member;
+  }
+
+  function createTeamCard(teamName, teamLead, memberNames) {
+    const card = document.createElement("article");
+    card.className = "team-card";
+    const header = document.createElement("div");
+    header.className = "team-card-header";
+    const titleBlock = document.createElement("div");
+    const title = document.createElement("h2");
+    title.textContent = teamName;
+    const lead = document.createElement("p");
+    lead.textContent = teamLead
+      ? `Led by ${teamLead}`
+      : "No team lead assigned";
+    titleBlock.append(title, lead);
+    const count = document.createElement("span");
+    count.className = "team-count";
+    header.append(titleBlock, count);
+    const members = document.createElement("div");
+    members.className = "team-members-list";
+    memberNames.forEach((name) => members.append(createMember(name)));
+
+    const form = document.createElement("form");
+    form.className = "team-member-form";
+    const label = document.createElement("label");
+    label.textContent = "Add a member";
+    const controls = document.createElement("div");
+    const select = document.createElement("select");
+    select.innerHTML = '<option value="">Select an employee</option>';
+    const addButton = document.createElement("button");
+    addButton.type = "submit";
+    addButton.className = "secondary-button";
+    addButton.textContent = "Add";
+    controls.append(select, addButton);
+    form.append(label, controls);
+
+    card.append(header, members, form);
+    teamView.querySelector(".team-grid").append(card);
+    updateTeamCount(card);
+    refreshMemberSelect(card);
+  }
+
+  teamView.querySelectorAll(".team-card").forEach((teamCard) => {
+    updateTeamCount(teamCard);
+    refreshMemberSelect(teamCard);
+  });
+
+  function setCreateTeamFormVisibility(isVisible) {
+    createTeamForm.hidden = !isVisible;
+    showCreateTeamButton.setAttribute("aria-expanded", String(isVisible));
+    if (isVisible) {
+      createTeamForm.elements["team-name"].focus();
+    } else {
+      createTeamForm.reset();
+      showCreateTeamButton.focus();
+    }
+  }
+
+  showCreateTeamButton.addEventListener("click", () => {
+    setCreateTeamFormVisibility(true);
+  });
+
+  cancelCreateTeamButton?.addEventListener("click", () => {
+    setCreateTeamFormVisibility(false);
+  });
+
+  createTeamForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const teamName = createTeamForm.elements["team-name"].value.trim();
+    const teamLead = createTeamForm.elements["team-lead"].value;
+    const selectedMembers = [
+      ...createTeamForm.elements["team-employees"].selectedOptions,
+    ].map((option) => option.value);
+
+    if (!teamName || selectedMembers.length === 0) {
+      createTeamForm.reportValidity();
+      return;
+    }
+
+    createTeamCard(teamName, teamLead, selectedMembers);
+    createTeamForm.reset();
+    const teamTotal = teamView.querySelector(".teams-page-header .team-count");
+    if (teamTotal) {
+      teamTotal.textContent = `${teamView.querySelectorAll(".team-card").length} teams`;
+    }
+    setCreateTeamFormVisibility(false);
+  });
+
+  teamView.addEventListener("submit", (event) => {
+    const memberForm = event.target.closest(".team-member-form");
+    if (!memberForm) {
+      return;
+    }
+    event.preventDefault();
+    const teamCard = memberForm.closest(".team-card");
+    const select = memberForm.querySelector("select");
+    if (!select.value) {
+      select.focus();
+      return;
+    }
+    teamCard
+      .querySelector(".team-members-list")
+      .append(createMember(select.value));
+    memberForm.reset();
+    updateTeamCount(teamCard);
+    refreshMemberSelect(teamCard);
+  });
+
+  teamView.addEventListener("click", (event) => {
+    const removeButton = event.target.closest(
+      ".team-member .employee-action-button",
+    );
+    if (!removeButton) {
+      return;
+    }
+    const teamCard = removeButton.closest(".team-card");
+    removeButton.closest(".team-member").remove();
+    updateTeamCount(teamCard);
+    refreshMemberSelect(teamCard);
   });
 }
