@@ -1703,7 +1703,7 @@ img {
   text-align: left;
 }
 
-.attendance-employee-button[aria-pressed="true"] {
+.attendance-employee-button.selected {
   border-color: var(--blue);
   background: var(--blue-soft);
 }
@@ -1778,5 +1778,223 @@ img {
 
   .attendance-employee-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.leave-view {
+  width: 100%;
+}
+
+.leave-view > .page-section-header {
+  margin-bottom: 20px;
+}
+
+.employee-leave-view > .stats-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 20px;
+}
+
+.leave-view > .panel + .panel {
+  margin-top: 20px;
+}
+
+.leave-view .panel {
+  min-width: 0;
+}
+
+.leave-view table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  color: var(--text-dark);
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+.leave-view caption {
+  padding: 0 0 12px;
+  color: var(--text-light);
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.leave-view th,
+.leave-view td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.leave-view thead th {
+  background: var(--blue-soft);
+  color: var(--blue-strong);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.leave-view tbody th {
+  font-weight: 700;
+}
+
+.employee-leave-view tbody tr:last-child th,
+.employee-leave-view tbody tr:last-child td {
+  border-bottom: 0;
+  background: var(--white);
+  font-weight: 800;
+}
+
+.leave-application-form {
+  display: grid;
+  gap: 18px;
+}
+
+.leave-application-form .employee-form-grid {
+  gap: 16px;
+}
+
+.leave-application-form label {
+  color: var(--text-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.leave-application-form .employee-form-grid input,
+.leave-application-form .employee-form-grid select,
+.leave-application-form textarea {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--text-dark);
+  font: inherit;
+}
+
+.leave-application-form .employee-form-grid input:focus,
+.leave-application-form .employee-form-grid select:focus,
+.leave-application-form textarea :focus {
+  border-color: var(--blue);
+  outline: 3px solid rgba(45, 93, 154, 0.14);
+}
+
+.leave-application-form fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 22px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.leave-application-form legend {
+  padding: 0 6px;
+  color: var(--text-dark);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.leave-application-form fieldset label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.leave-application-form input[type="radio"] {
+  accent-color: var(--pink);
+}
+
+.leave-application-form > label {
+  display: grid;
+  gap: 8px;
+}
+
+.leave-application-form textarea {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+}
+
+.leave-application-form .save-employee-button {
+  justify-self: start;
+  margin-top: 0;
+  background-color: var(--pink);
+}
+
+.manager-leave-view .panel-header > span {
+  color: var(--pink);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.manager-leave-view .employee-row {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 16px;
+  border-radius: 8px;
+}
+
+.manager-leave-view .employee-details small {
+  display: block;
+  margin-top: 7px;
+  color: var(--pink);
+  font-size: 0.85rem;
+}
+
+.manager-leave-view .employee-actions .secondary-button {
+  border-color: var(--blue-strong);
+  color: var(--blue-strong);
+}
+
+.manager-leave-view .employee-actions .secondary-button:hover {
+  border-color: var(--pink);
+  color: var(--pink);
+}
+
+.manager-leave-view .employee-actions .employee-action-button {
+  border-color: var(--pink);
+  color: var(--pink);
+}
+
+.manager-leave-view .employee-actions .employee-action-button:hover {
+  border-color: var(--blue-strong);
+  background: var(--white);
+  color: var(--blue-strong);
+}
+
+@media (max-width: 640px) {
+  .employee-leave-view > .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .leave-view > .panel {
+    padding: 16px;
+  }
+
+  .leave-view th,
+  .leave-view td {
+    padding: 10px;
+  }
+
+  .manager-leave-view .employee-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .manager-leave-view .employee-team,
+  .manager-leave-view .employee-actions {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .manager-leave-view .employee-actions {
+    justify-content: flex-start;
+  }
+
+  .leave-application-form .employee-form-grid {
+    grid-template-columns: 1fr;
   }
 }

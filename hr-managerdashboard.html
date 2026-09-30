@@ -13,7 +13,7 @@
           <img src="logo.png" alt="Mamily logo" class="brand-logo" />
           <div class="brand-name">Mamily - Connect</div>
         </div>
-        <nav class="sidebar-nav" aria-label="HR/Manager Navigation">
+        <nav class="sidebar-nav">
           <a
             href="#dashboard"
             class="nav-item active"
@@ -97,24 +97,22 @@
         </nav>
         <a href="index.html" class="logout-button">Sign Out</a>
       </aside>
-
       <main class="dashboard-main">
         <header class="topbar-dashboard">
           <div>
             <p class="dashboard-kicker">Welcome Back</p>
             <h1>HR & Manager Dashboard</h1>
           </div>
-
           <div class="user-chip manager-chip">
             <span class="user-avatar">HR</span>
             <div>
-              <strong>ABCD</strong>
+              <strong>Ananya Roy</strong>
               <small>HR Manager</small>
             </div>
           </div>
         </header>
         <div id="dashboard-view" class="dashboard-view">
-          <section class="stats-grid" aria-label="Manager overview stats">
+          <section class="stats-grid">
             <article class="stat-card highlight">
               <span>Total Employees</span>
               <strong>6</strong>
@@ -147,7 +145,6 @@
                 <h2>Approval Queue</h2>
                 <a href="#">View All</a>
               </div>
-
               <ul class="schedule-list">
                 <li>
                   <span class="time">Pending</span>
@@ -172,12 +169,10 @@
                 </li>
               </ul>
             </article>
-
             <article class="panel highlight-panel manager-panel">
               <div class="panel-header">
                 <h2>Manager Tools</h2>
               </div>
-
               <div class="quick-actions">
                 <button type="button">Create Announcement</button>
                 <button type="button">Review Attendance</button>
@@ -199,7 +194,7 @@
                 class="add-employee-button"
                 id="show-add-employee"
               >
-                <span aria-hidden="true">+</span> Add Employee
+                <span>+</span> Add Employee
               </button>
             </div>
           </div>
@@ -221,7 +216,6 @@
                 type="button"
                 class="close-form-button"
                 id="cancel-add-employee"
-                aria-label="Close add employee form"
               >
                 —
               </button>
@@ -345,14 +339,14 @@
               <span class="member-avatar avatar-pink">AR</span>
               <div class="employee-details">
                 <h3>Ananya Roy</h3>
-                <p>Support Team Lead</p>
+                <p>HR Manager</p>
               </div>
               <span class="employee-team">Software Support</span>
             </article>
             <article class="employee-row">
               <span class="member-avatar avatar-green">MK</span>
               <div class="employee-details">
-                <h3>Michael Kim</h3>
+                <h3>Mandeep Kaur</h3>
                 <p>Customer Support Specialist</p>
               </div>
               <span class="employee-team">Customer Success</span>
@@ -376,7 +370,7 @@
             <article class="employee-row">
               <span class="member-avatar avatar-teal">DO</span>
               <div class="employee-details">
-                <h3>David Okafor</h3>
+                <h3>Daksh Ojha</h3>
                 <p>Finance Analyst</p>
               </div>
               <span class="employee-team">Finance</span>
@@ -392,7 +386,6 @@
                 type="button"
                 class="close-form-button"
                 id="close-profile-dialog"
-                aria-label="Close employee profile"
               >
                 —
               </button>
@@ -458,7 +451,6 @@
             </form>
           </dialog>
         </section>
-
         <section id="teams-view" class="employees-view teams-view" hidden>
           <div class="page-section-header teams-page-header">
             <div>
@@ -471,14 +463,11 @@
                 type="button"
                 class="add-employee-button"
                 id="show-create-team"
-                aria-controls="create-team"
-                aria-expanded="false"
               >
-                <span aria-hidden="true">+</span> Add Team
+                <span>+</span> Add Team
               </button>
             </div>
           </div>
-
           <form
             class="add-employee-form team-create-form"
             id="create-team"
@@ -495,7 +484,6 @@
                   type="button"
                   class="close-form-button"
                   id="cancel-create-team"
-                  aria-label="Close create team form"
                 >
                   —
                 </button>
@@ -517,9 +505,9 @@
                   <option value="">Select a team lead</option>
                   <option>Sarthak Sanyal</option>
                   <option>Ananya Roy</option>
-                  <option>Michael Kim</option>
+                  <option>Mandeep Kaur</option>
                   <option>Neha Kapoor</option>
-                  <option>David Okafor</option>
+                  <option>Daksh Ojha</option>
                 </select>
               </label>
               <label>
@@ -527,10 +515,10 @@
                 <select name="team-employees" multiple size="4">
                   <option>Sarthak Sanyal</option>
                   <option>Ananya Roy</option>
-                  <option>Michael Kim</option>
+                  <option>Mandeep Kaur</option>
                   <option>Jaya Patel</option>
                   <option>Neha Kapoor</option>
-                  <option>David Okafor</option>
+                  <option>Daksh Ojha</option>
                 </select>
               </label>
             </div>
@@ -538,12 +526,11 @@
               Create Team
             </button>
           </form>
-
-          <div class="team-grid" aria-label="Company teams">
+          <div class="team-grid">
             <article class="team-card">
               <div class="team-card-header">
                 <div>
-                  <h2>Software Support</h2>
+                  <h2>HR</h2>
                   <p>Led by Ananya Roy</p>
                 </div>
                 <span class="team-count">2 members</span>
@@ -561,7 +548,7 @@
                 <div class="team-member">
                   <span class="member-avatar avatar-pink">AR</span>
                   <div class="team-member-details">
-                    <strong>Ananya Roy</strong><span>Support Team Lead</span>
+                    <strong>Ananya Roy</strong><span>HR Manager</span>
                   </div>
                   <button type="button" class="employee-action-button">
                     Remove
@@ -573,20 +560,19 @@
                 <div>
                   <select id="software-support-member">
                     <option>Select an employee</option>
-                    <option>Michael Kim</option>
+                    <option>Mandeep Kaur</option>
                     <option>Jaya Patel</option>
                     <option>Neha Kapoor</option>
-                    <option>David Okafor</option></select
+                    <option>Daksh Ojha</option></select
                   ><button type="submit" class="secondary-button">Add</button>
                 </div>
               </form>
             </article>
-
             <article class="team-card">
               <div class="team-card-header">
                 <div>
                   <h2>Customer Success</h2>
-                  <p>Led by Michael Kim</p>
+                  <p>Led by Mandeep Kaur</p>
                 </div>
                 <span class="team-count">2 members</span>
               </div>
@@ -594,7 +580,7 @@
                 <div class="team-member">
                   <span class="member-avatar avatar-green">MK</span>
                   <div class="team-member-details">
-                    <strong>Michael Kim</strong
+                    <strong>Mandeep Kaur</strong
                     ><span>Customer Support Specialist</span>
                   </div>
                   <button type="button" class="employee-action-button">
@@ -620,12 +606,11 @@
                     <option>Sarthak Sanyal</option>
                     <option>Ananya Roy</option>
                     <option>Neha Kapoor</option>
-                    <option>David Okafor</option></select
+                    <option>Daksh Ojha</option></select
                   ><button type="submit" class="secondary-button">Add</button>
                 </div>
               </form>
             </article>
-
             <article class="team-card">
               <div class="team-card-header">
                 <div>
@@ -653,19 +638,18 @@
                     <option>Select an employee</option>
                     <option>Sarthak Sanyal</option>
                     <option>Ananya Roy</option>
-                    <option>Michael Kim</option>
+                    <option>Mandeep Kaur</option>
                     <option>Jaya Patel</option>
-                    <option>David Okafor</option></select
+                    <option>Daksh Ojha</option></select
                   ><button type="submit" class="secondary-button">Add</button>
                 </div>
               </form>
             </article>
-
             <article class="team-card">
               <div class="team-card-header">
                 <div>
                   <h2>Finance</h2>
-                  <p>Led by David Okafor</p>
+                  <p>Led by Daksh Ojha</p>
                 </div>
                 <span class="team-count">1 member</span>
               </div>
@@ -673,7 +657,7 @@
                 <div class="team-member">
                   <span class="member-avatar avatar-teal">DO</span>
                   <div class="team-member-details">
-                    <strong>David Okafor</strong><span>Finance Analyst</span>
+                    <strong>Daksh Ojha</strong><span>Finance Analyst</span>
                   </div>
                   <button type="button" class="employee-action-button">
                     Remove
@@ -687,7 +671,7 @@
                     <option>Select an employee</option>
                     <option>Sarthak Sanyal</option>
                     <option>Ananya Roy</option>
-                    <option>Michael Kim</option>
+                    <option>Mandeep Kaur</option>
                     <option>Jaya Patel</option>
                     <option>Neha Kapoor</option></select
                   ><button type="submit" class="secondary-button">Add</button>
@@ -711,20 +695,15 @@
             <nav
               class="attendance-employee-list"
               data-attendance-employees
-              aria-label="Employees"
             ></nav>
-            <div class="attendance-detail" aria-live="polite">
+            <div class="attendance-detail">
               <div class="attendance-summary" data-attendance-summary></div>
-              <section
-                class="attendance-calendar-panel"
-                aria-label="Employee monthly attendance calendar"
-              >
+              <section class="attendance-calendar-panel">
                 <div class="attendance-calendar-toolbar">
                   <button
                     type="button"
                     class="calendar-month-button"
                     data-month-prev
-                    aria-label="Previous Month"
                   >
                     &larr;
                   </button>
@@ -733,25 +712,17 @@
                     type="button"
                     class="calendar-month-button"
                     data-month-next
-                    aria-label="Next Month"
                   >
                     &rarr;
                   </button>
                 </div>
-                <div class="attendance-weekdays" aria-hidden="true">
+                <div class="attendance-weekdays">
                   <span>Mon</span><span>Tue</span><span>Wed</span
                   ><span>Thurs</span><span>Fri</span><span>Sat</span
                   ><span>Sun</span>
                 </div>
-                <div
-                  class="attendance-calendar"
-                  data-attendance-calendar
-                  role="grid"
-                ></div>
-                <div
-                  class="attendance-legend"
-                  aria-label="Attendance Status Legend"
-                >
+                <div class="attendance-calendar" data-attendance-calendar></div>
+                <div class="attendance-legend">
                   <span><i class="status-sign present"></i>Present</span>
                   <span><i class="status-sign absent"></i>Absent</span>
                   <span>
@@ -762,6 +733,157 @@
               <p class="attendance-note">Attendance Records</p>
             </div>
           </div>
+        </section>
+        <section
+          id="leave-requests"
+          class="employees-view leave-view manager-leave-view"
+          hidden
+        >
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Leave Management</p>
+              <p>Review Employee Balances and Pending Leave Requests.</p>
+            </div>
+          </div>
+          <section class="panel">
+            <div class="panel-header">
+              <h2 id="team-leave-balances-title">Employee Leave Balances</h2>
+            </div>
+            <table>
+              <caption>
+                Current Year Leave Balances
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Employee</th>
+                  <th scope="col">Role</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Used</th>
+                  <th scope="col">Available</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Sarthak Sanyal</th>
+                  <td>Software Intern</td>
+                  <td>18</td>
+                  <td>6</td>
+                  <td>12</td>
+                </tr>
+                <tr>
+                  <th scope="row">Ananya Roy</th>
+                  <td>HR Manager</td>
+                  <td>18</td>
+                  <td>8</td>
+                  <td>10</td>
+                </tr>
+                <tr>
+                  <th scope="row">Mandeep Kaur</th>
+                  <td>Customer Support Specialist</td>
+                  <td>18</td>
+                  <td>10</td>
+                  <td>8</td>
+                </tr>
+                <tr>
+                  <th scope="row">Jaya Kapoor</th>
+                  <td>Customer Support Specialist</td>
+                  <td>18</td>
+                  <td>3</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <th scope="row">Neha Kapoor</th>
+                  <td>People Operations Associate</td>
+                  <td>18</td>
+                  <td>9</td>
+                  <td>9</td>
+                </tr>
+                <tr>
+                  <th scope="row">Daksh Ojha</th>
+                  <td>Finance Analyst</td>
+                  <td>18</td>
+                  <td>8</td>
+                  <td>10</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="panel">
+            <div class="panel-header">
+              <h2 id="pending-leave-requests-title">Pending Leave Requests</h2>
+              <span>4 requests</span>
+            </div>
+            <div class="employee-directory">
+              <article class="employee-row">
+                <div class="employee-details">
+                  <h3>Sarthak Sanyal</h3>
+                  <p>casual Leave - Full Day - 5 October 2026</p>
+                  <small>Reason: Personal reasons</small>
+                </div>
+                <span class="employee-team">12 Leaves Available</span>
+                <div class="employee-actions">
+                  <button type="button" class="secondary-button">
+                    Approve
+                  </button>
+                  <button type="button" class="employee-action-button">
+                    Reject
+                  </button>
+                </div>
+              </article>
+              <article class="employee-row">
+                <div class="employee-details">
+                  <h3>Ananya Roy</h3>
+                  <p>Sick Leave - Full Day - 1 October 2026</p>
+                  <small>Reason: Sick </small>
+                </div>
+                <span class="employee-team">10 Leaves Available</span>
+                <div class="employee-actions">
+                  <button type="button" class="secondary-button">
+                    Approve
+                  </button>
+                  <button type="button" class="employee-action-button">
+                    Reject
+                  </button>
+                </div>
+              </article>
+              <article class="employee-row">
+                <div class="employee-details">
+                  <h3>Mandeep Kaur</h3>
+                  <p>
+                    Casual Leave - Short Leave - 30 September 2026, 16:00-18:00
+                  </p>
+                  <small>Reason: Personal reasons</small>
+                </div>
+                <span class="employee-team">8 Leaves Available</span>
+                <div class="employee-actions">
+                  <button type="button" class="secondary-button">
+                    Approve
+                  </button>
+                  <button type="button" class="employee-action-button">
+                    Reject
+                  </button>
+                </div>
+              </article>
+              <article class="employee-row">
+                <div class="employee-details">
+                  <h3>Daksh Ojha</h3>
+                  <p>
+                    Casual Leave - Short Leave - 30 September 2026, 09:00-11:00
+                  </p>
+                  <small>Reason: Medical</small>
+                </div>
+                <span class="employee-team">2 Leaves Available</span>
+                <div class="employee-actions">
+                  <button type="button" class="secondary-button">
+                    Approve
+                  </button>
+                  <button type="button" class="employee-action-button">
+                    Reject
+                  </button>
+                </div>
+              </article>
+            </div>
+          </section>
         </section>
       </main>
     </div>

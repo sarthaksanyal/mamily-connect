@@ -13,7 +13,7 @@
           <img src="logo.png" alt="mamily-logo" class="brand-logo" />
           <div class="brand-name">Mamily - Connect</div>
         </div>
-        <nav class="sidebar-nav" aria-label="Employee Navigation">
+        <nav class="sidebar-nav">
           <a
             href="#dashboard"
             class="nav-item active"
@@ -35,12 +35,11 @@
             data-title="Attendance"
             >Attendance</a
           >
-          <a
-            href="#"
-            class="nav-item"
-            data-view="notifications"
-            data-title="Notifications"
-            >Notifications</a
+          <a href="#" class="nav-item" data-view="leaves" data-title="Leaves"
+            >Leave</a
+          >
+          <a href="#" class="nav-item" data-view="Tasks" data-title="Tasks"
+            >Tasks</a
           >
           <a
             href="#"
@@ -49,18 +48,12 @@
             data-title="Performance"
             >Performance</a
           >
-          <a href="#" class="nav-item" data-view="leaves" data-title="Leaves"
-            >Leave</a
-          >
           <a
             href="#"
             class="nav-item"
             data-view="work-log"
             data-title="Work Log"
             >Work Log</a
-          >
-          <a href="#" class="nav-item" data-view="Tasks" data-title="Tasks"
-            >Tasks</a
           >
           <a
             href="#"
@@ -71,6 +64,13 @@
           >
           <a href="#" class="nav-item" data-view="profile" data-title="Profile"
             >Profile</a
+          >
+          <a
+            href="#"
+            class="nav-item"
+            data-view="notifications"
+            data-title="Notifications"
+            >Notifications</a
           >
         </nav>
         <a href="index.html" class="logout-button">Sign Out</a>
@@ -90,7 +90,7 @@
           </div>
         </header>
         <div id="dashboard-view" class="dashboard-view">
-          <section class="stats-grid" aria-label="Overview stats">
+          <section class="stats-grid">
             <article class="stat-card highlight">
               <span>Attendance</span>
               <strong>96%</strong>
@@ -163,7 +163,6 @@
           <div class="page-section-header">
             <div>
               <p class="dashboard-kicker">Software Support Team</p>
-
               <p>People working with you in the Software Support team.</p>
             </div>
             <span class="team-count">4 members</span>
@@ -181,7 +180,7 @@
               <span class="member-avatar avatar-pink">AR</span>
               <div>
                 <h3>Ananya Roy</h3>
-                <p>Support Team Lead</p>
+                <p>HR Manager</p>
                 <small>Online</small>
               </div>
             </article>
@@ -196,7 +195,7 @@
             <article class="team-member-card">
               <span class="member-avatar avatar-green">MK</span>
               <div>
-                <h3>Michael Kim</h3>
+                <h3>Mandeep Kaur</h3>
                 <p>Customer Support Specialist</p>
                 <small>In a meeting</small>
               </div>
@@ -218,21 +217,13 @@
               <p>Your Daily Attendance & Check-in and Check-out Time</p>
             </div>
           </div>
-          <div
-            class="attendance-summary"
-            data-attendance-summary
-            aria-live="polite"
-          ></div>
-          <section
-            class="attendance-calendar-panel"
-            aria-label="Monthly Attendance Calendar"
-          >
+          <div class="attendance-summary" data-attendance-summary></div>
+          <section class="attendance-calendar-panel">
             <div class="attendance-calendar-toolbar">
               <button
                 type="button"
                 class="calendar-month-button"
                 data-month-prev
-                aria-label="Previous Month"
               >
                 &larr;
               </button>
@@ -241,30 +232,169 @@
                 type="button"
                 class="calendar-month-button"
                 data-month-next
-                aria-label="Next Month"
               >
                 &rarr;
               </button>
             </div>
-            <div class="attendance-weekdays" aria-hidden="true">
+            <div class="attendance-weekdays">
               <span>Mon</span><span>Tue</span><span>Wed</span><span>Thurs</span
               ><span>Fri</span><span>Sat</span><span>Sun</span>
             </div>
-            <div
-              class="attendance-calendar"
-              data-attendance-calendar
-              role="grid"
-            ></div>
-            <div
-              class="attendance-legend"
-              aria-label="Attendance Status Legend"
-            >
+            <div class="attendance-calendar" data-attendance-calendar></div>
+            <div class="attendance-legend">
               <span><i class="status-sign present"></i>Present</span>
               <span><i class="status-sign absent"></i>Absent</span>
               <span> <i class="status-sign neutral"></i>Weekend/Upcoming </span>
             </div>
           </section>
           <p class="attendance-note">Attendance Records</p>
+        </section>
+        <section
+          id="leaves"
+          class="employees-view leave-view employee-leave-view"
+          hidden
+        >
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Leave Overview</p>
+              <p>Review Leave balance and Submit Leave Requests</p>
+            </div>
+          </div>
+          <section class="stats-grid">
+            <article class="stat-card highlight">
+              <span>Available Leaves</span>
+              <strong>12</strong>
+              <small>Remaining balance</small>
+            </article>
+            <article class="stat-card">
+              <span>Total Leaves</span>
+              <strong>18</strong>
+              <small>For the current year</small>
+            </article>
+            <article class="stat-card">
+              <span>Used Leaves</span>
+              <strong>6</strong>
+              <small>Approved this year</small>
+            </article>
+          </section>
+          <section class="panel">
+            <div class="panel-header">
+              <h2 id="employee-leave-balance-title">Leaves Available</h2>
+            </div>
+            <table>
+              <caption>
+                Leaves taken and remaining leaves
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Leave type</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Used</th>
+                  <th scope="col">Available</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Casual Leave</th>
+                  <td>8</td>
+                  <td>3</td>
+                  <td>5</td>
+                </tr>
+                <tr>
+                  <th scope="row">Sick Leave</th>
+                  <td>6</td>
+                  <td>2</td>
+                  <td>4</td>
+                </tr>
+                <tr>
+                  <th scope="row">Earned Leave</th>
+                  <td>4</td>
+                  <td>1</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <th scope="row">Total</th>
+                  <td>18</td>
+                  <td>6</td>
+                  <td>12</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="panel">
+            <div class="panel-header">
+              <h2 id="leave-application-title">Apply for a Leave</h2>
+            </div>
+            <form id="leave-application-form" class="leave-application-form">
+              <div class="employee-form-grid">
+                <label>
+                  Leave Category
+                  <select name="leave-category" required>
+                    <option value="">Select a Leave Category</option>
+                    <option value="casual">Casual Leave</option>
+                    <option value="sick">Sick Leave</option>
+                  </select>
+                </label>
+                <label>
+                  Start date
+                  <input type="date" name="start-date" required />
+                </label>
+                <label>
+                  End date
+                  <input type="date" name="end-date" required />
+                </label>
+              </div>
+              <fieldset>
+                <legend>Leave Duration</legend>
+                <label>
+                  <input
+                    type="radio"
+                    name="leave-duration"
+                    value="full-day"
+                    checked
+                  />
+                  Full Day
+                </label>
+                <label>
+                  <input type="radio" name="leave-duration" value="half-day" />
+                  Half Day
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="leave-duration"
+                    value="short-leave"
+                  />
+                  Short Leave
+                </label>
+              </fieldset>
+              <div class="employee-form-grid">
+                <label>
+                  Choose Session
+                  <select name="half-day-session">
+                    <option value="select-an-option">Select an Option</option>
+                    <option value="first-half">First Half</option>
+                    <option value="second-half">Second Half</option>
+                  </select>
+                </label>
+                <label>
+                  Short Leave Start Time
+                  <input type="time" name="short-leave-start" />
+                </label>
+                <label>
+                  Short Leave End Time
+                  <input type="time" name="short-leave-end" />
+                </label>
+              </div>
+              <label>
+                Reason for Leave
+                <textarea name="reason" rows="4" required></textarea>
+              </label>
+              <button type="button" class="save-employee-button">
+                Submit Leave Request
+              </button>
+            </form>
+          </section>
         </section>
       </main>
     </div>

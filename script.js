@@ -30,7 +30,6 @@ function updateRoleUI(role) {
   roleButtons.forEach((button) => {
     const isActive = button.dataset.role === role;
     button.classList.toggle("active", isActive);
-    button.setAttribute("aria-pressed", String(isActive));
   });
 
   const config = roleConfig[role];
@@ -51,10 +50,6 @@ if (roleButtons.length > 0) {
     const isPassword = passwordInput.type === "password";
     passwordInput.type = isPassword ? "text" : "password";
     passwordToggle.textContent = isPassword ? "Hide" : "Show";
-    passwordToggle.setAttribute(
-      "aria-label",
-      isPassword ? "Hide password" : "Show password",
-    );
   });
 
   loginForm.addEventListener("submit", (event) => {
@@ -168,21 +163,9 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
       button.className = `employee-action-button ${action}-employee-button`;
       button.dataset.action = action;
       button.textContent = label;
-      button.setAttribute(
-        "aria-label",
-        `${label}: ${getEmployeeData(employeeRow).name}`,
-      );
       actions.append(button);
     });
     employeeRow.append(actions);
-  }
-
-  function updateEmployeeActionLabels(employeeRow) {
-    const employeeName = getEmployeeData(employeeRow).name;
-    employeeRow.querySelectorAll("[data-action]").forEach((button) => {
-      const actionLabel = button.textContent;
-      button.setAttribute("aria-label", `${actionLabel}: ${employeeName}`);
-    });
   }
 
   function updateEmployeeCount() {
@@ -319,7 +302,6 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     Object.entries(updatedData).forEach(([key, value]) => {
       editingEmployeeRow.dataset[key] = value;
     });
-    updateEmployeeActionLabels(editingEmployeeRow);
     employeeProfileDialog.close();
   });
 
@@ -467,7 +449,6 @@ if (teamView && createTeamForm && showCreateTeamButton) {
     removeButton.type = "button";
     removeButton.className = "employee-action-button";
     removeButton.textContent = "Remove";
-    removeButton.setAttribute("aria-label", `Remove ${name} from team`);
 
     member.append(avatar, details, removeButton);
     return member;
@@ -520,7 +501,6 @@ if (teamView && createTeamForm && showCreateTeamButton) {
 
   function setCreateTeamFormVisibility(isVisible) {
     createTeamForm.hidden = !isVisible;
-    showCreateTeamButton.setAttribute("aria-expanded", String(isVisible));
     if (isVisible) {
       createTeamForm.elements["team-name"].focus();
     } else {
@@ -651,7 +631,6 @@ if (attendanceView) {
     for (let blankDay = 0; blankDay < firstDayOffset; blankDay += 1) {
       const emptyCell = document.createElement("div");
       emptyCell.className = "attendance-day empty-day";
-      emptyCell.setAttribute("aria-hidden", "true");
       cells.push(emptyCell);
     }
 
@@ -660,13 +639,8 @@ if (attendanceView) {
       const status = getAttendanceStatus(date, employeeIndex);
       const cell = document.createElement("article");
       cell.className = `attendance-day ${status}-day`;
-      cell.setAttribute("role", "gridcell");
 
       const dateNumber = document.createElement("strong");
-      dateNumber.className = "attendance-date-number";
-      dateNumber.textContent = String(day);
-      cell.append(dateNumber);
-
       const statusLabel = document.createElement("span");
       statusLabel.className = "attendance-status";
       statusLabel.textContent = status[0].toUpperCase() + status.slice(1);
@@ -732,10 +706,6 @@ if (attendanceView) {
         const role = document.createElement("small");
         role.textContent = row.querySelector(".employee-details p").textContent;
         button.append(name, role);
-        button.setAttribute(
-          "aria-pressed",
-          String(index === selectedEmployeeIndex),
-        );
         employeeList.append(button);
       });
 
@@ -747,11 +717,9 @@ if (attendanceView) {
         employeeList
           .querySelectorAll(".attendance-employee-button")
           .forEach((button) => {
-            button.setAttribute(
-              "aria-pressed",
-              String(
-                Number(button.dataset.employeeIndex) === selectedEmployeeIndex,
-              ),
+            button.classList.toggle(
+              "selected",
+              Number(button.dataset.employeeIndex) === selectedEmployeeIndex,
             );
           });
         renderAttendanceCalendar(selectedEmployeeIndex);
