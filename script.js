@@ -772,3 +772,516 @@ if (attendanceView) {
     }
   });
 }
+
+const leaveStorageKey = "mamily-connect-leave-state-v1";
+const leaveStateSeed = {
+  balances: {
+    "Sarthak Sanyal": {
+      total: 18,
+      used: 6,
+      available: 12,
+      categories: {
+        casual: { total: 8, used: 3, available: 5 },
+        sick: { total: 6, used: 2, available: 4 },
+        earned: { total: 4, used: 1, available: 3 },
+      },
+    },
+    "Ananya Roy": {
+      total: 18,
+      used: 8,
+      available: 10,
+      categories: {
+        casual: { total: 8, used: 4, available: 4 },
+        sick: { total: 6, used: 3, available: 3 },
+        earned: { total: 4, used: 1, available: 3 },
+      },
+    },
+    "Mandeep Kaur": {
+      total: 18,
+      used: 10,
+      available: 8,
+      categories: {
+        casual: { total: 8, used: 5, available: 3 },
+        sick: { total: 6, used: 4, available: 2 },
+        earned: { total: 4, used: 1, available: 3 },
+      },
+    },
+    "Jaya Kapoor": {
+      total: 18,
+      used: 3,
+      available: 15,
+      categories: {
+        casual: { total: 8, used: 1, available: 7 },
+        sick: { total: 6, used: 1, available: 5 },
+        earned: { total: 4, used: 1, available: 3 },
+      },
+    },
+    "Neha Kapoor": {
+      total: 18,
+      used: 9,
+      available: 9,
+      categories: {
+        casual: { total: 8, used: 4, available: 4 },
+        sick: { total: 6, used: 3, available: 3 },
+        earned: { total: 4, used: 2, available: 2 },
+      },
+    },
+    "Daksh Ojha": {
+      total: 18,
+      used: 8,
+      available: 10,
+      categories: {
+        casual: { total: 8, used: 3, available: 5 },
+        sick: { total: 6, used: 3, available: 3 },
+        earned: { total: 4, used: 2, available: 2 },
+      },
+    },
+  },
+  requests: [
+    {
+      id: "leave-seed-1",
+      employee: "Sarthak Sanyal",
+      category: "casual",
+      duration: "full-day",
+      startDate: "2026-10-05",
+      endDate: "2026-10-05",
+      reason: "Personal reasons",
+      days: 1,
+      status: "pending",
+    },
+    {
+      id: "leave-seed-2",
+      employee: "Ananya Roy",
+      category: "sick",
+      duration: "full-day",
+      startDate: "2026-10-01",
+      endDate: "2026-10-01",
+      reason: "Sick",
+      days: 1,
+      status: "pending",
+    },
+    {
+      id: "leave-seed-3",
+      employee: "Mandeep Kaur",
+      category: "casual",
+      duration: "short-leave",
+      startDate: "2026-09-30",
+      endDate: "2026-09-30",
+      startTime: "16:00",
+      endTime: "18:00",
+      reason: "Personal reasons",
+      days: 0,
+      status: "pending",
+    },
+    {
+      id: "leave-seed-4",
+      employee: "Daksh Ojha",
+      category: "casual",
+      duration: "short-leave",
+      startDate: "2026-09-30",
+      endDate: "2026-09-30",
+      startTime: "09:00",
+      endTime: "11:00",
+      reason: "Medical",
+      days: 0,
+      status: "pending",
+    },
+  ],
+};
+
+function copyLeaveState(state) {
+  return JSON.parse(JSON.stringify(state));
+}
+
+function loadLeaveState() {
+  try {
+    const storedState = window.localStorage.getItem(leaveStorageKey);
+    if (storedState) {
+      return JSON.parse(storedState);
+    }
+    const initialState = copyLeaveState(leaveStateSeed);
+    window.localStorage.setItem(leaveStorageKey, JSON.stringify(initialState));
+    return initialState;
+  } catch {
+    return copyLeaveState(leaveStateSeed);
+  }
+}
+
+let leaveState = loadLeaveState();
+
+function saveLeaveState() {
+  try {
+    window.localStorage.setItem(leaveStorageKey, JSON.stringify(leaveState));
+  } catch {
+    return;
+  }
+}
+
+function getLeaveCategoryLabel(category) {
+  return (
+    {
+      casual: "Casual Leave",
+      sick: "Sick Leave",
+      earned: "Earned Leave",
+    }[category] || "Leave"
+  );
+}
+
+function formatLeaveDate(dateValue) {
+  const [year, month, day] = dateValue.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString([], {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function updateEmployeeLeaveBalances() {
+  const leaveView = document.getElementById("leaves");
+  if (!leaveView) {
+    return;
+  }
+
+  const employeeName =
+    document.querySelector(".user-chip strong")?.textContent.trim() ||
+    "Sarthak Sanyal";
+  const balance = leaveState.balances[employeeName];
+  if (!balance) {
+    return;
+  }
+
+  const summaryValues = leaveView.querySelectorAll(
+    ".stats-grid .stat-card strong",
+  );
+  [balance.available, balance.total, balance.used].forEach((value, index) => {
+    if (summaryValues[index]) {
+      summaryValues[index].textContent = String(value);
+    }
+  });
+
+  leaveView.querySelectorAll("table tbody tr").forEach((row) => {
+    const categoryName = row
+      .querySelector("th")
+      ?.textContent.trim()
+      .toLowerCase();
+    if (!categoryName) {
+      return;
+    }
+    if (categoryName === "total") {
+      row.cells[1].textContent = String(balance.total);
+      row.cells[2].textContent = String(balance.used);
+      row.cells[3].textContent = String(balance.available);
+      return;
+    }
+    const category = categoryName.split(" ")[0];
+    const categoryBalance = balance.categories[category];
+    if (categoryBalance) {
+      row.cells[1].textContent = String(categoryBalance.total);
+      row.cells[2].textContent = String(categoryBalance.used);
+      row.cells[3].textContent = String(categoryBalance.available);
+    }
+  });
+}
+
+function updateManagerLeaveBalances() {
+  const leaveView = document.getElementById("leave-requests");
+  if (!leaveView) {
+    return;
+  }
+
+  leaveView.querySelectorAll("table tbody tr").forEach((row) => {
+    const employeeName = row.querySelector("th")?.textContent.trim();
+    const balance = leaveState.balances[employeeName];
+    if (!balance) {
+      return;
+    }
+    row.cells[2].textContent = String(balance.total);
+    row.cells[3].textContent = String(balance.used);
+    row.cells[4].textContent = String(balance.available);
+  });
+}
+
+function renderManagerLeaveRequests() {
+  const leaveView = document.getElementById("leave-requests");
+  const requestList = leaveView?.querySelector(".employee-directory");
+  if (!leaveView || !requestList) {
+    return;
+  }
+
+  const pendingRequests = leaveState.requests.filter(
+    (request) => request.status === "pending",
+  );
+  const requestCount = leaveView.querySelector(".panel-header > span");
+  if (requestCount) {
+    requestCount.textContent = `${pendingRequests.length} request${pendingRequests.length === 1 ? "" : "s"}`;
+  }
+
+  requestList.replaceChildren();
+  if (pendingRequests.length === 0) {
+    const emptyMessage = document.createElement("p");
+    emptyMessage.className = "leave-empty-state";
+    emptyMessage.textContent = "No pending leave requests.";
+    requestList.append(emptyMessage);
+    return;
+  }
+
+  pendingRequests.forEach((request) => {
+    const row = document.createElement("article");
+    row.className = "employee-row";
+    row.dataset.leaveRequestId = request.id;
+
+    const details = document.createElement("div");
+    details.className = "employee-details";
+    const name = document.createElement("h3");
+    name.textContent = request.employee;
+    const description = document.createElement("p");
+    const durationLabel = {
+      "full-day": "Full Day",
+      "half-day": "Half Day",
+      "short-leave": "Short Leave",
+    }[request.duration];
+    const halfDayLabel =
+      request.duration === "half-day"
+        ? ` (${request.halfDaySession === "second-half" ? "Second Half" : "First Half"})`
+        : "";
+    const dateLabel =
+      request.startDate === request.endDate
+        ? formatLeaveDate(request.startDate)
+        : `${formatLeaveDate(request.startDate)} - ${formatLeaveDate(request.endDate)}`;
+    const timeLabel =
+      request.duration === "short-leave"
+        ? `, ${request.startTime} - ${request.endTime}`
+        : "";
+    description.textContent = `${getLeaveCategoryLabel(request.category)} - ${durationLabel}${halfDayLabel} - ${dateLabel}${timeLabel}`;
+    const reason = document.createElement("small");
+    reason.textContent = `Reason: ${request.reason}`;
+    details.append(name, description, reason);
+
+    const balance = leaveState.balances[request.employee];
+    const balanceLabel = document.createElement("span");
+    balanceLabel.className = "employee-team";
+    balanceLabel.textContent = `${balance?.available ?? 0} Leaves Available`;
+
+    const actions = document.createElement("div");
+    actions.className = "employee-actions";
+    [
+      ["approve", "Approve", "secondary-button"],
+      ["reject", "Reject", "employee-action-button"],
+    ].forEach(([action, label, className]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = className;
+      button.dataset.leaveAction = action;
+      button.textContent = label;
+      actions.append(button);
+    });
+
+    row.append(details, balanceLabel, actions);
+    requestList.append(row);
+  });
+}
+
+function updateLeaveViews() {
+  updateEmployeeLeaveBalances();
+  updateManagerLeaveBalances();
+  renderManagerLeaveRequests();
+}
+
+function countLeaveDays(startDate, endDate) {
+  const [startYear, startMonth, startDay] = startDate.split("-").map(Number);
+  const [endYear, endMonth, endDay] = endDate.split("-").map(Number);
+  const current = new Date(startYear, startMonth - 1, startDay);
+  const end = new Date(endYear, endMonth - 1, endDay);
+  let weekdays = 0;
+
+  while (current <= end) {
+    if (current.getDay() !== 0 && current.getDay() !== 6) {
+      weekdays += 1;
+    }
+    current.setDate(current.getDate() + 1);
+  }
+  return weekdays;
+}
+
+const leaveForm = document.getElementById("leave-application-form");
+if (leaveForm) {
+  const submitLeaveButton = leaveForm.querySelector("button[type='button']");
+  let leaveFormMessage = leaveForm.querySelector(".leave-form-message");
+
+  if (!leaveFormMessage) {
+    leaveFormMessage = document.createElement("p");
+    leaveFormMessage.className = "leave-form-message";
+    submitLeaveButton.before(leaveFormMessage);
+  }
+
+  function showLeaveFormMessage(message, isError = false) {
+    leaveFormMessage.textContent = message;
+    leaveFormMessage.classList.toggle("error", isError);
+  }
+
+  submitLeaveButton.addEventListener("click", () => {
+    if (!leaveForm.reportValidity()) {
+      return;
+    }
+
+    const formData = new FormData(leaveForm);
+    const category = formData.get("leave-category");
+    const duration = formData.get("leave-duration");
+    const startDate = formData.get("start-date");
+    const endDate = formData.get("end-date");
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const start = new Date(`${startDate}T00:00:00`);
+    const end = new Date(`${endDate}T00:00:00`);
+
+    if (start < today || end < start) {
+      showLeaveFormMessage("Choose a current or future date range.", true);
+      return;
+    }
+
+    if (duration !== "full-day" && startDate !== endDate) {
+      showLeaveFormMessage(
+        "Half-day and short leave requests must be for one date.",
+        true,
+      );
+      return;
+    }
+
+    if (
+      duration !== "full-day" &&
+      (start.getDay() === 0 || start.getDay() === 6)
+    ) {
+      showLeaveFormMessage(
+        "Choose a weekday for half-day or short leave.",
+        true,
+      );
+      return;
+    }
+
+    const startTime = formData.get("short-leave-start");
+    const endTime = formData.get("short-leave-end");
+    if (
+      duration === "short-leave" &&
+      (!startTime || !endTime || startTime >= endTime)
+    ) {
+      showLeaveFormMessage(
+        "Choose valid start and end times for your short leave.",
+        true,
+      );
+      return;
+    }
+
+    const employeeName =
+      document.querySelector(".user-chip strong")?.textContent.trim() ||
+      "Sarthak Sanyal";
+    const balance = leaveState.balances[employeeName];
+    const categoryBalance = balance?.categories[category];
+    const requestedDays =
+      duration === "short-leave"
+        ? 0
+        : duration === "half-day"
+          ? 0.5
+          : countLeaveDays(startDate, endDate);
+
+    if (requestedDays === 0 && duration !== "short-leave") {
+      showLeaveFormMessage(
+        "The selected range contains no working days.",
+        true,
+      );
+      return;
+    }
+
+    const alreadyRequested = leaveState.requests
+      .filter(
+        (request) =>
+          request.status === "pending" &&
+          request.employee === employeeName &&
+          request.category === category,
+      )
+      .reduce((total, request) => total + request.days, 0);
+    if (
+      categoryBalance &&
+      requestedDays > categoryBalance.available - alreadyRequested
+    ) {
+      showLeaveFormMessage(
+        "There are not enough available leaves in this category.",
+        true,
+      );
+      return;
+    }
+
+    leaveState.requests.push({
+      id: `leave-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      employee: employeeName,
+      category,
+      duration,
+      startDate,
+      endDate,
+      startTime: duration === "short-leave" ? startTime : "",
+      endTime: duration === "short-leave" ? endTime : "",
+      halfDaySession: formData.get("half-day-session"),
+      reason: formData.get("reason").trim(),
+      days: requestedDays,
+      status: "pending",
+    });
+    saveLeaveState();
+    leaveForm.reset();
+    showLeaveFormMessage("Your leave request has been sent for review.");
+  });
+}
+
+const managerLeaveView = document.getElementById("leave-requests");
+managerLeaveView?.addEventListener("click", (event) => {
+  const actionButton = event.target.closest("[data-leave-action]");
+  if (!actionButton) {
+    return;
+  }
+
+  const requestRow = actionButton.closest("[data-leave-request-id]");
+  const request = leaveState.requests.find(
+    (item) => item.id === requestRow?.dataset.leaveRequestId,
+  );
+  if (!request || request.status !== "pending") {
+    return;
+  }
+
+  if (actionButton.dataset.leaveAction === "approve") {
+    const balance = leaveState.balances[request.employee];
+    const categoryBalance = balance?.categories[request.category];
+    if (
+      request.days > 0 &&
+      (!balance ||
+        !categoryBalance ||
+        balance.available < request.days ||
+        categoryBalance.available < request.days)
+    ) {
+      return;
+    }
+    if (request.days > 0) {
+      balance.available -= request.days;
+      balance.used += request.days;
+      categoryBalance.available -= request.days;
+      categoryBalance.used += request.days;
+    }
+    request.status = "approved";
+  } else {
+    request.status = "rejected";
+  }
+
+  saveLeaveState();
+  updateLeaveViews();
+});
+
+updateLeaveViews();
+
+window.addEventListener("storage", (event) => {
+  if (event.key !== leaveStorageKey || !event.newValue) {
+    return;
+  }
+  try {
+    leaveState = JSON.parse(event.newValue);
+    updateLeaveViews();
+  } catch {
+    return;
+  }
+});
