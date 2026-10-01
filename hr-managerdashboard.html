@@ -49,22 +49,12 @@
             data-title="Leave Requests"
             >Leave Requests</a
           >
-          <a href="#" class="nav-item" data-view="taska" data-title="Tasks"
-            >Tasks</a
-          >
           <a
             href="#"
             class="nav-item"
-            data-view="performance"
+            data-view="performance-view"
             data-title="Performance"
             >Performance</a
-          >
-          <a
-            href="#"
-            class="nav-item"
-            data-view="analytics"
-            data-title="Analytics"
-            >Analytics</a
           >
           <a
             href="#"
@@ -181,6 +171,7 @@
             </article>
           </section>
         </div>
+
         <section id="employees-view" class="employees-view" hidden>
           <div class="page-section-header">
             <div>
@@ -882,6 +873,71 @@
                   </button>
                 </div>
               </article>
+            </div>
+          </section>
+        </section>
+        <section id="performance-view" class="performance-view" hidden>
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">2026 Annual Review</p>
+              <p data-performance-description>
+                Annual Performance and Progress of all Employees.
+              </p>
+            </div>
+          </div>
+          <div class="employee-directory-toolbar">
+            <div class="employee-search">
+              <label for="performance-employee-search">Search Employee</label>
+              <input
+                type="search"
+                id="performance-employee-search"
+                role="combobox"
+                aria-autocomplete="list"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="performance-employee-options"
+                placeholder="Search or select an employee"
+                autocomplete="off"
+              />
+              <div
+                class="performance-employee-options"
+                id="performance-employee-options"
+                role="listbox"
+                hidden
+              ></div>
+            </div>
+          </div>
+          <div class="performance-summary" data-performance-summary></div>
+          <section class="performance-chart-panel">
+            <div class="performance-chart-heading">
+              <div>
+                <h2 data-performance-chart-title>
+                  Team Performance Through the Year
+                </h2>
+                <p>Monthly Score Out of 100</p>
+              </div>
+              <span class="performance-employee-label">All Employees</span>
+            </div>
+            <div class="performance-chart-wrap" data-performance-chart></div>
+            <div class="performance-legend" data-performance-legend></div>
+          </section>
+          <section class="performance-roster-panel">
+            <div class="panel-header">
+              <h2>Employee Performance</h2>
+              <span>Current Year</span>
+            </div>
+            <div class="performance-table-wrap">
+              <table class="performance-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Employee</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Year-End Score</th>
+                    <th scope="col">Change This Year</th>
+                  </tr>
+                </thead>
+                <tbody data-performance-roster></tbody>
+              </table>
             </div>
           </section>
         </section>

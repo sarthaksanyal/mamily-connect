@@ -38,22 +38,12 @@
           <a href="#" class="nav-item" data-view="leaves" data-title="Leaves"
             >Leave</a
           >
-          <a href="#" class="nav-item" data-view="Tasks" data-title="Tasks"
-            >Tasks</a
-          >
           <a
             href="#"
             class="nav-item"
-            data-view="performance"
+            data-view="performance-view"
             data-title="Performance"
             >Performance</a
-          >
-          <a
-            href="#"
-            class="nav-item"
-            data-view="work-log"
-            data-title="Work Log"
-            >Work Log</a
           >
           <a
             href="#"
@@ -95,11 +85,6 @@
               <span>Attendance</span>
               <strong>96%</strong>
               <small>+4% this month</small>
-            </article>
-            <article class="stat-card">
-              <span>Tasks Done</span>
-              <strong>18</strong>
-              <small>5 pending</small>
             </article>
             <article class="stat-card">
               <span>Leave Balance</span>
@@ -153,7 +138,6 @@
               </div>
               <div class="quick-actions">
                 <button type="button">Leave Request</button>
-                <button type="button">Submit WorkLog</button>
                 <button type="button">Update Profile</button>
               </div>
             </article>
@@ -328,9 +312,9 @@
             <form id="leave-application-form" class="leave-application-form">
               <div class="employee-form-grid">
                 <label>
-                  Leave Category
-                  <select name="leave-category" required>
-                    <option value="">Select a Leave Category</option>
+                  Leave Type
+                  <select name="leave-type" required>
+                    <option value="">Select a Leave Type</option>
                     <option value="casual">Casual Leave</option>
                     <option value="sick">Sick Leave</option>
                   </select>
@@ -394,6 +378,25 @@
                 Submit Leave Request
               </button>
             </form>
+          </section>
+        </section>
+        <section id="performance-view" class="performance-view" hidden>
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">2026 Annual Review</p>
+              <p>Your performance score and monthly progress for the year.</p>
+            </div>
+          </div>
+          <div class="performance-summary" data-performance-summary></div>
+          <section class="performance-chart-panel">
+            <div class="performance-chart-heading">
+              <div>
+                <h2>Performance through the year</h2>
+                <p>Monthly score out of 100</p>
+              </div>
+              <span class="performance-employee-label">Sarthak Sanyal</span>
+            </div>
+            <div class="performance-chart-wrap" data-performance-chart></div>
           </section>
         </section>
       </main>

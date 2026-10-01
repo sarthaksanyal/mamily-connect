@@ -84,7 +84,7 @@ if (roleButtons.length > 0) {
 
 const navigationItems = document.querySelectorAll(".nav-item[data-view]");
 const dashboardViews = document.querySelectorAll(
-  ".dashboard-view, .team-members-view, .employees-view, .attendance-view",
+  ".dashboard-view, .team-members-view, .employees-view, .attendance-view, .performance-view, .feedback-view, .meetings-view",
 );
 const dashboardHeading = document.querySelector(".topbar-dashboard h1");
 navigationItems.forEach((item) => {
@@ -357,6 +357,7 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     addEmployeeActions(employeeRow);
     employeeDirectory.append(employeeRow);
     window.refreshAttendanceEmployeeList?.();
+    window.refreshMeetingEmployeeList?.();
 
     updateEmployeeCount();
     addEmployeeForm.reset();
@@ -1125,7 +1126,7 @@ if (leaveForm) {
     }
 
     const formData = new FormData(leaveForm);
-    const category = formData.get("leave-category");
+    const category = formData.get("leave-type");
     const duration = formData.get("leave-duration");
     const startDate = formData.get("start-date");
     const endDate = formData.get("end-date");
@@ -1204,7 +1205,7 @@ if (leaveForm) {
       requestedDays > categoryBalance.available - alreadyRequested
     ) {
       showLeaveFormMessage(
-        "There are not enough available leaves in this category.",
+        "There are not enough leaves available in this category.",
         true,
       );
       return;
@@ -1285,3 +1286,365 @@ window.addEventListener("storage", (event) => {
     return;
   }
 });
+
+const performanceView = document.getElementById("performance-view");
+if (performanceView) {
+  const performanceSeries = {
+    "Sarthak Sanyal": [72, 75, 74, 79, 78, 82, 80, 84, 86, 85, 89, 91],
+    "Ananya Roy": [80, 82, 81, 83, 85, 84, 88, 90, 89, 92, 93, 94],
+    "Mandeep Kaur": [68, 70, 72, 71, 74, 76, 75, 78, 80, 79, 82, 84],
+    "Jaya Patel": [75, 73, 76, 78, 77, 80, 82, 81, 84, 83, 86, 88],
+    "Neha Kapoor": [78, 79, 80, 78, 82, 84, 83, 85, 87, 86, 88, 90],
+    "Daksh Ojha": [71, 74, 76, 75, 77, 79, 81, 80, 82, 85, 84, 87],
+  };
+  const performanceColors = [
+    "#2d5d9a",
+    "#e53d7a",
+    "#278264",
+    "#b27a12",
+    "#7454a8",
+    "#168c99",
+  ];
+  const monthLabels = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const chart = performanceView.querySelector("[data-performance-chart]");
+  const summary = performanceView.querySelector("[data-performance-summary]");
+  const roster = performanceView.querySelector("[data-performance-roster]");
+  const legend = performanceView.querySelector("[data-performance-legend]");
+  const employeeSearchInput = performanceView.querySelector(
+    "#performance-employee-search",
+  );
+  const employeeOptions = performanceView.querySelector(
+    "#performance-employee-options",
+  );
+  const performanceDescription = performanceView.querySelector(
+    "[data-performance-description]",
+  );
+  const performanceChartTitle = performanceView.querySelector(
+    "[data-performance-chart-title]",
+  );
+  const performanceEmployeeLabel = performanceView.querySelector(
+    ".performance-employee-label",
+  );
+  let activeEmployeeOption = -1;
+  const employeeDirectoryRows = document.querySelectorAll(
+    "#employee-directory .employee-row",
+  );
+  const isManagerView = Boolean(roster);
+  const employees = isManagerView
+    ? [...employeeDirectoryRows].map((row) => ({
+        name: row.querySelector(".employee-details h3").textContent.trim(),
+        role: row.querySelector(".employee-details p").textContent.trim(),
+      }))
+    : [
+        {
+          name:
+            document.querySelector(".user-chip strong")?.textContent.trim() ||
+            "Sarthak Sanyal",
+          role: "",
+        },
+      ];
+  function getPerformanceScores(name, employeeIndex) {
+    if (performanceSeries[name]) {
+      return performanceSeries[name];
+    }
+    return monthLabels.map(
+      (_, monthIndex) => 70 + ((employeeIndex * 7 + monthIndex * 3) % 19),
+    );
+  }
+
+  function renderPerformanceChart(series) {
+    const width = 760;
+    const height = 300;
+    const plot = { left: 42, right: 18, top: 18, bottom: 38 };
+    const plotWidth = width - plot.left - plot.right;
+    const plotHeight = height - plot.top - plot.bottom;
+    const yForScore = (score) => plot.top + ((100 - score) / 50) * plotHeight;
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    svg.setAttribute("role", "img");
+
+    [50, 60, 70, 80, 90, 100].forEach((score) => {
+      const y = yForScore(score);
+      const gridLine = document.createElementNS(svg.namespaceURI, "line");
+      gridLine.setAttribute("x1", String(plot.left));
+      gridLine.setAttribute("x2", String(width - plot.right));
+      gridLine.setAttribute("y1", String(y));
+      gridLine.setAttribute("y2", String(y));
+      gridLine.setAttribute("class", "performance-grid-line");
+      svg.append(gridLine);
+      const scoreLabel = document.createElementNS(svg.namespaceURI, "text");
+      scoreLabel.setAttribute("x", String(plot.left - 10));
+      scoreLabel.setAttribute("y", String(y + 4));
+      scoreLabel.setAttribute("text-anchor", "end");
+      scoreLabel.setAttribute("class", "performance-axis-label");
+      scoreLabel.textContent = String(score);
+      svg.append(scoreLabel);
+    });
+    monthLabels.forEach((month, monthIndex) => {
+      const x = plot.left + (monthIndex / (monthLabels.length - 1)) * plotWidth;
+      const monthLabel = document.createElementNS(svg.namespaceURI, "text");
+      monthLabel.setAttribute("x", String(x));
+      monthLabel.setAttribute("y", String(height - 10));
+      monthLabel.setAttribute("text-anchor", "middle");
+      monthLabel.setAttribute("class", "performance-axis-label");
+      monthLabel.textContent = month;
+      svg.append(monthLabel);
+    });
+    series.forEach(({ name, scores, color }) => {
+      const points = scores.map((score, monthIndex) => {
+        const x =
+          plot.left + (monthIndex / (monthLabels.length - 1)) * plotWidth;
+        return `${x},${yForScore(score)}`;
+      });
+      const line = document.createElementNS(svg.namespaceURI, "polyline");
+      line.setAttribute("points", points.join(" "));
+      line.setAttribute("stroke", color);
+      line.setAttribute("class", "performance-line");
+      svg.append(line);
+      scores.forEach((score, monthIndex) => {
+        const point = document.createElementNS(svg.namespaceURI, "circle");
+        point.setAttribute(
+          "cx",
+          String(
+            plot.left + (monthIndex / (monthLabels.length - 1)) * plotWidth,
+          ),
+        );
+        point.setAttribute("cy", String(yForScore(score)));
+        point.setAttribute("r", series.length === 1 ? "4" : "3");
+        point.setAttribute("fill", color);
+        point.setAttribute("class", "performance-point");
+        const pointTitle = document.createElementNS(svg.namespaceURI, "title");
+        pointTitle.textContent = `${name}, ${monthLabels[monthIndex]}: ${score}%`;
+        point.append(pointTitle);
+        svg.append(point);
+      });
+    });
+
+    chart.replaceChildren(svg);
+  }
+
+  const chartSeries = employees.map((employee, index) => ({
+    ...employee,
+    scores: getPerformanceScores(employee.name, index),
+    color: performanceColors[index % performanceColors.length],
+  }));
+  function closeEmployeeOptions() {
+    employeeOptions.hidden = true;
+    employeeSearchInput.setAttribute("aria-expanded", "false");
+    employeeSearchInput.removeAttribute("aria-activedescendant");
+    activeEmployeeOption = -1;
+  }
+
+  function renderEmployeeOptions(searchTerm = "") {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+    const matchingEmployees = employees.filter((employee) =>
+      employee.name.toLowerCase().includes(normalizedSearch),
+    );
+    employeeOptions.replaceChildren();
+    activeEmployeeOption = -1;
+
+    if (!matchingEmployees.length) {
+      const emptyMessage = document.createElement("div");
+      emptyMessage.className = "performance-employee-empty";
+      emptyMessage.textContent = "No employees found";
+      employeeOptions.append(emptyMessage);
+    } else {
+      matchingEmployees.forEach((employee, index) => {
+        const option = document.createElement("div");
+        option.className = "performance-employee-option";
+        option.id = `performance-employee-option-${index}`;
+        option.setAttribute("role", "option");
+        option.setAttribute("aria-selected", "false");
+        option.textContent = employee.name;
+        option.addEventListener("click", () => {
+          employeeSearchInput.value = employee.name;
+          closeEmployeeOptions();
+          renderPerformanceView();
+        });
+        employeeOptions.append(option);
+      });
+    }
+
+    employeeOptions.hidden = false;
+    employeeSearchInput.setAttribute("aria-expanded", "true");
+  }
+
+  function setActiveEmployeeOption(nextIndex) {
+    const options = employeeOptions.querySelectorAll('[role="option"]');
+    if (!options.length) return;
+
+    activeEmployeeOption = (nextIndex + options.length) % options.length;
+    options.forEach((option, index) => {
+      const isActive = index === activeEmployeeOption;
+      option.setAttribute("aria-selected", String(isActive));
+      option.classList.toggle("is-active", isActive);
+    });
+    employeeSearchInput.setAttribute(
+      "aria-activedescendant",
+      options[activeEmployeeOption].id,
+    );
+    options[activeEmployeeOption].scrollIntoView({ block: "nearest" });
+  }
+
+  function renderPerformanceView() {
+    const searchTerm = employeeSearchInput?.value.trim().toLowerCase() || "";
+    const selectedEmployee = searchTerm
+      ? chartSeries.find(
+          (employee) => employee.name.toLowerCase() === searchTerm,
+        )
+      : null;
+    const displayedSeries = selectedEmployee ? [selectedEmployee] : chartSeries;
+    renderPerformanceChart(displayedSeries);
+
+    if (isManagerView) {
+      performanceDescription.textContent = selectedEmployee
+        ? `Showing annual performance for ${selectedEmployee.name}.`
+        : searchTerm
+          ? "No employee selected; showing annual performance for the full team."
+          : "Annual performance across all employees.";
+      performanceChartTitle.textContent = selectedEmployee
+        ? `${selectedEmployee.name} performance through the year`
+        : "Team performance through the year";
+      performanceEmployeeLabel.textContent = selectedEmployee
+        ? selectedEmployee.name
+        : "All employees";
+    }
+
+    const averageScore = displayedSeries.length
+      ? Math.round(
+          displayedSeries.reduce(
+            (total, employee) => total + employee.scores[11],
+            0,
+          ) / displayedSeries.length,
+        )
+      : 0;
+    const summaryItems = isManagerView
+      ? selectedEmployee
+        ? [
+            ["Year-end score", `${selectedEmployee.scores[11]}%`],
+            [
+              "Annual average",
+              `${Math.round(selectedEmployee.scores.reduce((total, score) => total + score, 0) / 12)}%`,
+            ],
+            [
+              "Change this year",
+              `${selectedEmployee.scores[11] - selectedEmployee.scores[0] >= 0 ? "+" : ""}${selectedEmployee.scores[11] - selectedEmployee.scores[0]} pts`,
+            ],
+          ]
+        : [
+            ["Team average", `${averageScore}%`],
+            ["Employees reviewed", displayedSeries.length],
+            [
+              "Top score",
+              `${Math.max(0, ...displayedSeries.map((employee) => employee.scores[11]))}%`,
+            ],
+          ]
+      : [
+          ["Year-end score", `${displayedSeries[0].scores[11]}%`],
+          [
+            "Annual average",
+            `${Math.round(displayedSeries[0].scores.reduce((total, score) => total + score, 0) / 12)}%`,
+          ],
+          [
+            "Change this year",
+            `+${displayedSeries[0].scores[11] - displayedSeries[0].scores[0]} pts`,
+          ],
+        ];
+    summary.replaceChildren();
+    summaryItems.forEach(([label, value]) => {
+      const metric = document.createElement("article");
+      metric.className = "performance-metric";
+      const metricLabel = document.createElement("span");
+      metricLabel.textContent = label;
+      const metricValue = document.createElement("strong");
+      metricValue.textContent = String(value);
+      metric.append(metricLabel, metricValue);
+      summary.append(metric);
+    });
+    roster?.replaceChildren();
+    legend?.replaceChildren();
+    if (roster) {
+      displayedSeries.forEach((employee) => {
+        const row = document.createElement("tr");
+        [
+          employee.name,
+          employee.role,
+          `${employee.scores[11]}%`,
+          `${employee.scores[11] - employee.scores[0] >= 0 ? "+" : ""}${employee.scores[11] - employee.scores[0]} pts`,
+        ].forEach((value) => {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          row.append(cell);
+        });
+        roster.append(row);
+
+        const legendItem = document.createElement("span");
+        legendItem.className = "performance-legend-item";
+        const swatch = document.createElement("i");
+        swatch.style.setProperty("--series-color", employee.color);
+        const employeeName = document.createElement("span");
+        employeeName.textContent = employee.name;
+        legendItem.append(swatch, employeeName);
+        legend.append(legendItem);
+      });
+    }
+  }
+
+  employeeSearchInput?.addEventListener("focus", () => {
+    renderEmployeeOptions(employeeSearchInput.value);
+  });
+  employeeSearchInput?.addEventListener("click", () => {
+    if (employeeOptions.hidden) {
+      renderEmployeeOptions(employeeSearchInput.value);
+    }
+  });
+  employeeSearchInput?.addEventListener("input", () => {
+    renderEmployeeOptions(employeeSearchInput.value);
+    renderPerformanceView();
+  });
+  employeeSearchInput?.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      if (employeeOptions.hidden) {
+        renderEmployeeOptions(employeeSearchInput.value);
+      }
+      setActiveEmployeeOption(
+        activeEmployeeOption + (event.key === "ArrowDown" ? 1 : -1),
+      );
+    } else if (event.key === "Enter" && activeEmployeeOption >= 0) {
+      event.preventDefault();
+      employeeOptions
+        .querySelectorAll('[role="option"]')
+        [activeEmployeeOption]?.click();
+    } else if (event.key === "Escape") {
+      closeEmployeeOptions();
+    }
+  });
+  employeeOptions?.addEventListener("mousedown", (event) => {
+    event.preventDefault();
+  });
+  if (employeeSearchInput && employeeOptions) {
+    document.addEventListener("click", (event) => {
+      if (
+        !employeeSearchInput.contains(event.target) &&
+        !employeeOptions.contains(event.target)
+      ) {
+        closeEmployeeOptions();
+      }
+    });
+  }
+  renderPerformanceView();
+}
