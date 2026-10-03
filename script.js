@@ -84,7 +84,7 @@ if (roleButtons.length > 0) {
 
 const navigationItems = document.querySelectorAll(".nav-item[data-view]");
 const dashboardViews = document.querySelectorAll(
-  ".dashboard-view, .team-members-view, .employees-view, .attendance-view, .performance-view, .feedback-view, .meetings-view",
+  ".dashboard-view, .team-members-view, .employees-view, .attendance-view, .performance-view, .feedback-view, .meetings-view, .task-view",
 );
 const dashboardHeading = document.querySelector(".topbar-dashboard h1");
 navigationItems.forEach((item) => {
@@ -1865,3 +1865,295 @@ window.addEventListener("storage", (event) => {
   renderEmployeeFeedback();
   renderManagerFeedback();
 });
+
+const taskStorageKey = "mamily-connect-tasks";
+const taskView = document.querySelector(".task-view");
+
+if (taskView) {
+  const taskList = taskView.querySelector("[data-task-list]");
+  const taskStats = taskView.querySelector("[data-task-stats]");
+  const taskForm = document.getElementById("task-assignment-form");
+  const assigneeSelect = taskForm?.elements.assignee;
+  const taskEmployeeName =
+    document.querySelector(".user-chip strong")?.textContent.trim() ||
+    "Sarthak Sanyal";
+
+  function localDateString(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function makeInitialTask() {
+    const assignedAt = new Date();
+    const dueDate = new Date(assignedAt);
+    dueDate.setDate(dueDate.getDate() + 4);
+    return {
+      id: `task-${Date.now()}`,
+      title: "Prepare onboarding checklist",
+      description:
+        "Review the new-starter steps and share the updated checklist with the team.",
+      assignee: "Sarthak Sanyal",
+      assignedBy: "Ananya Roy",
+      assignedAt: assignedAt.toISOString(),
+      dueDate: localDateString(dueDate),
+      progress: 35,
+    };
+  }
+
+  function loadTasks() {
+    try {
+      const savedTasks = localStorage.getItem(taskStorageKey);
+      if (savedTasks) {
+        const parsedTasks = JSON.parse(savedTasks);
+        return Array.isArray(parsedTasks) ? parsedTasks : [makeInitialTask];
+      }
+      const initialTasks = [makeInitialTask()];
+      localStorage.setItem(taskStorageKey, JSON.stringify(initialTasks));
+      return initialTasks;
+    } catch {
+      return [makeInitialTask()];
+    }
+  }
+
+  let tasks = loadTasks();
+
+  function saveTasks() {
+    try {
+      localStorage.setItem(taskStorageKey, JSON.stringify(tasks));
+    } catch {
+      return;
+    }
+  }
+
+  function formatDate(dateValue) {
+    if (!dateValue) {
+      return "No deadline";
+    }
+    return new Date(`${dateValue}T00:00:00`).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  function getTaskStatus(task) {
+    if (task.progress >= 100) {
+      return "Completed";
+    }
+    return task.progress > 0 ? "In Progress" : "Not Started";
+  }
+
+  function addTaskStat(label, value) {
+    const stat = document.createElement("article");
+    stat.className = "task-stat";
+    const statLabel = document.createElement("span");
+    statLabel.textContent = label;
+    const statValue = document.createElement("strong");
+    statValue.textContent = value;
+    stat.append(statLabel, statValue);
+    taskStats.append(stat);
+  }
+
+  function createTaskCard(task, isManager) {
+    const card = document.createElement("article");
+    card.className = "task-card";
+    card.dataset.taskId = task.id;
+
+    const cardHeader = document.createElement("div");
+    cardHeader.className = "task-card-header";
+    const titleBlock = document.createElement("div");
+    const title = document.createElement("h3");
+    title.textContent = task.title;
+    const status = document.createElement("span");
+    status.className = `task-status ${getTaskStatus(task).toLowerCase().replaceAll(" ", "-")}`;
+    status.textContent = getTaskStatus(task);
+    titleBlock.append(title);
+    if (task.description) {
+      const description = document.createElement("p");
+      description.className = "task-description";
+      description.textContent = task.description;
+      titleBlock.append(description);
+    }
+    cardHeader.append(titleBlock, status);
+
+    const metadata = document.createElement("dl");
+    metadata.className = "task-metadata";
+    const metadataItems = isManager
+      ? [
+          ["Assigned to", task.assignee],
+          ["Assigned by", task.assignedBy],
+          ["Assigned on", new Date(task.assignedAt).toLocaleString()],
+          ["Due date", formatDate(task.dueDate)],
+        ]
+      : [
+          ["Assigned by", task.assignedBy],
+          ["Assigned on", new Date(task.assignedAt).toLocaleString()],
+          ["Due date", formatDate(task.dueDate)],
+          [
+            "Time given",
+            `${Math.max(1, Math.ceil((new Date(`${task.dueDate}T00:00:00`) - new Date(task.assignedAt)) / 86400000))} days`,
+          ],
+        ];
+    metadataItems.forEach(([label, value]) => {
+      const item = document.createElement("div");
+      const term = document.createElement("dt");
+      term.textContent = label;
+      const detail = document.createElement("dd");
+      detail.textContent = value || "Not provided";
+      item.append(term, detail);
+      metadata.append(item);
+    });
+
+    const progressSection = document.createElement("div");
+    progressSection.className = "task-progress-section";
+    const progressHeader = document.createElement("div");
+    progressHeader.className = "task-progress-header";
+    const progressLabel = document.createElement("span");
+    progressLabel.textContent = isManager ? "Completion" : "Progress";
+    const progressValue = document.createElement("strong");
+    progressValue.className = "task-progress-value";
+    progressValue.textContent = `${task.progress}%`;
+    progressHeader.append(progressLabel, progressValue);
+    const progressTrack = document.createElement("div");
+    progressTrack.className = "task-progress-track";
+    const progressFill = document.createElement("span");
+    progressFill.className = "task-progress-fill";
+    progressFill.style.width = `${task.progress}%`;
+    progressTrack.append(progressFill);
+    progressSection.append(progressHeader, progressTrack);
+
+    if (isManager) {
+      const progressControl = document.createElement("label");
+      progressControl.className = "task-progress-control";
+      const controlLabel = document.createElement("span");
+      controlLabel.textContent = "Update completion";
+      const range = document.createElement("input");
+      range.type = "range";
+      range.min = "0";
+      range.max = "100";
+      range.step = "5";
+      range.value = String(task.progress);
+      range.setAttribute("aria-label", `Completion for ${task.title}`);
+      progressControl.append(controlLabel, range);
+      progressSection.append(progressControl);
+    }
+
+    card.append(cardHeader, metadata, progressSection);
+    return card;
+  }
+
+  function renderTasks() {
+    const isManager = Boolean(taskForm);
+    const visibleTasks = isManager
+      ? tasks
+      : tasks.filter((task) => task.assignee === taskEmployeeName);
+    taskList.replaceChildren();
+    taskStats.replaceChildren();
+    const completedCount = visibleTasks.filter(
+      (task) => task.progress >= 100,
+    ).length;
+    addTaskStat("Assigned", String(visibleTasks.length));
+    addTaskStat(
+      "In progress",
+      String(
+        visibleTasks.filter((task) => task.progress > 0 && task.progress < 100)
+          .length,
+      ),
+    );
+    addTaskStat("Completed", String(completedCount));
+
+    if (visibleTasks.length === 0) {
+      const emptyState = document.createElement("p");
+      emptyState.className = "task-empty-state";
+      emptyState.textContent = "No tasks have been assigned to you yet.";
+      taskList.append(emptyState);
+      return;
+    }
+
+    visibleTasks
+      .slice()
+      .sort(
+        (first, second) => new Date(first.dueDate) - new Date(second.dueDate),
+      )
+      .forEach((task) => taskList.append(createTaskCard(task, isManager)));
+  }
+
+  if (assigneeSelect) {
+    document
+      .querySelectorAll("#employee-directory .employee-row")
+      .forEach((row) => {
+        const name = row
+          .querySelector(".employee-details h3")
+          ?.textContent.trim();
+        if (name) {
+          assigneeSelect.append(new Option(name, name));
+        }
+      });
+    const dueDateInput = taskForm.elements.dueDate;
+    dueDateInput.min = localDateString(new Date());
+    dueDateInput.value = localDateString(new Date(Date.now() + 86400000 * 7));
+
+    taskForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(taskForm);
+      tasks.push({
+        id: `task-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        title: formData.get("title").trim(),
+        description: formData.get("description").trim(),
+        assignee: formData.get("assignee"),
+        assignedBy:
+          document.querySelector(".user-chip strong")?.textContent.trim() ||
+          "Manager",
+        assignedAt: new Date().toISOString(),
+        dueDate: formData.get("dueDate"),
+        progress: 0,
+      });
+      saveTasks();
+      renderTasks();
+      taskForm.reset();
+      dueDateInput.value = localDateString(new Date(Date.now() + 86400000 * 7));
+    });
+
+    taskList.addEventListener("input", (event) => {
+      const range = event.target.closest('input[type="range"]');
+      if (!range) {
+        return;
+      }
+      const card = range.closest("[data-task-id]");
+      const task = tasks.find((item) => item.id === card?.dataset.taskId);
+      if (!task) {
+        return;
+      }
+      task.progress = Number(range.value);
+      card.querySelector(".task-progress-value").textContent =
+        `${task.progress}%`;
+      card.querySelector(".task-progress-fill").style.width =
+        `${task.progress}%`;
+      const status = card.querySelector(".task-status");
+      status.textContent = getTaskStatus(task);
+      status.className = `task-status ${getTaskStatus(task).toLowerCase().replaceAll(" ", "-")}`;
+      saveTasks();
+    });
+
+    taskList.addEventListener("change", (event) => {
+      if (event.target.matches('input[type="range"]')) {
+        renderTasks();
+      }
+    });
+  }
+
+  renderTasks();
+  window.addEventListener("storage", (event) => {
+    if (event.key !== taskStorageKey || !event.newValue) {
+      return;
+    }
+    try {
+      tasks = JSON.parse(event.newValue);
+      renderTasks();
+    } catch {
+      return;
+    }
+  });
+}

@@ -49,6 +49,9 @@
             data-title="Leave Requests"
             >Leave Requests</a
           >
+          <a href="#" class="nav-item" data-view="tasks-view" data-title="Tasks"
+            >Tasks</a
+          >
           <a
             href="#"
             class="nav-item"
@@ -1006,6 +1009,64 @@
               </form>
             </section>
           </div>
+        </section>
+        <section id="tasks-view" class="task-view manager-task-view" hidden>
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Team Work</p>
+              <p>Assign Tasks, Set Deadlines and Track Completion.</p>
+            </div>
+          </div>
+          <div class="task-stats" data-task-stats></div>
+          <section class="task-assignment-panel">
+            <div class="task-board-heading">
+              <div>
+                <p class="dashboard-kicker">New Assignment</p>
+                <h2>Assign a task</h2>
+              </div>
+            </div>
+            <form id="task-assignment-form" class="task-assignment-form">
+              <label>
+                Task name
+                <input
+                  name="title"
+                  type="text"
+                  required
+                  maxlength="100"
+                  placeholder="e.g. Prepare the weekly support report"
+                />
+              </label>
+              <label>
+                Assign to
+                <select name="assignee" required>
+                  <option value="">Select an Employee</option>
+                </select>
+              </label>
+              <label>
+                Completion Deadline
+                <input name="dueDate" type="date" required />
+              </label>
+              <label class="task-description-field">
+                Task Details
+                <textarea
+                  name="description"
+                  rows="3"
+                  maxlength="500"
+                  placeholder="Add Task Details (Optional)"
+                ></textarea>
+              </label>
+              <button type="submit" class="save-employee-button">
+                Assign Task
+              </button>
+            </form>
+          </section>
+          <section class="task-board-section">
+            <div class="task-board-heading">
+              <h2>Assigned Tasks</h2>
+              <span>Adjust Progress As Work Moves Forward</span>
+            </div>
+            <div class="task-list" data-task-list aria-live="polite"></div>
+          </section>
         </section>
       </main>
     </div>
