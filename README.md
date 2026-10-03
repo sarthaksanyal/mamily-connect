@@ -1,2 +1,2 @@
 # mamily-connect
-Creating a communication model between the managers and hr and employees
+Communication model for the managers, hr and employees
