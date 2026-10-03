@@ -941,6 +941,72 @@
             </div>
           </section>
         </section>
+        <section
+          id="feedback"
+          class="feedback-view manager-feedback-view"
+          data-feedback-role="manager"
+          hidden
+        >
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Team Feedback</p>
+              <p>Review feedback exchanged with your employees.</p>
+            </div>
+          </div>
+          <div class="feedback-layout manager-feedback-layout">
+            <section class="feedback-panel">
+              <div class="panel-header">
+                <h2>Feedback Sent to Employees</h2>
+              </div>
+              <div
+                class="feedback-list"
+                data-feedback-sent
+                aria-live="polite"
+              ></div>
+            </section>
+            <section class="feedback-panel">
+              <div class="panel-header">
+                <h2>Feedback Received from Employees</h2>
+              </div>
+              <div
+                class="feedback-list"
+                data-feedback-received
+                aria-live="polite"
+              ></div>
+            </section>
+            <section class="feedback-panel feedback-compose-panel">
+              <div class="panel-header">
+                <h2>Send Feedback</h2>
+              </div>
+              <form class="feedback-form" id="manager-feedback-form">
+                <label>
+                  Employee
+                  <select name="employee" required>
+                    <option value="">Select an Employee</option>
+                  </select>
+                </label>
+                <label>
+                  Feedback
+                  <textarea
+                    name="message"
+                    rows="5"
+                    maxlength="1200"
+                    required
+                    placeholder="Write feedback for this employee"
+                  ></textarea>
+                </label>
+                <button type="submit" class="save-employee-button">
+                  Send feedback
+                </button>
+                <p
+                  class="feedback-form-status"
+                  data-feedback-status
+                  role="status"
+                ></p>
+              </form>
+            </section>
+          </div>
+        </section>
       </main>
     </div>
     <script src="script.js"></script>

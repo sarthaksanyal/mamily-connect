@@ -1648,3 +1648,220 @@ if (performanceView) {
   }
   renderPerformanceView();
 }
+
+const feedbackStorageKey = "mamily-connect-feedback-v1";
+const feedbackSeed = [
+  {
+    id: "feedback-seed-1",
+    from: "Ananya Roy",
+    to: "Sarthak Sanyal",
+    date: "2026-09-24",
+    message:
+      "Your notes have been clear and helpful. Keep sharing your findings with the team.",
+  },
+  {
+    id: "feedback-seed-2",
+    from: "Ananya Roy",
+    to: "Mandeep Kaur",
+    date: "2026-09-15",
+    message:
+      "Thank you for your customer follow-ups and steady support this month.",
+  },
+  {
+    id: "feedback-seed-3",
+    from: "Sarthak Sanyal",
+    to: "Ananya Roy",
+    date: "2026-09-22",
+    message: "The onboarding checklist has been helpful. ",
+  },
+];
+
+function loadFeedbackEntries() {
+  try {
+    const storedEntries = window.localStorage.getItem(feedbackStorageKey);
+    if (storedEntries) {
+      const parsedEntries = JSON.parse(storedEntries);
+      if (Array.isArray(parsedEntries)) {
+        return parsedEntries;
+      }
+    }
+    window.localStorage.setItem(
+      feedbackStorageKey,
+      JSON.stringify(feedbackSeed),
+    );
+  } catch {
+    return [...feedbackSeed];
+  }
+  return [...feedbackSeed];
+}
+
+let feedbackEntries = loadFeedbackEntries();
+
+function saveFeedbackEntry(entry) {
+  feedbackEntries = [entry, ...feedbackEntries];
+  try {
+    window.localStorage.setItem(
+      feedbackStorageKey,
+      JSON.stringify(feedbackEntries),
+    );
+  } catch {
+    return;
+  }
+}
+
+function formatFeedbackDate(dateValue) {
+  const [year, month, day] = dateValue.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString([], {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+function getLocalDateValue() {
+  const today = new Date();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${today.getFullYear()}-${month}-${day}`;
+}
+
+function renderFeedbackList(container, entries, direction) {
+  if (!container) {
+    return;
+  }
+  if (!entries.length) {
+    const emptyState = document.createElement("p");
+    emptyState.className = "feedback-empty";
+    emptyState.textContent = "No feedback to show yet.";
+    container.replaceChildren(emptyState);
+    return;
+  }
+
+  const cards = entries.map((entry) => {
+    const card = document.createElement("article");
+    card.className = "feedback-entry";
+    const header = document.createElement("div");
+    header.className = "feedback-entry-header";
+    const senderOrRecipient = document.createElement("strong");
+    senderOrRecipient.textContent =
+      direction === "received" ? `From ${entry.from}` : `To ${entry.to}`;
+    const date = document.createElement("time");
+    date.dateTime = entry.date;
+    date.textContent = formatFeedbackDate(entry.date);
+    const message = document.createElement("p");
+    message.textContent = entry.message;
+    header.append(senderOrRecipient, date);
+    card.append(header, message);
+    return card;
+  });
+  container.replaceChildren(...cards);
+}
+
+const employeeFeedbackForm = document.getElementById("employee-feedback-form");
+const managerFeedbackForm = document.getElementById("manager-feedback-form");
+const employeeFeedbackName =
+  document.querySelector(".user-chip strong")?.textContent.trim() ||
+  "Sarthak Sanyal";
+const managerFeedbackName =
+  document
+    .querySelector(".manager-chip .user-chip strong")
+    ?.textContent.trim() ||
+  document.querySelector(".manager-chip strong")?.textContent.trim() ||
+  "Ananya Roy";
+
+function renderEmployeeFeedback() {
+  const receivedList = document.querySelector(
+    "#feedback[data-feedback-role='employee'] [data-feedback-received]",
+  );
+  renderFeedbackList(
+    receivedList,
+    feedbackEntries.filter((entry) => entry.to === employeeFeedbackName),
+    "received",
+  );
+}
+
+function renderManagerFeedback() {
+  const feedbackView = document.querySelector(
+    "#feedback[data-feedback-role='manager']",
+  );
+  if (!feedbackView) {
+    return;
+  }
+  renderFeedbackList(
+    feedbackView.querySelector("[data-feedback-sent]"),
+    feedbackEntries.filter((entry) => entry.from === managerFeedbackName),
+    "sent",
+  );
+  renderFeedbackList(
+    feedbackView.querySelector("[data-feedback-received]"),
+    feedbackEntries.filter((entry) => entry.to === managerFeedbackName),
+    "received",
+  );
+}
+
+if (employeeFeedbackForm) {
+  employeeFeedbackForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const message = employeeFeedbackForm.elements.message.value.trim();
+    if (!message) {
+      employeeFeedbackForm.elements.message.focus();
+      return;
+    }
+    saveFeedbackEntry({
+      id: `feedback-${Date.now()}`,
+      from: employeeFeedbackName,
+      to: "Ananya Roy",
+      date: getLocalDateValue(),
+      message,
+    });
+    employeeFeedbackForm.reset();
+    employeeFeedbackForm.querySelector("[data-feedback-status]").textContent =
+      "Feedback sent to Ananya Roy.";
+    renderEmployeeFeedback();
+  });
+  renderEmployeeFeedback();
+}
+
+if (managerFeedbackForm) {
+  const employeeSelect = managerFeedbackForm.elements.employee;
+  document
+    .querySelectorAll("#employee-directory .employee-row")
+    .forEach((row) => {
+      const name = row
+        .querySelector(".employee-details h3")
+        ?.textContent.trim();
+      if (name && name !== managerFeedbackName) {
+        employeeSelect.add(new Option(name, name));
+      }
+    });
+
+  managerFeedbackForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const recipient = employeeSelect.value;
+    const message = managerFeedbackForm.elements.message.value.trim();
+    if (!recipient || !message) {
+      managerFeedbackForm.reportValidity();
+      return;
+    }
+    saveFeedbackEntry({
+      id: `feedback-${Date.now()}`,
+      from: managerFeedbackName,
+      to: recipient,
+      date: getLocalDateValue(),
+      message,
+    });
+    managerFeedbackForm.reset();
+    managerFeedbackForm.querySelector("[data-feedback-status]").textContent =
+      `Feedback sent to ${recipient}.`;
+    renderManagerFeedback();
+  });
+  renderManagerFeedback();
+}
+
+window.addEventListener("storage", (event) => {
+  if (event.key !== feedbackStorageKey) {
+    return;
+  }
+  feedbackEntries = loadFeedbackEntries();
+  renderEmployeeFeedback();
+  renderManagerFeedback();
+});

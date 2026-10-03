@@ -52,15 +52,15 @@
             data-title="Feedback"
             >Feedback</a
           >
-          <a href="#" class="nav-item" data-view="profile" data-title="Profile"
-            >Profile</a
-          >
           <a
             href="#"
             class="nav-item"
             data-view="notifications"
             data-title="Notifications"
             >Notifications</a
+          >
+          <a href="#" class="nav-item" data-view="profile" data-title="Profile"
+            >Profile</a
           >
         </nav>
         <a href="index.html" class="logout-button">Sign Out</a>
@@ -398,6 +398,56 @@
             </div>
             <div class="performance-chart-wrap" data-performance-chart></div>
           </section>
+        </section>
+        <section
+          id="feedback"
+          class="feedback-view employee-feedback-view"
+          data-feedback-role="employee"
+          hidden
+        >
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Employee Feedback</p>
+              <p>View feedbacks and Send Messages</p>
+            </div>
+          </div>
+          <div class="feedback-layout">
+            <section class="feedback-panel">
+              <div class="panel-header">
+                <h2>Feedbacks Received</h2>
+              </div>
+              <div class="feedback-list" data-feedback-received></div>
+            </section>
+            <section class="feedback-panel" feedback-compose-panel>
+              <div class="panel-header">
+                <h2>Send Feedback to HR/Manager</h2>
+              </div>
+              <form class="feedback-form" id="employee-feedback-form">
+                <label>
+                  To
+                  <input type="text" value="Ananya Roy, HR Manager" readonly />
+                </label>
+                <label>
+                  Feedback
+                  <textarea
+                    name="message"
+                    rows="6"
+                    maxlength="1000"
+                    required
+                    placeholder="Share Your Feedback"
+                  ></textarea>
+                </label>
+                <button type="submit" class="save-employee-button">
+                  Send feedback
+                </button>
+                <p
+                  class="feedback-form-status"
+                  data-feedback-status
+                  role="status"
+                ></p>
+              </form>
+            </section>
+          </div>
         </section>
       </main>
     </div>
