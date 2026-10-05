@@ -41,6 +41,9 @@
           <a href="#" class="nav-item" data-view="tasks-view" data-title="Tasks"
             >Tasks</a
           >
+          <a href="#" class="nav-item" data-view="worklog" data-title="Work Log"
+            >Work Log</a
+          >
           <a
             href="#"
             class="nav-item"
@@ -383,6 +386,123 @@
             </form>
           </section>
         </section>
+        <section id="tasks-view" class="task-view employee-task-view" hidden>
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">My Work</p>
+              <p>Tasks Assigned, Their Deadlines and Current Progress.</p>
+            </div>
+          </div>
+          <div class="task-stats" data-task-stats></div>
+          <section class="task-board-section">
+            <div class="task-board-heading">
+              <h2>Assigned to Me</h2>
+              <span>Updates From Your Manager</span>
+            </div>
+            <div class="task-list" data-task-list aria-live="polite"></div>
+          </section>
+        </section>
+
+        <section
+          id="worklog"
+          class="work-log-view employee-work-log-view"
+          hidden
+        >
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Daily Work Record</p>
+              <p>Record What You Worked On And How Much Time You Spent</p>
+            </div>
+          </div>
+          <section class="work-log-panel">
+            <div class="work-log-heading">
+              <div>
+                <p class="dashboard-kicker">New Entry</p>
+                <h2>Log Your Work</h2>
+              </div>
+            </div>
+            <form id="work-log-form" class="work-log-form">
+              <div class="work-log-form-grid">
+                <label>
+                  Work Date
+                  <input name="workDate" type="date" required />
+                </label>
+                <label>
+                  Project or Area
+                  <input
+                    name="project"
+                    type="text"
+                    maxlength="100"
+                    placeholder="e.g. Customer Support"
+                  />
+                </label>
+                <label>
+                  Task or Activity
+                  <input
+                    name="activity"
+                    type="text"
+                    required
+                    maxlength="120"
+                    placeholder="e.g. Updated onboarding checklist"
+                  />
+                </label>
+                <label>
+                  Time Spent (hours)
+                  <input
+                    name="hours"
+                    type="number"
+                    min="0.25"
+                    max="24"
+                    step="0.25"
+                    required
+                    placeholder="e.g. 2.5"
+                  />
+                </label>
+                <label class="work-log-details-field">
+                  Work Details
+                  <textarea
+                    name="details"
+                    rows="5"
+                    minlength="10"
+                    maxlength="2000"
+                    required
+                    placeholder="What did you work on? Describe the task, progress and any important notes."
+                  ></textarea>
+                </label>
+                <label class="work-log-details-field">
+                  Blockers or Follow-up (optional)
+                  <textarea
+                    name="blockers"
+                    rows="3"
+                    maxlength="1000"
+                    placeholder="Other Details"
+                  ></textarea>
+                </label>
+              </div>
+              <div class="work-log-form-footer">
+                <p
+                  class="work-log-message"
+                  data-work-log-message
+                  role="status"
+                  aria-live="polite"
+                ></p>
+                <button type="submit" class="save-employee-button">
+                  Submit Work Log
+                </button>
+              </div>
+            </form>
+          </section>
+          <section class="work-log-history">
+            <div class="work-log-heading">
+              <h2>Recent Entries</h2>
+            </div>
+            <div
+              class="work-log-entry-list"
+              data-work-log-list
+              aria-live="polite"
+            ></div>
+          </section>
+        </section>
         <section id="performance-view" class="performance-view" hidden>
           <div class="page-section-header">
             <div>
@@ -451,22 +571,6 @@
               </form>
             </section>
           </div>
-        </section>
-        <section id="tasks-view" class="task-view employee-task-view" hidden>
-          <div class="page-section-header">
-            <div>
-              <p class="dashboard-kicker">My Work</p>
-              <p>Tasks Assigned, Their Deadlines and Current Progress.</p>
-            </div>
-          </div>
-          <div class="task-stats" data-task-stats></div>
-          <section class="task-board-section">
-            <div class="task-board-heading">
-              <h2>Assigned to Me</h2>
-              <span>Updates From Your Manager</span>
-            </div>
-            <div class="task-list" data-task-list aria-live="polite"></div>
-          </section>
         </section>
       </main>
     </div>

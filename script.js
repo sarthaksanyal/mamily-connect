@@ -84,7 +84,7 @@ if (roleButtons.length > 0) {
 
 const navigationItems = document.querySelectorAll(".nav-item[data-view]");
 const dashboardViews = document.querySelectorAll(
-  ".dashboard-view, .team-members-view, .employees-view, .attendance-view, .performance-view, .feedback-view, .meetings-view, .task-view",
+  ".dashboard-view, .team-members-view, .employees-view, .attendance-view, .performance-view, .feedback-view, .meetings-view, .task-view, .work-log-view",
 );
 const dashboardHeading = document.querySelector(".topbar-dashboard h1");
 navigationItems.forEach((item) => {
@@ -98,6 +98,12 @@ navigationItems.forEach((item) => {
       view.hidden = view !== selectedView;
     });
     dashboardHeading.textContent = item.dataset.title || "Dashboard";
+    if (
+      item.dataset.view === "work-log" &&
+      window.matchMedia("(max-width: 980px)").matches
+    ) {
+      selectedView.scrollIntoView({ block: "start" });
+    }
   });
 });
 
@@ -2156,4 +2162,345 @@ if (taskView) {
       return;
     }
   });
+}
+
+const workLogForm = document.getElementById("work-log-form");
+
+if (workLogForm) {
+  const workLogStorageKey = "mamily-connect-work-logs";
+  const workLogList = document.querySelector("[data-work-log-list]");
+  const workLogMessage = document.querySelector("[data-work-log-message]");
+  const workDateInput = workLogForm.elements.workDate;
+  const employeeName =
+    document.querySelector(".user-chip strong")?.textContent.trim() ||
+    "Employee";
+
+  function getLocalDateValue(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function loadWorkLogs() {
+    try {
+      const savedLogs = JSON.parse(
+        localStorage.getItem(workLogStorageKey) || "[]",
+      );
+      return Array.isArray(savedLogs) ? savedLogs : [];
+    } catch {
+      return [];
+    }
+  }
+
+  let workLogs = loadWorkLogs();
+  workDateInput.max = getLocalDateValue();
+  workDateInput.value = getLocalDateValue();
+
+  function formatWorkDate(dateValue) {
+    return new Date(`${dateValue}T00:00:00`).toLocaleDateString(undefined, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  function renderWorkLogs() {
+    const employeeLogs = workLogs
+      .filter((entry) => entry.employee === employeeName)
+      .sort((first, second) => second.workDate.localeCompare(first.workDate));
+    workLogList.replaceChildren();
+
+    if (employeeLogs.length === 0) {
+      const emptyState = document.createElement("p");
+      emptyState.className = "work-log-empty-state";
+      emptyState.textContent = "No work log entries yet.";
+      workLogList.append(emptyState);
+      return;
+    }
+
+    employeeLogs.forEach((entry) => {
+      const card = document.createElement("article");
+      card.className = "work-log-entry";
+      const header = document.createElement("div");
+      header.className = "work-log-entry-header";
+      const activity = document.createElement("h3");
+      activity.textContent = entry.activity;
+      const date = document.createElement("time");
+      date.dateTime = entry.workDate;
+      date.textContent = formatWorkDate(entry.workDate);
+      header.append(activity, date);
+
+      const metadata = document.createElement("p");
+      metadata.className = "work-log-entry-meta";
+      metadata.textContent = [entry.project, `${entry.hours} hours`]
+        .filter(Boolean)
+        .join(" · ");
+      const details = document.createElement("p");
+      details.className = "work-log-entry-details";
+      details.textContent = entry.details;
+      card.append(header, metadata, details);
+
+      if (entry.blockers) {
+        const blockers = document.createElement("p");
+        blockers.className = "work-log-entry-blockers";
+        blockers.textContent = `Blockers / follow-up: ${entry.blockers}`;
+        card.append(blockers);
+      }
+      workLogList.append(card);
+    });
+  }
+
+  workLogForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!workLogForm.reportValidity()) {
+      return;
+    }
+
+    const formData = new FormData(workLogForm);
+    const entry = {
+      id: `work-log-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      employee: employeeName,
+      workDate: formData.get("workDate"),
+      project: formData.get("project").trim(),
+      activity: formData.get("activity").trim(),
+      hours: Number(formData.get("hours")),
+      details: formData.get("details").trim(),
+      blockers: formData.get("blockers").trim(),
+      submittedAt: new Date().toISOString(),
+    };
+
+    workLogs.push(entry);
+    try {
+      localStorage.setItem(workLogStorageKey, JSON.stringify(workLogs));
+    } catch {
+      workLogs.pop();
+      workLogMessage.textContent =
+        "Unable to save this entry in browser storage.";
+      workLogMessage.classList.add("error");
+      return;
+    }
+
+    workLogForm.reset();
+    workDateInput.value = getLocalDateValue();
+    workLogMessage.textContent = "Work log submitted.";
+    workLogMessage.classList.remove("error");
+    renderWorkLogs();
+  });
+
+  renderWorkLogs();
+  window.addEventListener("storage", (event) => {
+    if (event.key !== workLogStorageKey) {
+      return;
+    }
+    workLogs = loadWorkLogs();
+    renderWorkLogs();
+  });
+}
+
+const managerWorkLogList = document.querySelector(
+  "[data-manager-work-log-list]",
+);
+
+if (managerWorkLogList) {
+  const workLogStorageKey = "mamily-connect-work-logs";
+  const searchInput = document.querySelector("[data-work-log-search]");
+  const employeeFilter = document.querySelector("[data-work-log-employee]");
+  const periodFilter = document.querySelector("[data-work-log-period]");
+  const clearFiltersButton = document.querySelector("[data-work-log-clear]");
+  const resultCount = document.querySelector("[data-work-log-result-count]");
+  const entryCount = document.querySelector("[data-work-log-entry-count]");
+  const contributorCount = document.querySelector(
+    "[data-work-log-contributor-count]",
+  );
+  const hoursTotal = document.querySelector("[data-work-log-hours]");
+  const followUpCount = document.querySelector(
+    "[data-work-log-follow-up-count]",
+  );
+
+  function loadManagerWorkLogs() {
+    try {
+      const savedLogs = JSON.parse(
+        localStorage.getItem(workLogStorageKey) || "[]",
+      );
+      return Array.isArray(savedLogs)
+        ? savedLogs.filter((entry) => entry && typeof entry === "object")
+        : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function formatManagerWorkDate(dateValue) {
+    const date = new Date(`${dateValue}T00:00:00`);
+    if (Number.isNaN(date.getTime())) {
+      return "Date unavailable";
+    }
+    return date.toLocaleDateString(undefined, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+  let managerWorkLogs = loadManagerWorkLogs();
+
+  function updateEmployeeFilter() {
+    const selectedEmployee = employeeFilter.value;
+    const employees = [
+      ...new Set(
+        managerWorkLogs
+          .map((entry) => entry.employee)
+          .filter(
+            (employee) => typeof employee === "string" && employee.trim(),
+          ),
+      ),
+    ].sort((first, second) => first.localeCompare(second));
+
+    employeeFilter.replaceChildren(new Option("All employees", ""));
+    employees.forEach((employee) => {
+      employeeFilter.add(new Option(employee, employee));
+    });
+    employeeFilter.value = employees.includes(selectedEmployee)
+      ? selectedEmployee
+      : "";
+  }
+
+  function renderManagerWorkLogs() {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    const selectedEmployee = employeeFilter.value;
+    const periodDays = Number(periodFilter.value);
+    const cutoffDate = new Date();
+    cutoffDate.setHours(0, 0, 0, 0);
+    if (periodDays) {
+      cutoffDate.setDate(cutoffDate.getDate() - periodDays + 1);
+    }
+
+    const visibleLogs = managerWorkLogs
+      .filter((entry) => {
+        if (selectedEmployee && entry.employee !== selectedEmployee) {
+          return false;
+        }
+
+        if (periodDays) {
+          const workDate = new Date(`${entry.workDate}T00:00:00`);
+          if (Number.isNaN(workDate.getTime()) || workDate < cutoffDate) {
+            return false;
+          }
+        }
+
+        const searchableText = [
+          entry.employee,
+          entry.project,
+          entry.activity,
+          entry.details,
+          entry.blockers,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return !searchTerm || searchableText.includes(searchTerm);
+      })
+      .sort((first, second) => {
+        const dateOrder = (second.workDate || "").localeCompare(
+          first.workDate || "",
+        );
+        return (
+          dateOrder ||
+          (second.submittedAt || "").localeCompare(first.submittedAt || "")
+        );
+      });
+
+    const contributors = new Set(
+      visibleLogs.map((entry) => entry.employee).filter(Boolean),
+    );
+    const totalHours = visibleLogs.reduce((total, entry) => {
+      const hours = Number(entry.hours);
+      return total + (Number.isFinite(hours) ? hours : 0);
+    }, 0);
+    const entriesWithFollowUp = visibleLogs.filter(
+      (entry) => typeof entry.blockers === "string" && entry.blockers.trim(),
+    ).length;
+
+    entryCount.textContent = String(visibleLogs.length);
+    contributorCount.textContent = String(contributors.size);
+    hoursTotal.textContent = totalHours.toLocaleString(undefined, {
+      maximumFractionDigits: 2,
+    });
+    followUpCount.textContent = String(entriesWithFollowUp);
+    resultCount.textContent = `${visibleLogs.length} ${visibleLogs.length === 1 ? "entry" : "entries"}`;
+    managerWorkLogList.replaceChildren();
+
+    if (visibleLogs.length === 0) {
+      const emptyState = document.createElement("p");
+      emptyState.className = "work-log-empty-state";
+      emptyState.textContent = managerWorkLogs.length
+        ? "No entries match these filters."
+        : "No team work logs have been submitted yet.";
+      managerWorkLogList.append(emptyState);
+      return;
+    }
+
+    visibleLogs.forEach((entry) => {
+      const card = document.createElement("article");
+      card.className = "work-log-entry manager-work-log-entry";
+
+      const header = document.createElement("div");
+      header.className = "work-log-entry-header";
+      const activity = document.createElement("h3");
+      activity.textContent = entry.activity || "Work entry";
+      const date = document.createElement("time");
+      date.dateTime = entry.workDate || "";
+      date.textContent = formatManagerWorkDate(entry.workDate);
+      header.append(activity, date);
+
+      const employee = document.createElement("p");
+      employee.className = "manager-work-log-employee";
+      employee.textContent = entry.employee || "Employee unavailable";
+
+      const metadata = document.createElement("p");
+      metadata.className = "work-log-entry-meta";
+      metadata.textContent = [
+        entry.project || "No project specified",
+        `${Number(entry.hours) || 0} hours`,
+      ].join(" · ");
+
+      const details = document.createElement("p");
+      details.className = "work-log-entry-details";
+      details.textContent = entry.details || "No details provided.";
+      card.append(header, employee, metadata, details);
+
+      if (entry.blockers && entry.blockers.trim()) {
+        const blockers = document.createElement("p");
+        blockers.className = "work-log-entry-blockers";
+        blockers.textContent = `Blockers / follow-up: ${entry.blockers}`;
+        card.append(blockers);
+      }
+      managerWorkLogList.append(card);
+    });
+  }
+
+  [searchInput, employeeFilter, periodFilter].forEach((control) => {
+    control.addEventListener("input", renderManagerWorkLogs);
+    control.addEventListener("change", renderManagerWorkLogs);
+  });
+  clearFiltersButton.addEventListener("click", () => {
+    searchInput.value = "";
+    employeeFilter.value = "";
+    periodFilter.value = "all";
+    renderManagerWorkLogs();
+  });
+
+  window.addEventListener("storage", (event) => {
+    if (event.key !== workLogStorageKey) {
+      return;
+    }
+    managerWorkLogs = loadManagerWorkLogs();
+    updateEmployeeFilter();
+    renderManagerWorkLogs();
+  });
+
+  updateEmployeeFilter();
+  renderManagerWorkLogs();
 }

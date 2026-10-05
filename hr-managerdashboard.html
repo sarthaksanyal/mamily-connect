@@ -55,6 +55,13 @@
           <a
             href="#"
             class="nav-item"
+            data-view="work-log"
+            data-title="Work Log"
+            >Work Log</a
+          >
+          <a
+            href="#"
+            class="nav-item"
             data-view="performance-view"
             data-title="Performance"
             >Performance</a
@@ -1065,7 +1072,87 @@
               <h2>Assigned Tasks</h2>
               <span>Adjust Progress As Work Moves Forward</span>
             </div>
-            <div class="task-list" data-task-list aria-live="polite"></div>
+            <div class="task-list" data-task-list></div>
+          </section>
+        </section>
+        <section id="work-log" class="work-log-view" hidden>
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Work Log</p>
+              <p>Track And Manage Your Team's Work Activities.</p>
+            </div>
+          </div>
+          <section
+            class="stats-grid manager-work-log-stats"
+            aria-label="Work log summary"
+          >
+            <article class="stat-card highlight">
+              <span>Entries Shown</span>
+              <strong data-work-log-entry-count>0</strong>
+              <small>Matching current filters</small>
+            </article>
+            <article class="stat-card">
+              <span>Contributors</span>
+              <strong data-work-log-contributor-count>0</strong>
+              <small>Employees represented</small>
+            </article>
+            <article class="stat-card">
+              <span>Hours Logged</span>
+              <strong data-work-log-hours>0</strong>
+              <small>Across matching entries</small>
+            </article>
+            <article class="stat-card">
+              <span>Follow-ups</span>
+              <strong data-work-log-follow-up-count>0</strong>
+              <small>Entries with blockers or notes</small>
+            </article>
+          </section>
+          <section
+            class="manager-work-log-panel"
+            aria-label="Team work log entries"
+          >
+            <div class="manager-work-log-toolbar">
+              <label class="manager-work-log-search">
+                Search entries
+                <input
+                  type="search"
+                  data-work-log-search
+                  placeholder="Employee, project, activity, or details"
+                />
+              </label>
+              <label>
+                Employee
+                <select data-work-log-employee>
+                  <option value="">All employees</option>
+                </select>
+              </label>
+              <label>
+                Date range
+                <select data-work-log-period>
+                  <option value="all">All time</option>
+                  <option value="7">Last 7 days</option>
+                  <option value="30">Last 30 days</option>
+                </select>
+              </label>
+              <button
+                type="button"
+                class="work-log-clear-filters"
+                data-work-log-clear
+              >
+                Clear filters
+              </button>
+            </div>
+            <div class="manager-work-log-list-heading">
+              <h2>Team Entries</h2>
+              <span data-work-log-result-count aria-live="polite"
+                >0 entries</span
+              >
+            </div>
+            <div
+              class="work-log-entry-list"
+              data-manager-work-log-list
+              aria-live="polite"
+            ></div>
           </section>
         </section>
       </main>
