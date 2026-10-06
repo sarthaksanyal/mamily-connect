@@ -749,8 +749,171 @@ img {
 .employees-view[hidden],
 .attendance-view[hidden],
 .performance-view[hidden],
-.meetings-view[hidden] {
+.meetings-view[hidden],
+.notification-view[hidden] {
   display: none;
+}
+
+.notification-view {
+  max-width: 1180px;
+}
+
+.notification-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.15fr);
+  align-items: start;
+  gap: 20px;
+}
+
+.employee-notification-view > .notification-panel {
+  max-width: 900px;
+}
+
+.notification-panel {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+}
+
+.notification-form,
+.notification-form label {
+  display: grid;
+  gap: 8px;
+}
+
+.notification-form {
+  gap: 15px;
+}
+
+.notification-form label {
+  color: var(--text-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.notification-form input,
+.notification-form textarea,
+.notification-form select {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--text-dark);
+  font: inherit;
+  font-size: 0.88rem;
+}
+
+.notification-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.notification-form input:focus,
+.notification-form textarea:focus,
+.notification-form select:focus {
+  border-color: var(--blue);
+  outline: 2px solid rgba(45, 93, 154, 0.14);
+}
+
+.notification-form .save-employee-button {
+  margin-top: 0;
+}
+
+.notification-form-status {
+  min-height: 1.2em;
+  color: var(--dark-green);
+  font-size: 0.8rem;
+}
+
+.notification-list {
+  display: grid;
+}
+
+.notification-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.notification-item:first-child {
+  padding-top: 0;
+}
+
+.notification-item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.notification-item.unread {
+  border-left: 3px solid var(--pink);
+  padding-left: 12px;
+}
+
+.notification-item h3 {
+  color: var(--text-dark);
+  font-size: 0.95rem;
+}
+
+.notification-item p {
+  grid-column: 1 / -1;
+  color: var(--text-mid);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.notification-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-light);
+  font-size: 0.72rem;
+}
+
+.notification-category {
+  padding: 4px 7px;
+  border-radius: 4px;
+  background: var(--blue-soft);
+  color: var(--blue-strong);
+  font-weight: 800;
+}
+
+.notification-category.urgent {
+  background: var(--pink-soft);
+  color: var(--pink);
+}
+
+.notification-read-button {
+  align-self: start;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--blue);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.notification-read-button:hover {
+  border-color: var(--blue);
+}
+
+.notification-empty {
+  padding: 16px 0;
+  color: var(--text-light);
+  font-size: 0.88rem;
+}
+
+.notification-total {
+  color: var(--text-light);
+  font-size: 0.78rem;
 }
 
 .team-members-view {
@@ -1474,6 +1637,14 @@ img {
   .stats-grid,
   .content-grid {
     grid-template-columns: 1fr;
+  }
+
+  .notification-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .notification-panel {
+    padding: 18px;
   }
 }
 

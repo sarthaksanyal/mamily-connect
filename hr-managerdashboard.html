@@ -1232,6 +1232,72 @@
           </form>
           <div class="meeting-list" id="meeting-list" aria-live="polite"></div>
         </section>
+        <section
+          id="notifications"
+          class="notification-view manager-notification-view"
+          data-notification-role="manager"
+          hidden
+        >
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Team Updates</p>
+              <p>Publish Announcements and Review Recent Notifications.</p>
+            </div>
+          </div>
+          <div class="notification-layout">
+            <section class="notification-panel">
+              <div class="panel-header">
+                <h2>New Announcement</h2>
+              </div>
+              <form class="notification-form" data-notification-form>
+                <label>
+                  Subject
+                  <input
+                    type="text"
+                    name="title"
+                    maxlength="100"
+                    required
+                    placeholder="e.g. Office schedule update"
+                  />
+                </label>
+                <label>
+                  Message
+                  <textarea
+                    name="message"
+                    rows="5"
+                    maxlength="500"
+                    required
+                    placeholder="Write an update for the team"
+                  ></textarea>
+                </label>
+                <label>
+                  Category
+                  <select name="category">
+                    <option value="General">General</option>
+                    <option value="Policy">Policy</option>
+                    <option value="Event">Event</option>
+                    <option value="Urgent">Urgent</option>
+                  </select>
+                </label>
+                <button type="submit" class="save-employee-button">
+                  Publish Announcement
+                </button>
+                <p
+                  class="notification-form-status"
+                  data-notification-status
+                  role="status"
+                ></p>
+              </form>
+            </section>
+            <section class="notification-panel">
+              <div class="panel-header">
+                <h2>Recent Notifications</h2>
+                <span class="notification-total" data-notification-count></span>
+              </div>
+              <div class="notification-list" data-notification-received></div>
+            </section>
+          </div>
+        </section>
       </main>
     </div>
     <script src="script.js"></script>

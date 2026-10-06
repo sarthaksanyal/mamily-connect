@@ -84,7 +84,7 @@ if (roleButtons.length > 0) {
 
 const navigationItems = document.querySelectorAll(".nav-item[data-view]");
 const dashboardViews = document.querySelectorAll(
-  ".dashboard-view, .team-members-view, .employees-view, .attendance-view, .performance-view, .feedback-view, .meetings-view, .task-view, .work-log-view",
+  ".dashboard-view, .team-members-view, .employees-view, .attendance-view, .performance-view, .feedback-view, .meetings-view, .task-view, .work-log-view, .notification-view",
 );
 const dashboardHeading = document.querySelector(".topbar-dashboard h1");
 navigationItems.forEach((item) => {
@@ -2726,4 +2726,203 @@ if (
 
   window.refreshMeetingEmployeeList = refreshMeetingEmployeeList;
   renderMeetings();
+}
+
+const notificationStorageKey = "mamily-connect-notifications-v1";
+const notificationRole = document
+  .querySelector("[data-notification-role]")
+  ?.getAttribute("data-notification-role");
+const notificationList = document.querySelector("[data-notification-received]");
+const notificationCount = document.querySelector("[data-notification-count]");
+const notificationForm = document.querySelector("[data-notification-form]");
+const notificationStatus = document.querySelector("[data-notification-status]");
+const readNotificationKey = `mamily-connect-read-notifications-${notificationRole}`;
+const notificationSeed = [
+  {
+    id: "welcome-update",
+    title: "Welcome to Mamily Connect",
+    message: "Your team updates and important announcements will appear here.",
+    category: "General",
+    sender: "Ananya Roy",
+    createdAt: "2026-10-01T09:00:00.000Z",
+  },
+  {
+    id: "wellbeing-session",
+    title: "Employee wellbeing session",
+    message:
+      "Join the optional wellbeing session this Friday at 3:00 PM in Meeting Room 2.",
+    category: "Event",
+    sender: "Ananya Roy",
+    createdAt: "2026-10-03T08:30:00.000Z",
+  },
+];
+
+function loadNotifications() {
+  try {
+    const savedNotifications = window.localStorage.getItem(
+      notificationStorageKey,
+    );
+    if (savedNotifications) {
+      const parsedNotifications = JSON.parse(savedNotifications);
+      if (Array.isArray(parsedNotifications)) {
+        return parsedNotifications;
+      }
+    }
+    window.localStorage.setItem(
+      notificationStorageKey,
+      JSON.stringify(notificationSeed),
+    );
+  } catch {
+    return [...notificationSeed];
+  }
+  return [...notificationSeed];
+}
+
+function loadReadNotifications() {
+  try {
+    const savedReadNotifications = JSON.parse(
+      window.localStorage.getItem(readNotificationKey) || "[]",
+    );
+    return Array.isArray(savedReadNotifications) ? savedReadNotifications : [];
+  } catch {
+    return [];
+  }
+}
+
+let notifications = notificationList ? loadNotifications() : [];
+let readNotifications = notificationList ? loadReadNotifications() : [];
+
+function saveNotifications() {
+  try {
+    window.localStorage.setItem(
+      notificationStorageKey,
+      JSON.stringify(notifications),
+    );
+  } catch {
+    return;
+  }
+}
+
+function saveReadNotifications() {
+  try {
+    window.localStorage.setItem(
+      readNotificationKey,
+      JSON.stringify(readNotifications),
+    );
+  } catch {
+    return;
+  }
+}
+
+function renderNotifications() {
+  if (!notificationList) {
+    return;
+  }
+
+  notificationList.replaceChildren();
+  const sortedNotifications = [...notifications].sort(
+    (first, second) => new Date(second.createdAt) - new Date(first.createdAt),
+  );
+  const unreadCount = sortedNotifications.filter(
+    (notification) => !readNotifications.includes(notification.id),
+  ).length;
+
+  if (notificationCount) {
+    notificationCount.textContent =
+      notificationRole === "employee"
+        ? `${unreadCount} unread`
+        : `${sortedNotifications.length} total`;
+  }
+
+  if (sortedNotifications.length === 0) {
+    const emptyState = document.createElement("p");
+    emptyState.className = "notification-empty";
+    emptyState.textContent = "No notifications yet.";
+    notificationList.append(emptyState);
+    return;
+  }
+
+  sortedNotifications.forEach((notification) => {
+    const isRead = readNotifications.includes(notification.id);
+    const item = document.createElement("article");
+    item.className = `notification-item${isRead ? "" : " unread"}`;
+    const heading = document.createElement("h3");
+    heading.textContent = notification.title;
+    const meta = document.createElement("div");
+    meta.className = "notification-meta";
+    const category = document.createElement("span");
+    category.className = `notification-category${notification.category === "Urgent" ? " urgent" : ""}`;
+    category.textContent = notification.category;
+    const timestamp = document.createElement("time");
+    timestamp.dateTime = notification.createdAt;
+    timestamp.textContent = new Date(notification.createdAt).toLocaleString(
+      [],
+      {
+        dateStyle: "medium",
+        timeStyle: "short",
+      },
+    );
+    const sender = document.createElement("span");
+    sender.textContent = `From ${notification.sender}`;
+    meta.append(category, timestamp, sender);
+
+    const action = document.createElement("button");
+    action.type = "button";
+    action.className = "notification-read-button";
+    action.dataset.notificationId = notification.id;
+    action.textContent = isRead ? "Read" : "Mark read";
+    action.disabled = isRead;
+
+    const message = document.createElement("p");
+    message.textContent = notification.message;
+    item.append(heading, action, meta, message);
+    notificationList.append(item);
+  });
+}
+
+if (notificationList) {
+  notificationList.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-notification-id]");
+    if (!button || readNotifications.includes(button.dataset.notificationId)) {
+      return;
+    }
+    readNotifications = [...readNotifications, button.dataset.notificationId];
+    saveReadNotifications();
+    renderNotifications();
+  });
+
+  if (notificationForm) {
+    notificationForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(notificationForm);
+      notifications = [
+        {
+          id: `notification-${Date.now()}`,
+          title: formData.get("title").trim(),
+          message: formData.get("message").trim(),
+          category: formData.get("category"),
+          sender: "Ananya Roy",
+          createdAt: new Date().toISOString(),
+        },
+        ...notifications,
+      ];
+      saveNotifications();
+      notificationForm.reset();
+      notificationStatus.textContent = "Announcement Sent to the Team.";
+      renderNotifications();
+    });
+  }
+
+  window.addEventListener("storage", (event) => {
+    if (event.key === notificationStorageKey) {
+      notifications = loadNotifications();
+      renderNotifications();
+    }
+    if (event.key === readNotificationKey) {
+      readNotifications = loadReadNotifications();
+      renderNotifications();
+    }
+  });
+
+  renderNotifications();
 }

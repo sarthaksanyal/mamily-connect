@@ -107,6 +107,11 @@
               <strong>5</strong>
               <small>From Manager</small>
             </article>
+            <article class="stat-card">
+              <span>Meetings</span>
+              <strong>1</strong>
+              <small>Meeting Room</small>
+            </article>
           </section>
           <section class="content-grid">
             <article class="panel">
@@ -571,6 +576,26 @@
               </form>
             </section>
           </div>
+        </section>
+        <section
+          id="notifications"
+          class="notification-view employee-notification-view"
+          data-notification-role="employee"
+          hidden
+        >
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Your Inbox</p>
+              <p>Updates and announcements from your team.</p>
+            </div>
+            <span class="team-count" data-notification-count>0 unread</span>
+          </div>
+          <section class="notification-panel">
+            <div class="panel-header">
+              <h2>Recent updates</h2>
+            </div>
+            <div class="notification-list" data-notification-received></div>
+          </section>
         </section>
       </main>
     </div>
