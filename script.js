@@ -2504,3 +2504,226 @@ if (managerWorkLogList) {
   updateEmployeeFilter();
   renderManagerWorkLogs();
 }
+
+const meetingsView = document.getElementById("meetings");
+const scheduleMeetingForm = document.getElementById("schedule-meeting-form");
+const showScheduleMeetingButton = document.getElementById(
+  "show-schedule-meeting",
+);
+const meetingEmployeeOptions = document.getElementById(
+  "meeting-employee-options",
+);
+const meetingList = document.getElementById("meeting-list");
+const meetingCount = document.getElementById("meeting-count");
+const meetingStorageKey = "mamily-connect-meetings-v1";
+
+if (
+  meetingsView &&
+  scheduleMeetingForm &&
+  showScheduleMeetingButton &&
+  meetingEmployeeOptions &&
+  meetingList
+) {
+  function dateAfterDays(days) {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 10);
+  }
+
+  const defaultMeetings = [
+    {
+      id: "meeting-seed-1",
+      title: "People Operations Sync",
+      date: dateAfterDays(1),
+      time: "10:30",
+      location: "Conference Room 2",
+      attendees: ["Ananya Roy", "Neha Kapoor"],
+    },
+    {
+      id: "meeting-seed-2",
+      title: "Customer Success Planning",
+      date: dateAfterDays(2),
+      time: "14:00",
+      location: "Video call",
+      attendees: ["Sarthak Sanyal", "Mandeep Kaur", "Jaya Patel"],
+    },
+  ];
+
+  function loadMeetings() {
+    try {
+      const savedMeetings = window.localStorage.getItem(meetingStorageKey);
+      if (savedMeetings) {
+        const parsedMeetings = JSON.parse(savedMeetings);
+        if (Array.isArray(parsedMeetings)) {
+          return parsedMeetings;
+        }
+      }
+    } catch {
+      return defaultMeetings;
+    }
+    return defaultMeetings;
+  }
+
+  let meetings = loadMeetings();
+
+  function saveMeetings() {
+    try {
+      window.localStorage.setItem(meetingStorageKey, JSON.stringify(meetings));
+    } catch {
+      return;
+    }
+  }
+
+  function refreshMeetingEmployeeList() {
+    const selectedEmployees = new Set(
+      [
+        ...meetingEmployeeOptions.querySelectorAll(
+          'input[name="attendees"]:checked',
+        ),
+      ].map((checkbox) => checkbox.value),
+    );
+    const employeeRows = document.querySelectorAll(
+      "#employee-directory .employee-row",
+    );
+    meetingEmployeeOptions.replaceChildren();
+
+    employeeRows.forEach((row, index) => {
+      const name = row
+        .querySelector(".employee-details h3")
+        ?.textContent.trim();
+      const role = row.querySelector(".employee-details p")?.textContent.trim();
+      if (!name) {
+        return;
+      }
+
+      const label = document.createElement("label");
+      label.className = "meeting-employee-option";
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.name = "attendees";
+      checkbox.value = name;
+      checkbox.id = `meeting-attendee-${index}`;
+      checkbox.checked = selectedEmployees.has(name);
+      const details = document.createElement("span");
+      const employeeName = document.createElement("strong");
+      employeeName.textContent = name;
+      const employeeRole = document.createElement("small");
+      employeeRole.textContent = role || "Employee";
+      details.append(employeeName, employeeRole);
+      label.append(checkbox, details);
+      meetingEmployeeOptions.append(label);
+    });
+  }
+
+  function renderMeetings() {
+    const orderedMeetings = [...meetings].sort((first, second) =>
+      `${first.date}T${first.time}`.localeCompare(
+        `${second.date}T${second.time}`,
+      ),
+    );
+    meetingList.replaceChildren();
+    meetingCount.textContent = `${meetings.length} meeting${meetings.length === 1 ? "" : "s"}`;
+
+    if (orderedMeetings.length === 0) {
+      const emptyMessage = document.createElement("p");
+      emptyMessage.className = "meeting-empty-state";
+      emptyMessage.textContent = "No meetings scheduled yet.";
+      meetingList.append(emptyMessage);
+      return;
+    }
+
+    orderedMeetings.forEach((meeting) => {
+      const item = document.createElement("article");
+      item.className = "meeting-item";
+      const date = new Date(`${meeting.date}T${meeting.time || "00:00"}`);
+      const dateTime = document.createElement("p");
+      dateTime.className = "meeting-date-time";
+      dateTime.textContent = `${date.toLocaleDateString([], {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })} at ${date.toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+      })}`;
+      const title = document.createElement("h2");
+      title.textContent = meeting.title;
+      const details = document.createElement("p");
+      details.className = "meeting-location";
+      details.textContent = meeting.location || "Location not specified";
+      const attendees = document.createElement("p");
+      attendees.className = "meeting-attendees-list";
+      attendees.textContent = `Employees: ${meeting.attendees.join(", ")}`;
+      item.append(dateTime, title, details, attendees);
+      meetingList.append(item);
+    });
+  }
+
+  function setMeetingFormVisibility(isVisible) {
+    scheduleMeetingForm.hidden = !isVisible;
+    showScheduleMeetingButton.hidden = isVisible;
+    if (isVisible) {
+      refreshMeetingEmployeeList();
+      scheduleMeetingForm.elements.title.focus();
+    } else {
+      scheduleMeetingForm.reset();
+      meetingEmployeeOptions
+        .querySelectorAll('input[name="attendees"]')
+        .forEach((checkbox) => checkbox.setCustomValidity(""));
+      showScheduleMeetingButton.focus();
+    }
+  }
+
+  showScheduleMeetingButton.addEventListener("click", () => {
+    setMeetingFormVisibility(true);
+  });
+  document
+    .getElementById("cancel-schedule-meeting")
+    .addEventListener("click", () => setMeetingFormVisibility(false));
+  document
+    .getElementById("dismiss-schedule-meeting")
+    .addEventListener("click", () => setMeetingFormVisibility(false));
+
+  meetingEmployeeOptions.addEventListener("change", () => {
+    meetingEmployeeOptions
+      .querySelectorAll('input[name="attendees"]')
+      .forEach((checkbox) => checkbox.setCustomValidity(""));
+  });
+
+  scheduleMeetingForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const attendees = [
+      ...meetingEmployeeOptions.querySelectorAll(
+        'input[name="attendees"]:checked',
+      ),
+    ].map((checkbox) => checkbox.value);
+    if (attendees.length === 0) {
+      const firstCheckbox = meetingEmployeeOptions.querySelector(
+        'input[name="attendees"]',
+      );
+      if (firstCheckbox) {
+        firstCheckbox.setCustomValidity("Select at least one employee.");
+        firstCheckbox.reportValidity();
+      }
+      return;
+    }
+
+    meetings.push({
+      id: `meeting-${Date.now()}`,
+      title: scheduleMeetingForm.elements.title.value.trim(),
+      date: scheduleMeetingForm.elements.date.value,
+      time: scheduleMeetingForm.elements.time.value,
+      location: scheduleMeetingForm.elements.location.value.trim(),
+      attendees,
+    });
+    saveMeetings();
+    renderMeetings();
+    setMeetingFormVisibility(false);
+  });
+
+  window.refreshMeetingEmployeeList = refreshMeetingEmployeeList;
+  renderMeetings();
+}

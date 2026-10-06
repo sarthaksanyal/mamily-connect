@@ -83,13 +83,6 @@
           <a
             href="#"
             class="nav-item"
-            data-view="announcements"
-            data-title="Announcements"
-            >Announcements</a
-          >
-          <a
-            href="#"
-            class="nav-item"
             data-view="notifications"
             data-title="Notifications"
             >Notifications</a
@@ -886,137 +879,6 @@
             </div>
           </section>
         </section>
-        <section id="performance-view" class="performance-view" hidden>
-          <div class="page-section-header">
-            <div>
-              <p class="dashboard-kicker">2026 Annual Review</p>
-              <p data-performance-description>
-                Annual Performance and Progress of all Employees.
-              </p>
-            </div>
-          </div>
-          <div class="employee-directory-toolbar">
-            <div class="employee-search">
-              <label for="performance-employee-search">Search Employee</label>
-              <input
-                type="search"
-                id="performance-employee-search"
-                role="combobox"
-                aria-autocomplete="list"
-                aria-haspopup="listbox"
-                aria-expanded="false"
-                aria-controls="performance-employee-options"
-                placeholder="Search or select an employee"
-                autocomplete="off"
-              />
-              <div
-                class="performance-employee-options"
-                id="performance-employee-options"
-                role="listbox"
-                hidden
-              ></div>
-            </div>
-          </div>
-          <div class="performance-summary" data-performance-summary></div>
-          <section class="performance-chart-panel">
-            <div class="performance-chart-heading">
-              <div>
-                <h2 data-performance-chart-title>
-                  Team Performance Through the Year
-                </h2>
-                <p>Monthly Score Out of 100</p>
-              </div>
-              <span class="performance-employee-label">All Employees</span>
-            </div>
-            <div class="performance-chart-wrap" data-performance-chart></div>
-            <div class="performance-legend" data-performance-legend></div>
-          </section>
-          <section class="performance-roster-panel">
-            <div class="panel-header">
-              <h2>Employee Performance</h2>
-              <span>Current Year</span>
-            </div>
-            <div class="performance-table-wrap">
-              <table class="performance-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Employee</th>
-                    <th scope="col">Role</th>
-                    <th scope="col">Year-End Score</th>
-                    <th scope="col">Change This Year</th>
-                  </tr>
-                </thead>
-                <tbody data-performance-roster></tbody>
-              </table>
-            </div>
-          </section>
-        </section>
-        <section
-          id="feedback"
-          class="feedback-view manager-feedback-view"
-          data-feedback-role="manager"
-          hidden
-        >
-          <div class="page-section-header">
-            <div>
-              <p class="dashboard-kicker">Team Feedback</p>
-              <p>Review feedback exchanged with your employees.</p>
-            </div>
-          </div>
-          <div class="feedback-layout manager-feedback-layout">
-            <section class="feedback-panel">
-              <div class="panel-header">
-                <h2>Feedback Sent to Employees</h2>
-              </div>
-              <div
-                class="feedback-list"
-                data-feedback-sent
-                aria-live="polite"
-              ></div>
-            </section>
-            <section class="feedback-panel">
-              <div class="panel-header">
-                <h2>Feedback Received from Employees</h2>
-              </div>
-              <div
-                class="feedback-list"
-                data-feedback-received
-                aria-live="polite"
-              ></div>
-            </section>
-            <section class="feedback-panel feedback-compose-panel">
-              <div class="panel-header">
-                <h2>Send Feedback</h2>
-              </div>
-              <form class="feedback-form" id="manager-feedback-form">
-                <label>
-                  Employee
-                  <select name="employee" required>
-                    <option value="">Select an Employee</option>
-                  </select>
-                </label>
-                <label>
-                  Feedback
-                  <textarea
-                    name="message"
-                    rows="5"
-                    maxlength="1200"
-                    required
-                    placeholder="Write feedback for this employee"
-                  ></textarea>
-                </label>
-                <button type="submit" class="save-employee-button">
-                  Send feedback
-                </button>
-                <p
-                  class="feedback-form-status"
-                  data-feedback-status
-                  role="status"
-                ></p>
-              </form>
-            </section>
-          </div>
-        </section>
         <section id="tasks-view" class="task-view manager-task-view" hidden>
           <div class="page-section-header">
             <div>
@@ -1154,6 +1016,221 @@
               aria-live="polite"
             ></div>
           </section>
+        </section>
+        <section id="performance-view" class="performance-view" hidden>
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">2026 Annual Review</p>
+              <p data-performance-description>
+                Annual Performance and Progress of all Employees.
+              </p>
+            </div>
+          </div>
+          <div class="employee-directory-toolbar">
+            <div class="employee-search">
+              <label for="performance-employee-search">Search Employee</label>
+              <input
+                type="search"
+                id="performance-employee-search"
+                role="combobox"
+                aria-autocomplete="list"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="performance-employee-options"
+                placeholder="Search or select an employee"
+                autocomplete="off"
+              />
+              <div
+                class="performance-employee-options"
+                id="performance-employee-options"
+                role="listbox"
+                hidden
+              ></div>
+            </div>
+          </div>
+          <div class="performance-summary" data-performance-summary></div>
+          <section class="performance-chart-panel">
+            <div class="performance-chart-heading">
+              <div>
+                <h2 data-performance-chart-title>
+                  Team Performance Through the Year
+                </h2>
+                <p>Monthly Score Out of 100</p>
+              </div>
+              <span class="performance-employee-label">All Employees</span>
+            </div>
+            <div class="performance-chart-wrap" data-performance-chart></div>
+            <div class="performance-legend" data-performance-legend></div>
+          </section>
+          <section class="performance-roster-panel">
+            <div class="panel-header">
+              <h2>Employee Performance</h2>
+              <span>Current Year</span>
+            </div>
+            <div class="performance-table-wrap">
+              <table class="performance-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Employee</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Year-End Score</th>
+                    <th scope="col">Change This Year</th>
+                  </tr>
+                </thead>
+                <tbody data-performance-roster></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+        <section
+          id="feedback"
+          class="feedback-view manager-feedback-view"
+          data-feedback-role="manager"
+          hidden
+        >
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Team Feedback</p>
+              <p>Review feedback exchanged with your employees.</p>
+            </div>
+          </div>
+          <div class="feedback-layout manager-feedback-layout">
+            <section class="feedback-panel">
+              <div class="panel-header">
+                <h2>Feedback Sent to Employees</h2>
+              </div>
+              <div
+                class="feedback-list"
+                data-feedback-sent
+                aria-live="polite"
+              ></div>
+            </section>
+            <section class="feedback-panel">
+              <div class="panel-header">
+                <h2>Feedback Received from Employees</h2>
+              </div>
+              <div
+                class="feedback-list"
+                data-feedback-received
+                aria-live="polite"
+              ></div>
+            </section>
+            <section class="feedback-panel feedback-compose-panel">
+              <div class="panel-header">
+                <h2>Send Feedback</h2>
+              </div>
+              <form class="feedback-form" id="manager-feedback-form">
+                <label>
+                  Employee
+                  <select name="employee" required>
+                    <option value="">Select an Employee</option>
+                  </select>
+                </label>
+                <label>
+                  Feedback
+                  <textarea
+                    name="message"
+                    rows="5"
+                    maxlength="1200"
+                    required
+                    placeholder="Write feedback for this employee"
+                  ></textarea>
+                </label>
+                <button type="submit" class="save-employee-button">
+                  Send feedback
+                </button>
+                <p
+                  class="feedback-form-status"
+                  data-feedback-status
+                  role="status"
+                ></p>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section id="meetings" class="meetings-view" hidden>
+          <div class="page-section-header">
+            <div>
+              <p>View Scheduled Meetings and Create Meetings.</p>
+            </div>
+            <div class="page-section-actions">
+              <span class="team-count" id="meeting-count">0 Meetings</span>
+              <button
+                type="button"
+                class="add-employee-button"
+                id="show-schedule-meeting"
+              >
+                <span>+</span> Schedule Meeting
+              </button>
+            </div>
+          </div>
+          <form
+            class="add-employee-form meeting-form"
+            id="schedule-meeting-form"
+            hidden
+          >
+            <div class="form-heading">
+              <h3>Schedule a Meeting</h3>
+              <button
+                type="button"
+                class="close-form-button"
+                id="cancel-schedule-meeting"
+                aria-label="Cancel scheduling"
+              >
+                &times;
+              </button>
+            </div>
+            <div class="employee-form-grid">
+              <label>
+                Meeting Title
+                <input
+                  type="text"
+                  name="title"
+                  required
+                  maxlength="100"
+                  placeholder="e.g. Weekly team sync"
+                />
+              </label>
+              <label>
+                Date
+                <input type="date" name="date" required />
+              </label>
+              <label>
+                Time
+                <input type="time" name="time" required />
+              </label>
+              <label>
+                Location or Meeting Link
+                <input
+                  type="text"
+                  name="location"
+                  maxlength="160"
+                  placeholder="e.g. Conference Room 2"
+                />
+              </label>
+            </div>
+            <fieldset class="meeting-attendees">
+              <legend>Employees to Invite</legend>
+              <div
+                class="meeting-employee-options"
+                id="meeting-employee-options"
+              ></div>
+            </fieldset>
+            <div class="meeting-form-actions">
+              <button
+                type="button"
+                class="secondary-button"
+                id="dismiss-schedule-meeting"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="save-employee-button">
+                Schedule Meeting
+              </button>
+            </div>
+          </form>
+          <div class="meeting-list" id="meeting-list" aria-live="polite"></div>
         </section>
       </main>
     </div>

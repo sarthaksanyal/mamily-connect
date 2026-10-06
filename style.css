@@ -2904,3 +2904,116 @@ task-progress-track {
     gap: 6px;
   }
 }
+
+.meetings-view {
+  max-width: 1080px;
+}
+
+.meeting-form {
+  margin-bottom: 24px;
+}
+
+.meeting-attendees {
+  margin: 20px 0;
+  padding: 0;
+  border: 0;
+}
+
+.meeting-attendees legend {
+  margin-bottom: 10px;
+  color: var(--text-dark);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.meeting-employee-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.meeting-employee-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  cursor: pointer;
+}
+
+.meeting-employee-option input {
+  accent-color: var(--blue);
+}
+
+.meeting-employee-option span {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.meeting-employee-option strong,
+.meeting-employee-option small {
+  overflow-wrap: anywhere;
+}
+
+.meeting-employee-option strong {
+  font-size: 0.82rem;
+}
+
+.meeting-employee-option small {
+  color: var(--text-light);
+  font-size: 0.72rem;
+}
+
+.meeting-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.meeting-form-actions button {
+  min-height: 42px;
+  padding: 10px 16px;
+}
+
+.meeting-list {
+  display: grid;
+  gap: 12px;
+}
+
+.meeting-item {
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--pink);
+  border-right: 4px solid var(--pink);
+  border-radius: 8px;
+  background: var(--white);
+}
+
+.meeting-date-time {
+  color: var(--blue);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.meeting-item h2 {
+  margin-top: 7px;
+  color: var(--text-dark);
+  font-size: 1.05rem;
+}
+
+.meeting-location,
+.meeting-attendees-list {
+  margin-top: 7px;
+  color: var(--text-mid);
+  font-size: 0.84rem;
+  overflow-wrap: anywhere;
+}
+
+.meeting-empty-state {
+  padding: 22px 0;
+  color: var(--text-light);
+}
