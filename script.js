@@ -84,7 +84,7 @@ if (roleButtons.length > 0) {
 
 const navigationItems = document.querySelectorAll(".nav-item[data-view]");
 const dashboardViews = document.querySelectorAll(
-  ".dashboard-view, .team-members-view, .employees-view, .attendance-view, .performance-view, .feedback-view, .meetings-view, .task-view, .work-log-view, .notification-view",
+  ".dashboard-view, .team-members-view, .profile-view, .employees-view, .attendance-view, .performance-view, .feedback-view, .meetings-view, .task-view, .work-log-view, .notification-view",
 );
 const dashboardHeading = document.querySelector(".topbar-dashboard h1");
 navigationItems.forEach((item) => {
