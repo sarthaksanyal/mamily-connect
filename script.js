@@ -87,22 +87,64 @@ const dashboardViews = document.querySelectorAll(
   ".dashboard-view, .team-members-view, .profile-view, .employees-view, .attendance-view, .performance-view, .feedback-view, .meetings-view, .task-view, .work-log-view, .notification-view",
 );
 const dashboardHeading = document.querySelector(".topbar-dashboard h1");
+
+function showDashboardView(viewId, title) {
+  const selectedView = document.getElementById(viewId);
+  if (!selectedView) {
+    return;
+  }
+
+  navigationItems.forEach((item) => {
+    item.classList.toggle("active", item.dataset.view === viewId);
+  });
+  dashboardViews.forEach((view) => {
+    view.hidden = view !== selectedView;
+  });
+  dashboardHeading.textContent = title || "Dashboard";
+}
+
 navigationItems.forEach((item) => {
   item.addEventListener("click", (event) => {
     event.preventDefault();
-    const selectedView = document.getElementById(item.dataset.view);
-    navigationItems.forEach((navigationItem) => {
-      navigationItem.classList.toggle("active", navigationItem === item);
-    });
-    dashboardViews.forEach((view) => {
-      view.hidden = view !== selectedView;
-    });
-    dashboardHeading.textContent = item.dataset.title || "Dashboard";
+    showDashboardView(item.dataset.view, item.dataset.title);
     if (
       item.dataset.view === "work-log" &&
       window.matchMedia("(max-width: 980px)").matches
     ) {
-      selectedView.scrollIntoView({ block: "start" });
+      document.getElementById(item.dataset.view).scrollIntoView({
+        block: "start",
+      });
+    }
+  });
+});
+
+document.querySelectorAll(".notification-bell").forEach((button) => {
+  button.addEventListener("click", () => {
+    showDashboardView(button.dataset.dashboardView, button.dataset.title);
+  });
+});
+
+document.querySelectorAll(".stat-card[data-dashboard-view]").forEach((card) => {
+  card.addEventListener("click", () => {
+    const navigationItem = [...navigationItems].find(
+      (item) => item.dataset.view === card.dataset.dashboardView,
+    );
+    if (navigationItem) {
+      navigationItem.click();
+    } else {
+      const fallbackTitle =
+        card.dataset.title ||
+        (card.dataset.dashboardView === "notifications"
+          ? "Notifications"
+          : "Dashboard");
+      showDashboardView(card.dataset.dashboardView, fallbackTitle);
+    }
+
+    if (card.dataset.scrollTarget) {
+      document.getElementById(card.dataset.scrollTarget)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
     }
   });
 });
@@ -582,17 +624,41 @@ if (teamView && createTeamForm && showCreateTeamButton) {
 
 const attendanceView = document.querySelector(".attendance-view");
 if (attendanceView) {
-  const monthLabel = attendanceView.querySelector("[data-month-label]");
+  const monthSelect = attendanceView.querySelector("[data-month-select]");
+  const yearSelect = attendanceView.querySelector("[data-year-select]");
   const calendar = attendanceView.querySelector("[data-attendance-calendar]");
   const summary = attendanceView.querySelector("[data-attendance-summary]");
-  const previousMonthButton = attendanceView.querySelector("[data-month-prev]");
-  const nextMonthButton = attendanceView.querySelector("[data-month-next]");
   const employeeList = attendanceView.querySelector(
     "[data-attendance-employees]",
   );
   const today = new Date();
   let displayedMonth = new Date(today.getFullYear(), today.getMonth(), 1);
   let selectedEmployeeIndex = 0;
+
+  Array.from({ length: 12 }, (_, month) => {
+    const option = document.createElement("option");
+    option.value = String(month);
+    option.textContent = new Date(2000, month, 1).toLocaleDateString([], {
+      month: "long",
+    });
+    monthSelect.append(option);
+  });
+
+  for (
+    let year = today.getFullYear() - 30;
+    year <= today.getFullYear() + 10;
+    year += 1
+  ) {
+    const option = document.createElement("option");
+    option.value = String(year);
+    option.textContent = String(year);
+    yearSelect.append(option);
+  }
+
+  function syncMonthControls() {
+    monthSelect.value = String(displayedMonth.getMonth());
+    yearSelect.value = String(displayedMonth.getFullYear());
+  }
 
   function getAttendanceStatus(date, employeeIndex) {
     if (date > today) {
@@ -630,10 +696,7 @@ if (attendanceView) {
     const counts = { present: 0, absent: 0 };
     const cells = [];
 
-    monthLabel.textContent = displayedMonth.toLocaleDateString([], {
-      month: "long",
-      year: "numeric",
-    });
+    syncMonthControls();
 
     for (let blankDay = 0; blankDay < firstDayOffset; blankDay += 1) {
       const emptyCell = document.createElement("div");
@@ -648,10 +711,9 @@ if (attendanceView) {
       cell.className = `attendance-day ${status}-day`;
 
       const dateNumber = document.createElement("strong");
-      const statusLabel = document.createElement("span");
-      statusLabel.className = "attendance-status";
-      statusLabel.textContent = status[0].toUpperCase() + status.slice(1);
-      cell.append(statusLabel);
+      dateNumber.className = "attendance-date-number";
+      dateNumber.textContent = String(day);
+      cell.append(dateNumber);
 
       if (status === "present") {
         counts.present += 1;
@@ -734,7 +796,6 @@ if (attendanceView) {
         employeeList.textContent = "No employees to display.";
         calendar.replaceChildren();
         summary.replaceChildren();
-        monthLabel.textContent = "";
       }
     }
 
@@ -753,10 +814,10 @@ if (attendanceView) {
     renderAttendanceCalendar(selectedEmployeeIndex);
   }
 
-  previousMonthButton.addEventListener("click", () => {
+  function updateDisplayedMonth() {
     displayedMonth = new Date(
-      displayedMonth.getFullYear(),
-      displayedMonth.getMonth() - 1,
+      Number(yearSelect.value),
+      Number(monthSelect.value),
       1,
     );
     if (employeeList) {
@@ -764,20 +825,10 @@ if (attendanceView) {
     } else {
       renderAttendanceCalendar(selectedEmployeeIndex);
     }
-  });
+  }
 
-  nextMonthButton.addEventListener("click", () => {
-    displayedMonth = new Date(
-      displayedMonth.getFullYear(),
-      displayedMonth.getMonth() + 1,
-      1,
-    );
-    if (employeeList) {
-      renderEmployeeList();
-    } else {
-      renderAttendanceCalendar(selectedEmployeeIndex);
-    }
-  });
+  monthSelect.addEventListener("change", updateDisplayedMonth);
+  yearSelect.addEventListener("change", updateDisplayedMonth);
 }
 
 const leaveStorageKey = "mamily-connect-leave-state-v1";
@@ -2736,6 +2787,31 @@ const notificationList = document.querySelector("[data-notification-received]");
 const notificationCount = document.querySelector("[data-notification-count]");
 const notificationForm = document.querySelector("[data-notification-form]");
 const notificationStatus = document.querySelector("[data-notification-status]");
+const resignationQueue = document.querySelector("[data-resignation-queue]");
+const pendingResignationList = document.querySelector(
+  "[data-resignation-pending]",
+);
+const reviewedResignationList = document.querySelector(
+  "[data-resignation-reviewed]",
+);
+const pendingResignationCount = document.querySelector(
+  "[data-resignation-pending-count]",
+);
+const reviewedResignationCount = document.querySelector(
+  "[data-resignation-reviewed-count]",
+);
+const resignationForm = document.querySelector("[data-resignation-form]");
+const resignationStatus = document.querySelector("[data-resignation-status]");
+const requisitionForm = document.querySelector("[data-requisition-form]");
+const requisitionStatus = document.querySelector("[data-requisition-status]");
+const requisitionPanel = document.querySelector(".requisition-panel");
+const showRequisitionFormButton = document.getElementById(
+  "show-requisition-form",
+);
+const closeRequisitionFormButtons = document.querySelectorAll(
+  "[data-close-requisition-form], [data-cancel-requisition-form]",
+);
+const requisitionStorageKey = "mamily-connect-manpower-requisitions-v1";
 const readNotificationKey = `mamily-connect-read-notifications-${notificationRole}`;
 const notificationSeed = [
   {
@@ -2789,7 +2865,8 @@ function loadReadNotifications() {
   }
 }
 
-let notifications = notificationList ? loadNotifications() : [];
+let notifications =
+  notificationList || resignationQueue ? loadNotifications() : [];
 let readNotifications = notificationList ? loadReadNotifications() : [];
 
 function saveNotifications() {
@@ -2866,22 +2943,253 @@ function renderNotifications() {
     sender.textContent = `From ${notification.sender}`;
     meta.append(category, timestamp, sender);
 
-    const action = document.createElement("button");
-    action.type = "button";
-    action.className = "notification-read-button";
-    action.dataset.notificationId = notification.id;
-    action.textContent = isRead ? "Read" : "Mark read";
-    action.disabled = isRead;
+    const actions = document.createElement("div");
+    actions.className = "notification-actions";
+
+    const readAction = document.createElement("button");
+    readAction.type = "button";
+    readAction.className = "notification-read-button";
+    readAction.dataset.notificationId = notification.id;
+    readAction.textContent = isRead ? "Read" : "Mark read";
+    readAction.disabled = isRead;
+    actions.append(readAction);
+
+    if (notification.type === "resignation") {
+      const status = document.createElement("span");
+      status.className = `resignation-status${notification.status === "Accepted" ? " accepted" : notification.status === "Rejected" ? " rejected" : ""}`;
+      status.textContent = notification.status || "Pending review";
+
+      if (notificationRole === "manager" && !notification.status) {
+        ["Accepted", "Rejected"].forEach((decision) => {
+          const decisionButton = document.createElement("button");
+          decisionButton.type = "button";
+          decisionButton.className = `resignation-decision-button ${decision.toLowerCase()}`;
+          decisionButton.dataset.notificationId = notification.id;
+          decisionButton.dataset.resignationDecision = decision;
+          decisionButton.textContent =
+            decision === "Accepted" ? "Accept" : "Reject";
+          actions.append(decisionButton);
+        });
+      }
+
+      if (notificationRole === "employee") {
+        actions.append(status);
+      } else {
+        actions.append(status);
+      }
+    }
 
     const message = document.createElement("p");
     message.textContent = notification.message;
-    item.append(heading, action, meta, message);
+    item.append(heading, actions, meta, message);
     notificationList.append(item);
+  });
+}
+
+function getResignationFormFields(notification) {
+  const messageLines = (notification.message || "").split("\n");
+  const getLegacyValue = (label) => {
+    const line = messageLines.find((item) => item.startsWith(`${label}: `));
+    return line ? line.slice(label.length + 2) : "Not provided";
+  };
+
+  return {
+    employeeName:
+      notification.employeeName || notification.sender || "Employee",
+    employeeRole: notification.employeeRole || getLegacyValue("Job title"),
+    lastWorkingDay:
+      notification.lastWorkingDay ||
+      getLegacyValue("Proposed last working day"),
+    reason: notification.reason || getLegacyValue("Reason"),
+  };
+}
+
+function createResignationQueueItem(notification, isReviewed) {
+  const formFields = getResignationFormFields(notification);
+  const item = document.createElement("article");
+  item.className = "resignation-queue-item";
+
+  const heading = document.createElement("div");
+  heading.className = "resignation-queue-heading";
+  const name = document.createElement("h3");
+  name.textContent = formFields.employeeName;
+  const status = document.createElement("span");
+  status.className = `resignation-status${notification.status === "Accepted" ? " accepted" : notification.status === "Rejected" ? " rejected" : ""}`;
+  status.textContent = notification.status || "Pending review";
+  heading.append(name, status);
+
+  const fields = document.createElement("dl");
+  fields.className = "resignation-form-details";
+  [
+    ["Job Title", formFields.employeeRole],
+    ["Proposed Last Working Day", formFields.lastWorkingDay],
+    ["Reason", formFields.reason],
+    [
+      "Submitted",
+      new Date(notification.createdAt).toLocaleString([], {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }),
+    ],
+  ].forEach(([label, value]) => {
+    const term = document.createElement("dt");
+    term.textContent = label;
+    const description = document.createElement("dd");
+    description.textContent = value;
+    fields.append(term, description);
+  });
+  item.append(heading, fields);
+
+  if (!isReviewed) {
+    const actions = document.createElement("div");
+    actions.className = "notification-actions resignation-queue-actions";
+    ["Accepted", "Rejected"].forEach((decision) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `resignation-decision-button ${decision.toLowerCase()}`;
+      button.dataset.notificationId = notification.id;
+      button.dataset.resignationDecision = decision;
+      button.textContent = decision === "Accepted" ? "Accept" : "Reject";
+      actions.append(button);
+    });
+    item.append(actions);
+  }
+
+  return item;
+}
+
+function renderResignationQueue() {
+  if (!resignationQueue) {
+    return;
+  }
+
+  const resignations = notifications
+    .filter((notification) => notification.type === "resignation")
+    .sort(
+      (first, second) => new Date(second.createdAt) - new Date(first.createdAt),
+    );
+  const pending = resignations.filter((notification) => !notification.status);
+  const reviewed = resignations.filter((notification) => notification.status);
+
+  pendingResignationList.replaceChildren();
+  reviewedResignationList.replaceChildren();
+  pendingResignationCount.textContent = `${pending.length} pending`;
+  reviewedResignationCount.textContent = `${reviewed.length} reviewed`;
+
+  [
+    [pending, pendingResignationList, "No pending resignation forms."],
+    [reviewed, reviewedResignationList, "No reviewed resignation forms yet."],
+  ].forEach(([items, list, emptyMessage]) => {
+    if (items.length === 0) {
+      const emptyState = document.createElement("p");
+      emptyState.className = "notification-empty";
+      emptyState.textContent = emptyMessage;
+      list.append(emptyState);
+      return;
+    }
+
+    items.forEach((notification) => {
+      list.append(
+        createResignationQueueItem(notification, Boolean(notification.status)),
+      );
+    });
+  });
+}
+
+function updateResignationDecision(button) {
+  const notification = notifications.find(
+    (item) => item.id === button.dataset.notificationId,
+  );
+  if (!notification || notification.status) {
+    return;
+  }
+
+  notification.status = button.dataset.resignationDecision;
+  notification.decidedAt = new Date().toISOString();
+  saveNotifications();
+  renderNotifications();
+  renderResignationQueue();
+}
+
+if (resignationQueue) {
+  resignationQueue.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-resignation-decision]");
+    if (button) {
+      updateResignationDecision(button);
+    }
+  });
+}
+
+renderResignationQueue();
+
+if (requisitionForm) {
+  const hideRequisitionForm = (reset = true) => {
+    if (reset) {
+      requisitionForm.reset();
+    }
+    requisitionPanel.hidden = true;
+    showRequisitionFormButton.hidden = false;
+  };
+
+  showRequisitionFormButton.addEventListener("click", () => {
+    requisitionStatus.textContent = "";
+    requisitionPanel.hidden = false;
+    showRequisitionFormButton.hidden = true;
+    requisitionForm.elements.jobTitle.focus();
+  });
+
+  closeRequisitionFormButtons.forEach((button) => {
+    button.addEventListener("click", () => hideRequisitionForm());
+  });
+
+  requisitionForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(requisitionForm);
+    let requisitions = [];
+    try {
+      requisitions = JSON.parse(
+        window.localStorage.getItem(requisitionStorageKey) || "[]",
+      );
+      if (!Array.isArray(requisitions)) {
+        requisitions = [];
+      }
+    } catch {
+      requisitions = [];
+    }
+    requisitions.unshift({
+      id: `requisition-${Date.now()}`,
+      jobTitle: formData.get("jobTitle").trim(),
+      team: formData.get("team").trim(),
+      positions: Number(formData.get("positions")),
+      employmentType: formData.get("employmentType"),
+      location: formData.get("location").trim(),
+      priority: formData.get("priority"),
+      justification: formData.get("justification").trim(),
+      submittedAt: new Date().toISOString(),
+    });
+    try {
+      window.localStorage.setItem(
+        requisitionStorageKey,
+        JSON.stringify(requisitions),
+      );
+    } catch {
+      requisitionStatus.textContent =
+        "Unable to save requisition in this browser.";
+      return;
+    }
+    requisitionStatus.textContent = "Manpower requisition submitted.";
+    hideRequisitionForm();
   });
 }
 
 if (notificationList) {
   notificationList.addEventListener("click", (event) => {
+    const decisionButton = event.target.closest("[data-resignation-decision]");
+    if (decisionButton) {
+      updateResignationDecision(decisionButton);
+      return;
+    }
+
     const button = event.target.closest("[data-notification-id]");
     if (!button || readNotifications.includes(button.dataset.notificationId)) {
       return;
@@ -2890,6 +3198,38 @@ if (notificationList) {
     saveReadNotifications();
     renderNotifications();
   });
+
+  if (resignationForm) {
+    resignationForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(resignationForm);
+      const employeeName = formData.get("employeeName").trim();
+      const employeeRole = formData.get("employeeRole").trim();
+      const lastWorkingDay = formData.get("lastWorkingDay");
+      const reason = formData.get("reason").trim();
+      notifications = [
+        {
+          id: `resignation-${Date.now()}`,
+          type: "resignation",
+          title: `Resignation submitted by ${employeeName}`,
+          message: `Job title: ${employeeRole}\nProposed last working day: ${lastWorkingDay}\nReason: ${reason}`,
+          employeeName,
+          employeeRole,
+          lastWorkingDay,
+          reason,
+          category: "Resignation",
+          sender: employeeName,
+          createdAt: new Date().toISOString(),
+          status: "",
+        },
+        ...notifications,
+      ];
+      saveNotifications();
+      resignationForm.reset();
+      resignationStatus.textContent = "Resignation submitted for HR review.";
+      renderNotifications();
+    });
+  }
 
   if (notificationForm) {
     notificationForm.addEventListener("submit", (event) => {
@@ -2917,6 +3257,7 @@ if (notificationList) {
     if (event.key === notificationStorageKey) {
       notifications = loadNotifications();
       renderNotifications();
+      renderResignationQueue();
     }
     if (event.key === readNotificationKey) {
       readNotifications = loadReadNotifications();
@@ -2925,4 +3266,5 @@ if (notificationList) {
   });
 
   renderNotifications();
+  renderResignationQueue();
 }

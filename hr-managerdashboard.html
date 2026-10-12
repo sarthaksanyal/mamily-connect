@@ -21,72 +21,90 @@
             data-title="HR & Manager Dashboard"
             >Dashboard</a
           >
-          <a
-            href="#employees"
-            class="nav-item"
-            data-view="employees-view"
-            data-title="Employees"
-            >Employees</a
-          >
-          <a
-            href="#teams"
-            class="nav-item"
-            data-view="teams-view"
-            data-title="Teams"
-            >Teams</a
-          >
-          <a
-            href="#"
-            class="nav-item"
-            data-view="attendance"
-            data-title="Attendance"
-            >Attendance</a
-          >
-          <a
-            href="#"
-            class="nav-item"
-            data-view="leave-requests"
-            data-title="Leave Requests"
-            >Leave Requests</a
-          >
-          <a href="#" class="nav-item" data-view="tasks-view" data-title="Tasks"
-            >Tasks</a
-          >
-          <a
-            href="#"
-            class="nav-item"
-            data-view="work-log"
-            data-title="Work Log"
-            >Work Log</a
-          >
-          <a
-            href="#"
-            class="nav-item"
-            data-view="performance-view"
-            data-title="Performance"
-            >Performance</a
-          >
-          <a
-            href="#"
-            class="nav-item"
-            data-view="feedback"
-            data-title="Feedback"
-            >Feedback</a
-          >
-          <a
-            href="#"
-            class="nav-item"
-            data-view="meetings"
-            data-title="Meetings"
-            >Meetings</a
-          >
-          <a
-            href="#"
-            class="nav-item"
-            data-view="notifications"
-            data-title="Notifications"
-            >Notifications</a
-          >
+          <div class="nav-section">
+            <p class="nav-section-label">Operations</p>
+            <a
+              href="#"
+              class="nav-item"
+              data-view="tasks-view"
+              data-title="Tasks"
+              >Tasks</a
+            >
+            <a
+              href="#"
+              class="nav-item"
+              data-view="work-log"
+              data-title="Work Log"
+              >Work Log</a
+            >
+            <a
+              href="#"
+              class="nav-item"
+              data-view="meetings"
+              data-title="Meetings"
+              >Meetings</a
+            >
+          </div>
+          <div class="nav-section">
+            <p class="nav-section-label">Organization</p>
+            <a
+              href="#employees"
+              class="nav-item"
+              data-view="employees-view"
+              data-title="Employees"
+              >Employees</a
+            >
+            <a
+              href="#teams"
+              class="nav-item"
+              data-view="teams-view"
+              data-title="Teams"
+              >Teams</a
+            >
+          </div>
+          <div class="nav-section">
+            <p class="nav-section-label">Approvals</p>
+            <a
+              href="#"
+              class="nav-item"
+              data-view="attendance"
+              data-title="Attendance Logs"
+              >Attendance Logs</a
+            >
+            <a
+              href="#"
+              class="nav-item"
+              data-view="leave-requests"
+              data-title="Leave Requests"
+              >Leave Requests</a
+            >
+          </div>
+          <details class="nav-dropdown">
+            <summary>HR Services</summary>
+            <div class="nav-dropdown-links">
+              <a
+                href="#"
+                class="nav-item"
+                data-view="performance-view"
+                data-title="Performance"
+                >Performance</a
+              >
+              <a
+                href="#"
+                class="nav-item"
+                data-view="feedback"
+                data-title="Feedback Admin"
+                >Feedback Admin</a
+              >
+              <a
+                href="#"
+                class="nav-item"
+                data-view="resignation-queue"
+                data-title="Resignation Queue"
+                >Resignation Queue</a
+              >
+            </div>
+          </details>
         </nav>
         <a href="index.html" class="logout-button">Sign Out</a>
       </aside>
@@ -96,41 +114,78 @@
             <p class="dashboard-kicker">Welcome Back</p>
             <h1>HR & Manager Dashboard</h1>
           </div>
-          <div class="user-chip manager-chip">
-            <span class="user-avatar">HR</span>
-            <div>
-              <strong>Ananya Roy</strong>
-              <small>HR Manager</small>
+          <div class="topbar-actions">
+            <button
+              type="button"
+              class="notification-bell"
+              data-dashboard-view="notifications"
+              data-title="Notifications"
+              aria-label="Notifications"
+              title="Notifications"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"
+                />
+              </svg>
+            </button>
+            <div class="user-chip manager-chip">
+              <span class="user-avatar">HR</span>
+              <div>
+                <strong>Ananya Roy</strong>
+                <small>HR Manager</small>
+              </div>
             </div>
           </div>
         </header>
         <div id="dashboard-view" class="dashboard-view">
           <section class="stats-grid">
-            <article class="stat-card highlight">
+            <button
+              type="button"
+              class="stat-card highlight"
+              data-dashboard-view="employees-view"
+            >
               <span>Total Employees</span>
               <strong>6</strong>
               <small>+2 this quarter</small>
-            </article>
-            <article class="stat-card">
+            </button>
+            <button
+              type="button"
+              class="stat-card"
+              data-dashboard-view="leave-requests"
+            >
               <span>Pending Requests</span>
               <strong>21</strong>
               <small>8 urgent</small>
-            </article>
-            <article class="stat-card">
+            </button>
+            <button
+              type="button"
+              class="stat-card"
+              data-dashboard-view="performance-view"
+            >
               <span>Overall Performance</span>
               <strong>92%</strong>
               <small>+2% than last quarter</small>
-            </article>
-            <article class="stat-card">
+            </button>
+            <button
+              type="button"
+              class="stat-card"
+              data-dashboard-view="attendance"
+            >
               <span>Team Attendance</span>
               <strong>94%</strong>
               <small>2 absences today</small>
-            </article>
-            <article class="stat-card">
+            </button>
+            <button
+              type="button"
+              class="stat-card"
+              data-dashboard-view="dashboard-view"
+              data-scroll-target="hiring-pipeline"
+            >
               <span>Open Positions</span>
               <strong>5</strong>
               <small>2 interviews booked</small>
-            </article>
+            </button>
           </section>
           <section class="content-grid">
             <article class="panel">
@@ -156,7 +211,7 @@
                 <li>
                   <span class="time">Action</span>
                   <div>
-                    <strong>Hiring Pipeline</strong>
+                    <strong id="hiring-pipeline">Hiring Pipeline</strong>
                     <small>Candidates shortlisted</small>
                   </div>
                 </li>
@@ -186,12 +241,119 @@
               <button
                 type="button"
                 class="add-employee-button"
+                id="show-requisition-form"
+              >
+                Manpower Requisition Form
+              </button>
+              <button
+                type="button"
+                class="add-employee-button"
                 id="show-add-employee"
               >
                 <span>+</span> Add Employee
               </button>
             </div>
           </div>
+          <p
+            class="notification-form-status requisition-status"
+            data-requisition-status
+            role="status"
+          ></p>
+          <section class="notification-panel requisition-panel" hidden>
+            <div class="panel-header">
+              <h2>Manpower Requisition Form</h2>
+              <button
+                type="button"
+                class="close-form-button"
+                data-close-requisition-form
+                aria-label="Close manpower requisition form"
+              >
+                &times;
+              </button>
+            </div>
+            <form
+              class="notification-form requisition-form"
+              data-requisition-form
+            >
+              <label>
+                Job Title
+                <input
+                  name="jobTitle"
+                  maxlength="100"
+                  required
+                  placeholder="e.g. Customer Support Specialist"
+                />
+              </label>
+              <label>
+                Department / Team
+                <input
+                  name="team"
+                  maxlength="100"
+                  required
+                  placeholder="e.g. Customer Success"
+                />
+              </label>
+              <label>
+                Number of Positions
+                <input
+                  name="positions"
+                  type="number"
+                  min="1"
+                  max="100"
+                  required
+                />
+              </label>
+              <label>
+                Employment Type
+                <select name="employmentType" required>
+                  <option value="">Select employment type</option>
+                  <option>Full-time</option>
+                  <option>Part-time</option>
+                  <option>Contract</option>
+                  <option>Internship</option>
+                </select>
+              </label>
+              <label>
+                Work Location
+                <input
+                  name="location"
+                  maxlength="100"
+                  required
+                  placeholder="Office or location"
+                />
+              </label>
+              <label>
+                Priority
+                <select name="priority" required>
+                  <option>Standard</option>
+                  <option>High</option>
+                  <option>Urgent</option>
+                </select>
+              </label>
+              <label>
+                Business Justification
+                <textarea
+                  name="justification"
+                  rows="4"
+                  maxlength="500"
+                  required
+                  placeholder="Explain the hiring need"
+                ></textarea>
+              </label>
+              <div class="requisition-form-actions">
+                <button
+                  type="button"
+                  class="secondary-button"
+                  data-cancel-requisition-form
+                >
+                  Cancel
+                </button>
+                <button type="submit" class="save-employee-button">
+                  Submit Requisition
+                </button>
+              </div>
+            </form>
+          </section>
           <div class="employee-directory-toolbar">
             <label class="employee-search" for="employee-search">
               <span>Search employees</span>
@@ -694,21 +856,16 @@
               <div class="attendance-summary" data-attendance-summary></div>
               <section class="attendance-calendar-panel">
                 <div class="attendance-calendar-toolbar">
-                  <button
-                    type="button"
-                    class="calendar-month-button"
-                    data-month-prev
-                  >
-                    &larr;
-                  </button>
-                  <h2 data-month-label></h2>
-                  <button
-                    type="button"
-                    class="calendar-month-button"
-                    data-month-next
-                  >
-                    &rarr;
-                  </button>
+                  <select
+                    class="attendance-month-select"
+                    data-month-select
+                    aria-label="Attendance month"
+                  ></select>
+                  <select
+                    class="attendance-year-select"
+                    data-year-select
+                    aria-label="Attendance year"
+                  ></select>
                 </div>
                 <div class="attendance-weekdays">
                   <span>Mon</span><span>Tue</span><span>Wed</span
@@ -724,7 +881,6 @@
                   </span>
                 </div>
               </section>
-              <p class="attendance-note">Attendance Records</p>
             </div>
           </div>
         </section>
@@ -1231,6 +1387,47 @@
             </div>
           </form>
           <div class="meeting-list" id="meeting-list" aria-live="polite"></div>
+        </section>
+        <section
+          id="resignation-queue"
+          class="notification-view resignation-queue-view"
+          data-resignation-queue
+          hidden
+        >
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">HR Services</p>
+              <p>Review resignation forms submitted by employees.</p>
+            </div>
+          </div>
+          <div class="resignation-queue-layout">
+            <section class="notification-panel">
+              <div class="panel-header">
+                <h2>Pending Resignations</h2>
+                <span
+                  class="notification-total"
+                  data-resignation-pending-count
+                ></span>
+              </div>
+              <div
+                class="resignation-queue-list"
+                data-resignation-pending
+              ></div>
+            </section>
+            <section class="notification-panel">
+              <div class="panel-header">
+                <h2>Reviewed Resignations</h2>
+                <span
+                  class="notification-total"
+                  data-resignation-reviewed-count
+                ></span>
+              </div>
+              <div
+                class="resignation-queue-list"
+                data-resignation-reviewed
+              ></div>
+            </section>
+          </div>
         </section>
         <section
           id="notifications"
