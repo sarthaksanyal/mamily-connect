@@ -841,56 +841,7 @@
               Add Employee
             </button>
           </form>
-          <div class="employee-directory" id="employee-directory">
-            <article class="employee-row">
-              <span class="member-avatar">SS</span>
-              <div class="employee-details">
-                <h3>Sarthak Sanyal</h3>
-                <p>Software Intern</p>
-              </div>
-              <span class="employee-team">Software Support</span>
-            </article>
-            <article class="employee-row">
-              <span class="member-avatar avatar-pink">AR</span>
-              <div class="employee-details">
-                <h3>Ananya Roy</h3>
-                <p>HR Manager</p>
-              </div>
-              <span class="employee-team">Software Support</span>
-            </article>
-            <article class="employee-row">
-              <span class="member-avatar avatar-green">MK</span>
-              <div class="employee-details">
-                <h3>Mandeep Kaur</h3>
-                <p>Customer Support Specialist</p>
-              </div>
-              <span class="employee-team">Customer Success</span>
-            </article>
-            <article class="employee-row">
-              <span class="member-avatar avatar-gold">JP</span>
-              <div class="employee-details">
-                <h3>Jaya Patel</h3>
-                <p>Customer Support Specialist</p>
-              </div>
-              <span class="employee-team">Customer Success</span>
-            </article>
-            <article class="employee-row">
-              <span class="member-avatar avatar-purple">NK</span>
-              <div class="employee-details">
-                <h3>Neha Kapoor</h3>
-                <p>People Operations Associate</p>
-              </div>
-              <span class="employee-team">People Operations</span>
-            </article>
-            <article class="employee-row">
-              <span class="member-avatar avatar-teal">DO</span>
-              <div class="employee-details">
-                <h3>Daksh Ojha</h3>
-                <p>Finance Analyst</p>
-              </div>
-              <span class="employee-team">Finance</span>
-            </article>
-          </div>
+          <div class="employee-directory" id="employee-directory"></div>
           <dialog class="employee-profile-dialog" id="employee-profile-dialog">
             <div class="profile-dialog-header">
               <div>
@@ -911,8 +862,24 @@
             <form class="profile-edit-form" id="profile-edit-form" hidden>
               <div class="employee-form-grid">
                 <label>
+                  Employee ID
+                  <input type="text" id="profile-employee-id" />
+                </label>
+                <label>
                   Employee Name
                   <input type="text" id="profile-name" required />
+                </label>
+                <label>
+                  Father's Name
+                  <input type="text" id="profile-father-name" />
+                </label>
+                <label>
+                  Correspondence Address
+                  <input type="text" id="profile-correspondence-address" />
+                </label>
+                <label>
+                  Permanent Address
+                  <input type="text" id="profile-permanent-address" />
                 </label>
                 <label>
                   Job Title
@@ -924,7 +891,7 @@
                 </label>
                 <label>
                   Email
-                  <input type="email" id="profile-email" />
+                  <input type="email" id="profile-email" required />
                 </label>
                 <label>
                   Contact Number
@@ -935,8 +902,24 @@
                   <input type="text" id="profile-location" />
                 </label>
                 <label>
+                  Aadhar Card Number
+                  <input type="text" id="profile-aadhar" />
+                </label>
+                <label>
+                  PAN Card Number
+                  <input type="text" id="profile-pan" />
+                </label>
+                <label>
                   Bank Details
                   <input type="text" id="profile-bank" />
+                </label>
+                <label>
+                  Emergency Contact Name
+                  <input type="text" id="profile-emergency-contact-name" />
+                </label>
+                <label>
+                  Emergency Contact Number
+                  <input type="tel" id="profile-emergency-contact-number" />
                 </label>
                 <label>
                   Joining Date
@@ -950,6 +933,8 @@
                   Shift End Time
                   <input type="time" id="profile-shift-end" />
                 </label>
+                <div id="profile-education-entries"></div>
+                <div id="profile-experience-entries"></div>
               </div>
               <div class="profile-dialog-actions">
                 <button
@@ -964,6 +949,59 @@
                 </button>
               </div>
             </form>
+          </dialog>
+          <dialog
+            class="employee-profile-dialog employee-documents-dialog"
+            id="employee-documents-dialog"
+          >
+            <div class="profile-dialog-header">
+              <div>
+                <p class="dashboard-kicker">Employee Documents</p>
+                <h2 id="employee-documents-title">Employee</h2>
+              </div>
+              <button
+                type="button"
+                class="close-form-button"
+                id="close-employee-documents"
+                aria-label="Close employee documents"
+              >
+                ×
+              </button>
+            </div>
+            <div
+              class="employee-document-identifiers"
+              data-employee-document-identifiers
+            ></div>
+            <form id="employee-document-form" class="employee-document-form">
+              <label>
+                Document type
+                <select name="category" required>
+                  <option value="Aadhar Card">Aadhar Card</option>
+                  <option value="PAN Card">PAN Card</option>
+                  <option value="Joining Letter">Joining Letter</option>
+                  <option value="Salary Slip">Salary Slip</option>
+                  <option value="Other">Other</option>
+                </select>
+              </label>
+              <label>
+                Choose Documents
+                <input name="file" type="file" multiple required />
+              </label>
+              <button type="submit" class="save-employee-button">
+                Upload Documents
+              </button>
+            </form>
+            <section class="employee-document-section">
+              <div class="employee-document-heading">
+                <h3>Documents</h3>
+                <span data-employee-document-status role="status"></span>
+              </div>
+              <div
+                class="employee-document-list"
+                data-employee-document-list
+                aria-live="polite"
+              ></div>
+            </section>
           </dialog>
         </section>
         <section id="teams-view" class="employees-view teams-view" hidden>
@@ -1856,6 +1894,6 @@
         </section>
       </main>
     </div>
-    <script src="script.js"></script>
+    <script src="finalscript.js"></script>
   </body>
 </html>

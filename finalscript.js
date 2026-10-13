@@ -1,3 +1,150 @@
+const initialEmployees = [
+  {
+    employeeId: "",
+    name: "Sarthak Sanyal",
+    fatherName: "",
+    correspondenceAddress: "",
+    permanentAddress: "",
+    role: "Software Intern",
+    team: "Software Support",
+    email: "sarthak.sanyal@mamily.com",
+    contact: "",
+    location: "",
+    aadhar: "",
+    pan: "",
+    bank: "",
+    emergencyContactName: "",
+    emergencyContactNumber: "",
+    joiningDate: "",
+    shiftStart: "",
+    shiftEnd: "",
+    education: [],
+    experience: [],
+    avatarClass: "member-avatar",
+  },
+  {
+    employeeId: "",
+    name: "Ananya Roy",
+    fatherName: "",
+    correspondenceAddress: "",
+    permanentAddress: "",
+    role: "HR Manager",
+    team: "Software Support",
+    email: "ananya.roy@mamily.com",
+    contact: "",
+    location: "",
+    aadhar: "",
+    pan: "",
+    bank: "",
+    emergencyContactName: "",
+    emergencyContactNumber: "",
+    joiningDate: "",
+    shiftStart: "",
+    shiftEnd: "",
+    education: [],
+    experience: [],
+    avatarClass: "member-avatar avatar-pink",
+  },
+  {
+    employeeId: "",
+    name: "Mandeep Kaur",
+    fatherName: "",
+    correspondenceAddress: "",
+    permanentAddress: "",
+    role: "Customer Support Specialist",
+    team: "Customer Success",
+    email: "mandeep.kaur@mamily.com",
+    contact: "",
+    location: "",
+    aadhar: "",
+    pan: "",
+    bank: "",
+    emergencyContactName: "",
+    emergencyContactNumber: "",
+    joiningDate: "",
+    shiftStart: "",
+    shiftEnd: "",
+    education: [],
+    experience: [],
+    avatarClass: "member-avatar avatar-green",
+  },
+  {
+    employeeId: "",
+    name: "Jaya Patel",
+    fatherName: "",
+    correspondenceAddress: "",
+    permanentAddress: "",
+    role: "Customer Support Specialist",
+    team: "Customer Success",
+    email: "jaya.patel@mamily.com",
+    contact: "",
+    location: "",
+    aadhar: "",
+    pan: "",
+    bank: "",
+    emergencyContactName: "",
+    emergencyContactNumber: "",
+    joiningDate: "",
+    shiftStart: "",
+    shiftEnd: "",
+    education: [],
+    experience: [],
+    avatarClass: "member-avatar avatar-gold",
+  },
+  {
+    employeeId: "",
+    name: "Neha Kapoor",
+    fatherName: "",
+    correspondenceAddress: "",
+    permanentAddress: "",
+    role: "People Operations Associate",
+    team: "People Operations",
+    email: "neha.kapoor@mamily.com",
+    contact: "",
+    location: "",
+    aadhar: "",
+    pan: "",
+    bank: "",
+    emergencyContactName: "",
+    emergencyContactNumber: "",
+    joiningDate: "",
+    shiftStart: "",
+    shiftEnd: "",
+    education: [],
+    experience: [],
+    avatarClass: "member-avatar avatar-purple",
+  },
+  {
+    employeeId: "",
+    name: "Daksh Ojha",
+    fatherName: "",
+    correspondenceAddress: "",
+    permanentAddress: "",
+    role: "Finance Analyst",
+    team: "Finance",
+    email: "daksh.ojha@mamily.com",
+    contact: "",
+    location: "",
+    aadhar: "",
+    pan: "",
+    bank: "",
+    emergencyContactName: "",
+    emergencyContactNumber: "",
+    joiningDate: "",
+    shiftStart: "",
+    shiftEnd: "",
+    education: [],
+    experience: [],
+    avatarClass: "member-avatar avatar-teal",
+  },
+];
+
+function normalizeEmployeeEmail(email) {
+  return String(email || "")
+    .trim()
+    .toLowerCase();
+}
+
 const roleButtons = document.querySelectorAll(".role-option");
 const authHeading = document.querySelector(".auth-head h2");
 const authSubtitle = document.querySelector(".auth-head p");
@@ -65,7 +212,10 @@ if (roleButtons.length > 0) {
 
     if (activeRole === "employee") {
       try {
-        sessionStorage.setItem("current-employee-email", email.toLowerCase());
+        sessionStorage.setItem(
+          "current-employee-email",
+          normalizeEmployeeEmail(email),
+        );
       } catch {
         // The demo can still sign in when browser storage is unavailable.
       }
@@ -163,12 +313,92 @@ const employeeSearch = document.getElementById("employee-search");
 const employeeProfileDialog = document.getElementById(
   "employee-profile-dialog",
 );
+const employeeDocumentsDialog = document.getElementById(
+  "employee-documents-dialog",
+);
+const employeeDocumentsForm = document.getElementById("employee-document-form");
+const employeeDocumentsList = document.querySelector(
+  "[data-employee-document-list]",
+);
+const employeeDocumentsStatus = document.querySelector(
+  "[data-employee-document-status]",
+);
+const employeeDocumentIdentifiers = document.querySelector(
+  "[data-employee-document-identifiers]",
+);
 const profileView = document.getElementById("profile-view");
 const profileDetails = document.getElementById("profile-details");
 const profileEditForm = document.getElementById("profile-edit-form");
 let editingEmployeeRow = null;
+let employeeDocumentsDatabasePromise;
+let activeDocumentsEmployeeEmail = "";
+let employeeDocumentUrls = [];
+
+function renderInitialEmployees() {
+  if (!employeeDirectory) {
+    return;
+  }
+
+  const seenEmails = new Set();
+  initialEmployees.forEach((employee) => {
+    const email = normalizeEmployeeEmail(employee.email);
+    if (!email || seenEmails.has(email)) {
+      console.error(
+        `Skipping ${employee.name}: employee email is missing or duplicated.`,
+      );
+      return;
+    }
+    seenEmails.add(email);
+
+    const employeeRow = document.createElement("article");
+    employeeRow.className = "employee-row";
+
+    const avatar = document.createElement("span");
+    avatar.className = employee.avatarClass;
+    avatar.textContent = employee.name
+      .split(/\s+/)
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+
+    const employeeDetails = document.createElement("div");
+    employeeDetails.className = "employee-details";
+    const employeeName = document.createElement("h3");
+    employeeName.textContent = employee.name;
+    const employeeRole = document.createElement("p");
+    employeeRole.textContent = employee.role;
+    employeeDetails.append(employeeName, employeeRole);
+
+    const employeeTeam = document.createElement("span");
+    employeeTeam.className = "employee-team";
+    employeeTeam.textContent = employee.team;
+
+    employeeRow.append(avatar, employeeDetails, employeeTeam);
+    Object.entries(employee).forEach(([key, value]) => {
+      if (key !== "avatarClass") {
+        employeeRow.dataset[key] =
+          key === "email"
+            ? email
+            : Array.isArray(value)
+              ? JSON.stringify(value)
+              : value;
+      }
+    });
+    employeeDirectory.append(employeeRow);
+  });
+}
 
 if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
+  function isEmployeeEmailInUse(email, excludedRow = null) {
+    const normalizedEmail = normalizeEmployeeEmail(email);
+    return [...employeeDirectory.querySelectorAll(".employee-row")].some(
+      (row) =>
+        row !== excludedRow &&
+        normalizeEmployeeEmail(row.dataset.email) === normalizedEmail,
+    );
+  }
+
   const profileFields = [
     ["Employee ID", "employeeId"],
     ["Name", "name"],
@@ -191,6 +421,217 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     ["Educational Details", "education"],
     ["Employment Experience", "experience"],
   ];
+  const editableProfileEntries = {
+    education: {
+      containerId: "profile-education-entries",
+      caption: "Educational Details",
+      fields: [
+        "Degree",
+        "University or institute",
+        "Year of passing",
+        "Percentage or CGPA",
+        "Specialization",
+      ],
+    },
+    experience: {
+      containerId: "profile-experience-entries",
+      caption: "Employment Experience",
+      fields: [
+        "Company name",
+        "Position",
+        "Duration",
+        "Job role",
+        "Key responsibilities",
+      ],
+    },
+  };
+
+  const employeeDocumentsDatabaseName = "mamily-connect-employee-documents";
+  const employeeDocumentsStoreName = "documents";
+
+  function getEmployeeDocumentsDatabase() {
+    if (!window.indexedDB) {
+      return Promise.reject(new Error("Document storage is unavailable."));
+    }
+    if (!employeeDocumentsDatabasePromise) {
+      employeeDocumentsDatabasePromise = new Promise((resolve, reject) => {
+        const request = window.indexedDB.open(employeeDocumentsDatabaseName, 1);
+        request.onupgradeneeded = () => {
+          if (
+            !request.result.objectStoreNames.contains(
+              employeeDocumentsStoreName,
+            )
+          ) {
+            request.result.createObjectStore(employeeDocumentsStoreName, {
+              keyPath: "id",
+            });
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      }).catch((error) => {
+        employeeDocumentsDatabasePromise = null;
+        throw error;
+      });
+    }
+    return employeeDocumentsDatabasePromise;
+  }
+
+  function loadEmployeeDocuments(email) {
+    return getEmployeeDocumentsDatabase().then(
+      (database) =>
+        new Promise((resolve, reject) => {
+          const request = database
+            .transaction(employeeDocumentsStoreName, "readonly")
+            .objectStore(employeeDocumentsStoreName)
+            .getAll();
+          request.onsuccess = () =>
+            resolve(
+              request.result.filter(
+                (document) => document.employeeEmail === email,
+              ),
+            );
+          request.onerror = () => reject(request.error);
+        }),
+    );
+  }
+
+  function saveEmployeeDocument(document) {
+    return getEmployeeDocumentsDatabase().then(
+      (database) =>
+        new Promise((resolve, reject) => {
+          const transaction = database.transaction(
+            employeeDocumentsStoreName,
+            "readwrite",
+          );
+          transaction.objectStore(employeeDocumentsStoreName).put(document);
+          transaction.oncomplete = resolve;
+          transaction.onerror = () => reject(transaction.error);
+          transaction.onabort = () => reject(transaction.error);
+        }),
+    );
+  }
+
+  function releaseEmployeeDocumentUrls() {
+    employeeDocumentUrls.forEach((url) => URL.revokeObjectURL(url));
+    employeeDocumentUrls = [];
+  }
+
+  async function renderEmployeeDocuments() {
+    releaseEmployeeDocumentUrls();
+    employeeDocumentsList.replaceChildren();
+    employeeDocumentsStatus.textContent = "Loading documents...";
+
+    try {
+      const documents = await loadEmployeeDocuments(
+        activeDocumentsEmployeeEmail,
+      );
+      if (!activeDocumentsEmployeeEmail) {
+        return;
+      }
+      documents.sort(
+        (first, second) =>
+          new Date(second.uploadedAt) - new Date(first.uploadedAt),
+      );
+      employeeDocumentsStatus.textContent = `${documents.length} document${documents.length === 1 ? "" : "s"}`;
+
+      if (documents.length === 0) {
+        const emptyState = document.createElement("p");
+        emptyState.className = "employee-document-empty";
+        emptyState.textContent = "No uploaded documents for this employee yet.";
+        employeeDocumentsList.append(emptyState);
+        return;
+      }
+
+      documents.forEach((employeeDocument) => {
+        const item = document.createElement("article");
+        item.className = "employee-document-item";
+        const details = document.createElement("div");
+        const name = document.createElement("h3");
+        name.textContent = employeeDocument.name;
+        const metadata = document.createElement("p");
+        metadata.textContent = `${employeeDocument.category} · ${new Date(employeeDocument.uploadedAt).toLocaleDateString()}`;
+        details.append(name, metadata);
+
+        const link = document.createElement("a");
+        link.className = "employee-document-link";
+        link.href = URL.createObjectURL(employeeDocument.file);
+        employeeDocumentUrls.push(link.href);
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.download = employeeDocument.name;
+        link.textContent = "Open / download";
+        item.append(details, link);
+        employeeDocumentsList.append(item);
+      });
+    } catch {
+      employeeDocumentsStatus.textContent =
+        "Unable to load employee documents in this browser.";
+    }
+  }
+
+  function showEmployeeDocuments(employeeRow) {
+    const employeeData = getEmployeeData(employeeRow);
+    activeDocumentsEmployeeEmail = employeeData.email.toLowerCase();
+    document.getElementById("employee-documents-title").textContent =
+      employeeData.name;
+    employeeDocumentIdentifiers.replaceChildren();
+    [
+      ["Aadhar Card", employeeData.aadhar],
+      ["PAN Card", employeeData.pan],
+    ].forEach(([label, value]) => {
+      const item = document.createElement("div");
+      item.className = "employee-document-identifier";
+      const name = document.createElement("span");
+      name.textContent = label;
+      const detail = document.createElement("strong");
+      detail.textContent = value || "Not provided";
+      item.append(name, detail);
+      employeeDocumentIdentifiers.append(item);
+    });
+    employeeDocumentsStatus.textContent = "Loading documents...";
+    employeeDocumentsDialog.showModal();
+    renderEmployeeDocuments();
+  }
+
+  employeeDocumentsForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const fileInput = employeeDocumentsForm.elements.file;
+    const files = [...fileInput.files];
+    if (!activeDocumentsEmployeeEmail || files.length === 0) {
+      return;
+    }
+
+    const category = employeeDocumentsForm.elements.category.value;
+    employeeDocumentsStatus.textContent = "Uploading documents...";
+    try {
+      await Promise.all(
+        files.map((file) =>
+          saveEmployeeDocument({
+            id: `employee-document-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+            employeeEmail: activeDocumentsEmployeeEmail,
+            category,
+            name: file.name,
+            file,
+            uploadedAt: new Date().toISOString(),
+          }),
+        ),
+      );
+      employeeDocumentsForm.reset();
+      await renderEmployeeDocuments();
+    } catch {
+      employeeDocumentsStatus.textContent =
+        "Unable to save documents in this browser.";
+    }
+  });
+
+  document
+    .getElementById("close-employee-documents")
+    .addEventListener("click", () => employeeDocumentsDialog.close());
+  employeeDocumentsDialog.addEventListener("close", () => {
+    activeDocumentsEmployeeEmail = "";
+    releaseEmployeeDocumentUrls();
+  });
 
   function parseEmployeeRows(value) {
     try {
@@ -246,6 +687,60 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     };
   }
 
+  function renderEditableProfileEntries(key, entries) {
+    const { containerId, caption, fields } = editableProfileEntries[key];
+    const container = document.getElementById(containerId);
+    container.className = "profile-edit-entry-field";
+    container.replaceChildren();
+
+    const table = document.createElement("table");
+    table.className = "employee-entry-table profile-edit-entry-table";
+    const tableCaption = document.createElement("caption");
+    tableCaption.textContent = caption;
+    const head = document.createElement("thead");
+    const headingRow = document.createElement("tr");
+    fields.forEach((field) => {
+      const heading = document.createElement("th");
+      heading.scope = "col";
+      heading.textContent = field;
+      headingRow.append(heading);
+    });
+    head.append(headingRow);
+
+    const body = document.createElement("tbody");
+    const rowCount = Math.max(3, entries.length);
+    for (let index = 0; index < rowCount; index += 1) {
+      const row = document.createElement("tr");
+      fields.forEach((field) => {
+        const cell = document.createElement("td");
+        const input = document.createElement("input");
+        input.type = "text";
+        input.setAttribute("aria-label", field);
+        input.value = entries[index]?.[field] || "";
+        cell.append(input);
+        row.append(cell);
+      });
+      body.append(row);
+    }
+
+    table.append(tableCaption, head, body);
+    container.append(table);
+  }
+
+  function getEditableProfileEntries(key) {
+    const { containerId } = editableProfileEntries[key];
+    return [...document.querySelectorAll(`#${containerId} tbody tr`)]
+      .map((row) =>
+        Object.fromEntries(
+          [...row.querySelectorAll("input")].map((input) => [
+            input.getAttribute("aria-label"),
+            input.value.trim(),
+          ]),
+        ),
+      )
+      .filter((row) => Object.values(row).some(Boolean));
+  }
+
   function addEmployeeActions(employeeRow) {
     if (employeeRow.querySelector(".employee-actions")) {
       return;
@@ -254,6 +749,7 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     const actions = document.createElement("div");
     actions.className = "employee-actions";
     [
+      ["documents", "Documents"],
       ["view", "View"],
       ["edit", "Edit"],
       ["delete", "Delete"],
@@ -313,26 +809,90 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     editingEmployeeRow = employeeRow;
     document.getElementById("profile-dialog-title").textContent =
       `Edit ${employeeData.name}`;
+    document.getElementById("profile-employee-id").value =
+      employeeData.employeeId;
     document.getElementById("profile-name").value = employeeData.name;
+    document.getElementById("profile-father-name").value =
+      employeeData.fatherName;
+    document.getElementById("profile-correspondence-address").value =
+      employeeData.correspondenceAddress;
+    document.getElementById("profile-permanent-address").value =
+      employeeData.permanentAddress;
     document.getElementById("profile-role").value = employeeData.role;
     document.getElementById("profile-team").value = employeeData.team;
     document.getElementById("profile-email").value = employeeData.email;
     document.getElementById("profile-contact").value = employeeData.contact;
     document.getElementById("profile-location").value = employeeData.location;
+    document.getElementById("profile-aadhar").value = employeeData.aadhar;
+    document.getElementById("profile-pan").value = employeeData.pan;
     document.getElementById("profile-bank").value = employeeData.bank;
+    document.getElementById("profile-emergency-contact-name").value =
+      employeeData.emergencyContactName;
+    document.getElementById("profile-emergency-contact-number").value =
+      employeeData.emergencyContactNumber;
     document.getElementById("profile-joining-date").value =
       employeeData.joiningDate;
     document.getElementById("profile-shift-start").value =
       employeeData.shiftStart;
     document.getElementById("profile-shift-end").value = employeeData.shiftEnd;
+    renderEditableProfileEntries("education", employeeData.education);
+    renderEditableProfileEntries("experience", employeeData.experience);
     profileView.hidden = true;
     profileEditForm.hidden = false;
     employeeProfileDialog.showModal();
   }
 
+  renderInitialEmployees();
   employeeDirectory
     .querySelectorAll(".employee-row")
     .forEach(addEmployeeActions);
+
+  employeeDirectory.querySelectorAll(".employee-row").forEach((row) => {
+    const email = normalizeEmployeeEmail(row.dataset.email);
+    if (!email) {
+      return;
+    }
+
+    try {
+      const savedProfile = JSON.parse(
+        localStorage.getItem(`employee-profile:${email}`) || "null",
+      );
+      if (savedProfile) {
+        const name = savedProfile.name || "";
+        row.querySelector(".employee-details h3").textContent =
+          name || row.querySelector(".employee-details h3").textContent;
+        row.querySelector(".employee-details p").textContent =
+          savedProfile.role ||
+          row.querySelector(".employee-details p").textContent;
+        row.querySelector(".employee-team").textContent =
+          savedProfile.team || row.querySelector(".employee-team").textContent;
+        if (name) {
+          row.querySelector(".member-avatar").textContent = name
+            .split(/\s+/)
+            .map((part) => part[0])
+            .join("")
+            .slice(0, 2)
+            .toUpperCase();
+        }
+        Object.entries(savedProfile).forEach(([key, value]) => {
+          if (value !== null && value !== undefined) {
+            row.dataset[key] = Array.isArray(value)
+              ? JSON.stringify(value)
+              : value;
+          }
+        });
+      }
+
+      const employeeData = getEmployeeData(row);
+      localStorage.setItem(
+        `employee-profile:${email}`,
+        JSON.stringify(employeeData),
+      );
+    } catch {
+      return;
+    }
+  });
+  updateEmployeeCount();
 
   showAddEmployeeButton.addEventListener("click", () => {
     addEmployeeForm.hidden = false;
@@ -364,11 +924,23 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     }
 
     const employeeRow = actionButton.closest(".employee-row");
-    if (actionButton.dataset.action === "view") {
+    if (actionButton.dataset.action === "documents") {
+      showEmployeeDocuments(employeeRow);
+    } else if (actionButton.dataset.action === "view") {
       showProfile(employeeRow);
     } else if (actionButton.dataset.action === "edit") {
       startEditingEmployee(employeeRow);
     } else if (window.confirm(`Delete ${getEmployeeData(employeeRow).name}?`)) {
+      const employeeData = getEmployeeData(employeeRow);
+      createDashboardNotification({
+        recipientRole: "employee",
+        recipientName: employeeData.name,
+        recipientEmail: employeeData.email,
+        title: "Employee record removed",
+        message: "HR has removed your employee record.",
+        category: "Profile",
+        sender: "Ananya Roy",
+      });
       employeeRow.remove();
       updateEmployeeCount();
     }
@@ -388,18 +960,45 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
 
   profileEditForm.addEventListener("submit", (event) => {
     event.preventDefault();
+    const previousEmail = normalizeEmployeeEmail(
+      editingEmployeeRow.dataset.email,
+    );
     const updatedData = {
+      employeeId: document.getElementById("profile-employee-id").value.trim(),
       name: document.getElementById("profile-name").value.trim(),
+      fatherName: document.getElementById("profile-father-name").value.trim(),
+      correspondenceAddress: document
+        .getElementById("profile-correspondence-address")
+        .value.trim(),
+      permanentAddress: document
+        .getElementById("profile-permanent-address")
+        .value.trim(),
       role: document.getElementById("profile-role").value.trim(),
       team: document.getElementById("profile-team").value.trim(),
       email: document.getElementById("profile-email").value.trim(),
       contact: document.getElementById("profile-contact").value.trim(),
       location: document.getElementById("profile-location").value.trim(),
+      aadhar: document.getElementById("profile-aadhar").value.trim(),
+      pan: document.getElementById("profile-pan").value.trim(),
       bank: document.getElementById("profile-bank").value.trim(),
+      emergencyContactName: document
+        .getElementById("profile-emergency-contact-name")
+        .value.trim(),
+      emergencyContactNumber: document
+        .getElementById("profile-emergency-contact-number")
+        .value.trim(),
       joiningDate: document.getElementById("profile-joining-date").value,
       shiftStart: document.getElementById("profile-shift-start").value,
       shiftEnd: document.getElementById("profile-shift-end").value,
+      education: getEditableProfileEntries("education"),
+      experience: getEditableProfileEntries("experience"),
     };
+    updatedData.email = normalizeEmployeeEmail(updatedData.email);
+    if (isEmployeeEmailInUse(updatedData.email, editingEmployeeRow)) {
+      alert("Another employee already uses this email address.");
+      document.getElementById("profile-email").focus();
+      return;
+    }
 
     editingEmployeeRow.querySelector(".employee-details h3").textContent =
       updatedData.name;
@@ -415,7 +1014,29 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
         .slice(0, 2)
         .toUpperCase();
     Object.entries(updatedData).forEach(([key, value]) => {
-      editingEmployeeRow.dataset[key] = value;
+      editingEmployeeRow.dataset[key] = Array.isArray(value)
+        ? JSON.stringify(value)
+        : value;
+    });
+    try {
+      if (previousEmail && previousEmail !== updatedData.email) {
+        localStorage.removeItem(`employee-profile:${previousEmail}`);
+      }
+      localStorage.setItem(
+        `employee-profile:${updatedData.email}`,
+        JSON.stringify(getEmployeeData(editingEmployeeRow)),
+      );
+    } catch {
+      // The in-page profile remains available when browser storage is unavailable.
+    }
+    createDashboardNotification({
+      recipientRole: "employee",
+      recipientName: updatedData.name,
+      recipientEmail: previousEmail || updatedData.email,
+      title: "Your employee profile was updated",
+      message: "HR updated your employee profile.",
+      category: "Profile",
+      sender: "Ananya Roy",
     });
     employeeProfileDialog.close();
   });
@@ -457,6 +1078,12 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
       education: getEntryRows("education"),
       experience: getEntryRows("experience"),
     };
+    profileData.email = normalizeEmployeeEmail(profileData.email);
+    if (isEmployeeEmailInUse(profileData.email)) {
+      alert("Another employee already uses this email address.");
+      document.getElementById("email-id").focus();
+      return;
+    }
     const initials = name
       .split(/\s+/)
       .map((part) => part[0])
@@ -493,13 +1120,22 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
       },
     );
     try {
-      sessionStorage.setItem(
-        `employee-profile:${profileData.email.toLowerCase()}`,
+      localStorage.setItem(
+        `employee-profile:${profileData.email}`,
         JSON.stringify({ name, role, team, ...profileData }),
       );
     } catch {
       // The manager's in-page employee profile still works without storage.
     }
+    createDashboardNotification({
+      recipientRole: "employee",
+      recipientName: name,
+      recipientEmail: profileData.email,
+      title: "Welcome to Mamily Connect",
+      message: "Your employee profile has been created by HR.",
+      category: "Profile",
+      sender: "Ananya Roy",
+    });
     addEmployeeActions(employeeRow);
     employeeDirectory.append(employeeRow);
     window.refreshAttendanceEmployeeList?.();
@@ -516,12 +1152,16 @@ const currentEmployeeProfile = document.getElementById(
   "current-employee-profile",
 );
 if (currentEmployeeProfile) {
+  const profileUnavailable = document.getElementById("profile-unavailable");
   let employeeProfile = null;
   try {
-    const currentEmail = sessionStorage.getItem("current-employee-email");
+    const currentEmail =
+      normalizeEmployeeEmail(
+        sessionStorage.getItem("current-employee-email"),
+      ) || document.querySelector(".user-chip")?.dataset.employeeEmail;
     if (currentEmail) {
       employeeProfile = JSON.parse(
-        sessionStorage.getItem(`employee-profile:${currentEmail}`) || "null",
+        localStorage.getItem(`employee-profile:${currentEmail}`) || "null",
       );
     }
   } catch {
@@ -529,7 +1169,17 @@ if (currentEmployeeProfile) {
   }
 
   if (employeeProfile) {
-    document.getElementById("sample-employee-profile").hidden = true;
+    profileUnavailable.hidden = true;
+    const userChip = document.querySelector(".user-chip");
+    if (userChip) {
+      userChip.querySelector("strong").textContent = employeeProfile.name;
+      userChip.querySelector(".user-avatar").textContent = employeeProfile.name
+        .split(/\s+/)
+        .map((part) => part[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
+    }
     currentEmployeeProfile.hidden = false;
 
     const setProfileText = (id, value) => {
@@ -619,6 +1269,8 @@ if (currentEmployeeProfile) {
       "Experience",
       employeeProfile.experience,
     );
+  } else {
+    profileUnavailable.hidden = false;
   }
 }
 
@@ -788,6 +1440,17 @@ if (teamView && createTeamForm && showCreateTeamButton) {
     }
 
     createTeamCard(teamName, teamLead, selectedMembers);
+    selectedMembers.forEach((memberName) => {
+      createDashboardNotification({
+        recipientRole: "employee",
+        recipientName: memberName,
+        recipientEmail: getEmployeeEmail(memberName),
+        title: `Added to team: ${teamName}`,
+        message: `You have been added to ${teamName}.`,
+        category: "Team",
+        sender: managerFeedbackName,
+      });
+    });
     createTeamForm.reset();
     const teamTotal = teamView.querySelector(".teams-page-header .team-count");
     if (teamTotal) {
@@ -811,6 +1474,16 @@ if (teamView && createTeamForm && showCreateTeamButton) {
     teamCard
       .querySelector(".team-members-list")
       .append(createMember(select.value));
+    const teamName = teamCard.querySelector(".team-card-header h2").textContent;
+    createDashboardNotification({
+      recipientRole: "employee",
+      recipientName: select.value,
+      recipientEmail: getEmployeeEmail(select.value),
+      title: `Added to team: ${teamName}`,
+      message: `You have been added to ${teamName}.`,
+      category: "Team",
+      sender: managerFeedbackName,
+    });
     memberForm.reset();
     updateTeamCount(teamCard);
     refreshMemberSelect(teamCard);
@@ -824,6 +1497,19 @@ if (teamView && createTeamForm && showCreateTeamButton) {
       return;
     }
     const teamCard = removeButton.closest(".team-card");
+    const employeeName = removeButton
+      .closest(".team-member")
+      .querySelector(".team-member-details strong").textContent;
+    const teamName = teamCard.querySelector(".team-card-header h2").textContent;
+    createDashboardNotification({
+      recipientRole: "employee",
+      recipientName: employeeName,
+      recipientEmail: getEmployeeEmail(employeeName),
+      title: `Removed from team: ${teamName}`,
+      message: `You have been removed from ${teamName}.`,
+      category: "Team",
+      sender: managerFeedbackName,
+    });
     removeButton.closest(".team-member").remove();
     updateTeamCount(teamCard);
     refreshMemberSelect(teamCard);
@@ -1183,6 +1869,17 @@ function saveLeaveState() {
   }
 }
 
+function getEmployeeEmail(employeeName) {
+  const employeeRow = [
+    ...document.querySelectorAll("#employee-directory .employee-row"),
+  ].find(
+    (row) =>
+      row.querySelector(".employee-details h3")?.textContent.trim() ===
+      employeeName,
+  );
+  return employeeRow?.dataset.email || "";
+}
+
 function getLeaveCategoryLabel(category) {
   return (
     {
@@ -1476,9 +2173,10 @@ if (leaveForm) {
       return;
     }
 
-    leaveState.requests.push({
+    const leaveRequest = {
       id: `leave-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       employee: employeeName,
+      employeeEmail: currentEmployeeEmail,
       category,
       duration,
       startDate,
@@ -1489,8 +2187,17 @@ if (leaveForm) {
       reason: formData.get("reason").trim(),
       days: requestedDays,
       status: "pending",
-    });
+    };
+    leaveState.requests.push(leaveRequest);
     saveLeaveState();
+    createDashboardNotification({
+      recipientRole: "manager",
+      recipientName: managerFeedbackName,
+      title: `Leave request from ${employeeName}`,
+      message: `${getLeaveCategoryLabel(category)} requested for ${formatLeaveDate(startDate)}${startDate === endDate ? "" : ` to ${formatLeaveDate(endDate)}`}.`,
+      category: "Leave",
+      sender: employeeName,
+    });
     leaveForm.reset();
     showLeaveFormMessage("Your leave request has been sent for review.");
   });
@@ -1535,6 +2242,15 @@ managerLeaveView?.addEventListener("click", (event) => {
   }
 
   saveLeaveState();
+  createDashboardNotification({
+    recipientRole: "employee",
+    recipientName: request.employee,
+    recipientEmail: request.employeeEmail || getEmployeeEmail(request.employee),
+    title: `Leave request ${request.status}`,
+    message: `Your ${getLeaveCategoryLabel(request.category).toLowerCase()} request for ${formatLeaveDate(request.startDate)}${request.startDate === request.endDate ? "" : ` to ${formatLeaveDate(request.endDate)}`} was ${request.status}.`,
+    category: "Leave",
+    sender: managerFeedbackName,
+  });
   updateLeaveViews();
 });
 
@@ -2023,7 +2739,23 @@ function renderFeedbackList(container, entries, direction) {
 
 const employeeFeedbackForm = document.getElementById("employee-feedback-form");
 const managerFeedbackForm = document.getElementById("manager-feedback-form");
+let currentEmployeeEmail = "";
+try {
+  currentEmployeeEmail =
+    sessionStorage.getItem("current-employee-email")?.toLowerCase() || "";
+} catch {
+  currentEmployeeEmail = "";
+}
+let currentEmployeeProfileData = null;
+try {
+  currentEmployeeProfileData = JSON.parse(
+    localStorage.getItem(`employee-profile:${currentEmployeeEmail}`) || "null",
+  );
+} catch {
+  currentEmployeeProfileData = null;
+}
 const employeeFeedbackName =
+  currentEmployeeProfileData?.name ||
   document.querySelector(".user-chip strong")?.textContent.trim() ||
   "Sarthak Sanyal";
 const managerFeedbackName =
@@ -2039,7 +2771,13 @@ function renderEmployeeFeedback() {
   );
   renderFeedbackList(
     receivedList,
-    feedbackEntries.filter((entry) => entry.to === employeeFeedbackName),
+    feedbackEntries.filter(
+      (entry) =>
+        (entry.toEmail &&
+          currentEmployeeEmail &&
+          entry.toEmail.toLowerCase() === currentEmployeeEmail) ||
+        entry.to === employeeFeedbackName,
+    ),
     "received",
   );
 }
@@ -2074,9 +2812,18 @@ if (employeeFeedbackForm) {
     saveFeedbackEntry({
       id: `feedback-${Date.now()}`,
       from: employeeFeedbackName,
+      fromEmail: currentEmployeeEmail,
       to: "Ananya Roy",
       date: getLocalDateValue(),
       message,
+    });
+    createDashboardNotification({
+      recipientRole: "manager",
+      recipientName: managerFeedbackName,
+      title: `Feedback received from ${employeeFeedbackName}`,
+      message,
+      category: "Feedback",
+      sender: employeeFeedbackName,
     });
     employeeFeedbackForm.reset();
     employeeFeedbackForm.querySelector("[data-feedback-status]").textContent =
@@ -2107,12 +2854,30 @@ if (managerFeedbackForm) {
       managerFeedbackForm.reportValidity();
       return;
     }
+    const recipientRow = [
+      ...document.querySelectorAll("#employee-directory .employee-row"),
+    ].find(
+      (row) =>
+        row.querySelector(".employee-details h3")?.textContent.trim() ===
+        recipient,
+    );
+    const recipientEmail = recipientRow?.dataset.email || "";
     saveFeedbackEntry({
       id: `feedback-${Date.now()}`,
       from: managerFeedbackName,
       to: recipient,
+      toEmail: recipientEmail.toLowerCase(),
       date: getLocalDateValue(),
       message,
+    });
+    createDashboardNotification({
+      recipientRole: "employee",
+      recipientName: recipient,
+      recipientEmail,
+      title: "New feedback from HR / Manager",
+      message,
+      category: "Feedback",
+      sender: managerFeedbackName,
     });
     managerFeedbackForm.reset();
     managerFeedbackForm.querySelector("[data-feedback-status]").textContent =
@@ -2142,6 +2907,13 @@ if (taskView) {
   const taskEmployeeName =
     document.querySelector(".user-chip strong")?.textContent.trim() ||
     "Sarthak Sanyal";
+  let taskEmployeeEmail = "";
+  try {
+    taskEmployeeEmail =
+      sessionStorage.getItem("current-employee-email")?.toLowerCase() || "";
+  } catch {
+    taskEmployeeEmail = "";
+  }
 
   function localDateString(date) {
     const year = date.getFullYear();
@@ -2160,6 +2932,7 @@ if (taskView) {
       description:
         "Review the new-starter steps and share the updated checklist with the team.",
       assignee: "Sarthak Sanyal",
+      assigneeEmail: "sarthak.sanyal@mamily.com",
       assignedBy: "Ananya Roy",
       assignedAt: assignedAt.toISOString(),
       dueDate: localDateString(dueDate),
@@ -2289,21 +3062,21 @@ if (taskView) {
     progressTrack.append(progressFill);
     progressSection.append(progressHeader, progressTrack);
 
-    if (isManager) {
-      const progressControl = document.createElement("label");
-      progressControl.className = "task-progress-control";
-      const controlLabel = document.createElement("span");
-      controlLabel.textContent = "Update completion";
-      const range = document.createElement("input");
-      range.type = "range";
-      range.min = "0";
-      range.max = "100";
-      range.step = "5";
-      range.value = String(task.progress);
-      range.setAttribute("aria-label", `Completion for ${task.title}`);
-      progressControl.append(controlLabel, range);
-      progressSection.append(progressControl);
-    }
+    const statusControl = document.createElement("label");
+    statusControl.className = "task-status-control";
+    const controlLabel = document.createElement("span");
+    controlLabel.textContent = isManager
+      ? "Set task status"
+      : "Update task status";
+    const statusSelect = document.createElement("select");
+    statusSelect.dataset.taskStatus = "";
+    statusSelect.setAttribute("aria-label", `Status for ${task.title}`);
+    ["Not Started", "In Progress", "Completed"].forEach((taskStatus) => {
+      statusSelect.add(new Option(taskStatus, taskStatus));
+    });
+    statusSelect.value = getTaskStatus(task);
+    statusControl.append(controlLabel, statusSelect);
+    progressSection.append(statusControl);
 
     card.append(cardHeader, metadata, progressSection);
     return card;
@@ -2313,7 +3086,11 @@ if (taskView) {
     const isManager = Boolean(taskForm);
     const visibleTasks = isManager
       ? tasks
-      : tasks.filter((task) => task.assignee === taskEmployeeName);
+      : tasks.filter((task) =>
+          task.assigneeEmail && taskEmployeeEmail
+            ? task.assigneeEmail.toLowerCase() === taskEmployeeEmail
+            : task.assignee === taskEmployeeName,
+        );
     taskList.replaceChildren();
     taskStats.replaceChildren();
     const completedCount = visibleTasks.filter(
@@ -2368,6 +3145,7 @@ if (taskView) {
         title: formData.get("title").trim(),
         description: formData.get("description").trim(),
         assignee: formData.get("assignee"),
+        assigneeEmail: getEmployeeEmail(formData.get("assignee")),
         assignedBy:
           document.querySelector(".user-chip strong")?.textContent.trim() ||
           "Manager",
@@ -2376,38 +3154,55 @@ if (taskView) {
         progress: 0,
       });
       saveTasks();
+      const assignedTask = tasks[tasks.length - 1];
+      createDashboardNotification({
+        recipientRole: "employee",
+        recipientName: assignedTask.assignee,
+        recipientEmail: assignedTask.assigneeEmail,
+        title: `New task assigned: ${assignedTask.title}`,
+        message: `Due ${formatDate(assignedTask.dueDate)}.`,
+        category: "Task",
+        sender: assignedTask.assignedBy,
+      });
       renderTasks();
       taskForm.reset();
       dueDateInput.value = localDateString(new Date(Date.now() + 86400000 * 7));
     });
-
-    taskList.addEventListener("input", (event) => {
-      const range = event.target.closest('input[type="range"]');
-      if (!range) {
-        return;
-      }
-      const card = range.closest("[data-task-id]");
-      const task = tasks.find((item) => item.id === card?.dataset.taskId);
-      if (!task) {
-        return;
-      }
-      task.progress = Number(range.value);
-      card.querySelector(".task-progress-value").textContent =
-        `${task.progress}%`;
-      card.querySelector(".task-progress-fill").style.width =
-        `${task.progress}%`;
-      const status = card.querySelector(".task-status");
-      status.textContent = getTaskStatus(task);
-      status.className = `task-status ${getTaskStatus(task).toLowerCase().replaceAll(" ", "-")}`;
-      saveTasks();
-    });
-
-    taskList.addEventListener("change", (event) => {
-      if (event.target.matches('input[type="range"]')) {
-        renderTasks();
-      }
-    });
   }
+
+  taskList.addEventListener("change", (event) => {
+    const statusSelect = event.target.closest("select[data-task-status]");
+    if (!statusSelect) {
+      return;
+    }
+
+    const card = statusSelect.closest("[data-task-id]");
+    const task = tasks.find((item) => item.id === card?.dataset.taskId);
+    const progressByStatus = {
+      "Not Started": 0,
+      "In Progress": 50,
+      Completed: 100,
+    };
+    const progress = progressByStatus[statusSelect.value];
+    if (!task || progress === undefined) {
+      return;
+    }
+
+    task.progress = progress;
+    saveTasks();
+    if (taskForm) {
+      createDashboardNotification({
+        recipientRole: "employee",
+        recipientName: task.assignee,
+        recipientEmail: task.assigneeEmail || getEmployeeEmail(task.assignee),
+        title: `Task status updated: ${task.title}`,
+        message: `The task status was updated to ${statusSelect.value}.`,
+        category: "Task",
+        sender: managerFeedbackName,
+      });
+    }
+    renderTasks();
+  });
 
   renderTasks();
   window.addEventListener("storage", (event) => {
@@ -2540,6 +3335,15 @@ if (workLogForm) {
       workLogMessage.classList.add("error");
       return;
     }
+
+    createDashboardNotification({
+      recipientRole: "manager",
+      recipientName: managerFeedbackName,
+      title: `Work log submitted by ${employeeName}`,
+      message: `${entry.activity} (${entry.hours} hours) for ${formatWorkDate(entry.workDate)}.`,
+      category: "Work Log",
+      sender: employeeName,
+    });
 
     workLogForm.reset();
     workDateInput.value = getLocalDateValue();
@@ -2863,6 +3667,7 @@ if (
       checkbox.type = "checkbox";
       checkbox.name = "attendees";
       checkbox.value = name;
+      checkbox.dataset.email = row.dataset.email || "";
       checkbox.id = `meeting-attendee-${index}`;
       checkbox.checked = selectedEmployees.has(name);
       const details = document.createElement("span");
@@ -2970,15 +3775,32 @@ if (
       return;
     }
 
+    const title = scheduleMeetingForm.elements.title.value.trim();
+    const date = scheduleMeetingForm.elements.date.value;
+    const time = scheduleMeetingForm.elements.time.value;
+    const location = scheduleMeetingForm.elements.location.value.trim();
     meetings.push({
       id: `meeting-${Date.now()}`,
-      title: scheduleMeetingForm.elements.title.value.trim(),
-      date: scheduleMeetingForm.elements.date.value,
-      time: scheduleMeetingForm.elements.time.value,
-      location: scheduleMeetingForm.elements.location.value.trim(),
+      title,
+      date,
+      time,
+      location,
       attendees,
     });
     saveMeetings();
+    meetingEmployeeOptions
+      .querySelectorAll('input[name="attendees"]:checked')
+      .forEach((checkbox) => {
+        createDashboardNotification({
+          recipientRole: "employee",
+          recipientName: checkbox.value,
+          recipientEmail: checkbox.dataset.email,
+          title: `Meeting invitation: ${title}`,
+          message: `${date} at ${time}${location ? `, ${location}` : ""}`,
+          category: "Meeting",
+          sender: "Ananya Roy",
+        });
+      });
     renderMeetings();
     setMeetingFormVisibility(false);
   });
@@ -3020,7 +3842,10 @@ const closeRequisitionFormButtons = document.querySelectorAll(
   "[data-close-requisition-form], [data-cancel-requisition-form]",
 );
 const requisitionStorageKey = "mamily-connect-manpower-requisitions-v1";
-const readNotificationKey = `mamily-connect-read-notifications-${notificationRole}`;
+const readNotificationKey =
+  notificationRole === "employee"
+    ? `mamily-connect-read-notifications-employee-${currentEmployeeEmail || employeeFeedbackName.toLowerCase()}`
+    : `mamily-connect-read-notifications-${notificationRole}`;
 const notificationSeed = [
   {
     id: "welcome-update",
@@ -3029,6 +3854,8 @@ const notificationSeed = [
     category: "General",
     sender: "Ananya Roy",
     createdAt: "2026-10-01T09:00:00.000Z",
+    recipientRole: "employee",
+    recipientName: "*",
   },
   {
     id: "wellbeing-session",
@@ -3038,6 +3865,8 @@ const notificationSeed = [
     category: "Event",
     sender: "Ananya Roy",
     createdAt: "2026-10-03T08:30:00.000Z",
+    recipientRole: "employee",
+    recipientName: "*",
   },
 ];
 
@@ -3088,6 +3917,50 @@ function saveNotifications() {
   }
 }
 
+function createDashboardNotification(notification) {
+  notifications = [
+    {
+      id: `notification-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      createdAt: new Date().toISOString(),
+      ...notification,
+    },
+    ...loadNotifications(),
+  ];
+  saveNotifications();
+  renderNotifications();
+  renderResignationQueue();
+}
+
+function getVisibleNotifications() {
+  return notifications.filter((notification) => {
+    if (!notification.recipientRole || notification.recipientRole === "all") {
+      return (
+        notification.type !== "resignation" || notificationRole === "manager"
+      );
+    }
+    if (notification.recipientRole !== notificationRole) {
+      return false;
+    }
+    if (notificationRole === "employee") {
+      if (notification.recipientName === "*") {
+        return true;
+      }
+      if (notification.recipientEmail && currentEmployeeEmail) {
+        if (
+          notification.recipientEmail.toLowerCase() === currentEmployeeEmail
+        ) {
+          return true;
+        }
+      }
+      return notification.recipientName === employeeFeedbackName;
+    }
+    return (
+      !notification.recipientName ||
+      notification.recipientName === managerFeedbackName
+    );
+  });
+}
+
 function saveReadNotifications() {
   try {
     window.localStorage.setItem(
@@ -3105,7 +3978,8 @@ function renderNotifications() {
   }
 
   notificationList.replaceChildren();
-  const sortedNotifications = [...notifications].sort(
+  const visibleNotifications = getVisibleNotifications();
+  const sortedNotifications = [...visibleNotifications].sort(
     (first, second) => new Date(second.createdAt) - new Date(first.createdAt),
   );
   const unreadCount = sortedNotifications.filter(
@@ -3315,6 +4189,15 @@ function updateResignationDecision(button) {
   notification.status = button.dataset.resignationDecision;
   notification.decidedAt = new Date().toISOString();
   saveNotifications();
+  createDashboardNotification({
+    recipientRole: "employee",
+    recipientName: notification.employeeName,
+    recipientEmail: notification.employeeEmail,
+    title: `Resignation ${notification.status.toLowerCase()}`,
+    message: `Your resignation request has been ${notification.status.toLowerCase()}.`,
+    category: "Resignation",
+    sender: "Ananya Roy",
+  });
   renderNotifications();
   renderResignationQueue();
 }
@@ -3422,11 +4305,14 @@ if (notificationList) {
           title: `Resignation submitted by ${employeeName}`,
           message: `Job title: ${employeeRole}\nProposed last working day: ${lastWorkingDay}\nReason: ${reason}`,
           employeeName,
+          employeeEmail: currentEmployeeEmail,
           employeeRole,
           lastWorkingDay,
           reason,
           category: "Resignation",
           sender: employeeName,
+          recipientRole: "manager",
+          recipientName: managerFeedbackName,
           createdAt: new Date().toISOString(),
           status: "",
         },
@@ -3451,6 +4337,8 @@ if (notificationList) {
           category: formData.get("category"),
           sender: "Ananya Roy",
           createdAt: new Date().toISOString(),
+          recipientRole: "employee",
+          recipientName: "*",
         },
         ...notifications,
       ];
