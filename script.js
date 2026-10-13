@@ -64,6 +64,11 @@ if (roleButtons.length > 0) {
     }
 
     if (activeRole === "employee") {
+      try {
+        sessionStorage.setItem("current-employee-email", email.toLowerCase());
+      } catch {
+        // The demo can still sign in when browser storage is unavailable.
+      }
       window.location.href = "employeedashboard.html";
       return;
     }
@@ -167,30 +172,77 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
   const profileFields = [
     ["Employee ID", "employeeId"],
     ["Name", "name"],
+    ["Father's Name", "fatherName"],
+    ["Correspondence Address", "correspondenceAddress"],
+    ["Permanent Address", "permanentAddress"],
     ["Job Title", "role"],
     ["Team", "team"],
     ["Email", "email"],
     ["Contact Number", "contact"],
     ["Job Location", "location"],
+    ["Aadhar Card Number", "aadhar"],
+    ["PAN Card Number", "pan"],
     ["Bank Details", "bank"],
+    ["Emergency Contact Name", "emergencyContactName"],
+    ["Emergency Contact Number", "emergencyContactNumber"],
     ["Joining Date", "joiningDate"],
     ["Shift Start Time", "shiftStart"],
     ["Shift End Time", "shiftEnd"],
+    ["Educational Details", "education"],
+    ["Employment Experience", "experience"],
   ];
+
+  function parseEmployeeRows(value) {
+    try {
+      const rows = JSON.parse(value || "[]");
+      return Array.isArray(rows) ? rows : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function getEntryRows(prefix) {
+    const firstInput = addEmployeeForm.querySelector(
+      `input[name^="${prefix}-"]`,
+    );
+    if (!firstInput) {
+      return [];
+    }
+
+    return [...firstInput.closest("table").querySelectorAll("tbody tr")]
+      .map((row) =>
+        Object.fromEntries(
+          [...row.querySelectorAll("input")].map((input) => [
+            input.getAttribute("aria-label"),
+            input.value.trim(),
+          ]),
+        ),
+      )
+      .filter((row) => Object.values(row).some(Boolean));
+  }
 
   function getEmployeeData(employeeRow) {
     return {
       employeeId: employeeRow.dataset.employeeId || "",
       name: employeeRow.querySelector(".employee-details h3").textContent,
+      fatherName: employeeRow.dataset.fatherName || "",
+      correspondenceAddress: employeeRow.dataset.correspondenceAddress || "",
+      permanentAddress: employeeRow.dataset.permanentAddress || "",
       role: employeeRow.querySelector(".employee-details p").textContent,
       team: employeeRow.querySelector(".employee-team").textContent,
       email: employeeRow.dataset.email || "",
       contact: employeeRow.dataset.contact || "",
       location: employeeRow.dataset.location || "",
+      aadhar: employeeRow.dataset.aadhar || "",
+      pan: employeeRow.dataset.pan || "",
       bank: employeeRow.dataset.bank || "",
+      emergencyContactName: employeeRow.dataset.emergencyContactName || "",
+      emergencyContactNumber: employeeRow.dataset.emergencyContactNumber || "",
       joiningDate: employeeRow.dataset.joiningDate || "",
       shiftStart: employeeRow.dataset.shiftStart || "",
       shiftEnd: employeeRow.dataset.shiftEnd || "",
+      education: parseEmployeeRows(employeeRow.dataset.education),
+      experience: parseEmployeeRows(employeeRow.dataset.experience),
     };
   }
 
@@ -232,7 +284,22 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
       const term = document.createElement("dt");
       term.textContent = label;
       const description = document.createElement("dd");
-      description.textContent = employeeData[key] || "Not provided";
+      const value = employeeData[key];
+      description.textContent = Array.isArray(value)
+        ? value.length
+          ? value
+              .map(
+                (row, index) =>
+                  `${index + 1}. ${Object.entries(row)
+                    .map(
+                      ([field, entry]) =>
+                        `${field}: ${entry || "Not provided"}`,
+                    )
+                    .join(" | ")}`,
+              )
+              .join("\n")
+          : "Not provided"
+        : value || "Not provided";
       profileDetails.append(term, description);
     });
 
@@ -361,13 +428,34 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     const team = document.getElementById("new-employee-team").value;
     const profileData = {
       employeeId: document.getElementById("employee-id").value.trim(),
+      fatherName: document
+        .getElementById("new-employee-father-name")
+        .value.trim(),
+      correspondenceAddress: document
+        .getElementById("new-employee-correspondence-address")
+        .value.trim(),
+      permanentAddress: document
+        .getElementById("new-employee-permanent-address")
+        .value.trim(),
       email: document.getElementById("email-id").value.trim(),
       contact: document.getElementById("contact-number").value.trim(),
       location: document.getElementById("job-location").value.trim(),
+      aadhar: document
+        .getElementById("new-employee-aadhar-number")
+        .value.trim(),
+      pan: document.getElementById("new-employee-pan-number").value.trim(),
       bank: document.getElementById("bank-account").value.trim(),
+      emergencyContactName: document
+        .getElementById("emergency-contact-name")
+        .value.trim(),
+      emergencyContactNumber: document
+        .getElementById("emergency-contact-number")
+        .value.trim(),
       joiningDate: document.getElementById("joining-date").value,
       shiftStart: document.getElementById("shift-timing").value,
       shiftEnd: document.getElementById("shift-end-time").value,
+      education: getEntryRows("education"),
+      experience: getEntryRows("experience"),
     };
     const initials = name
       .split(/\s+/)
@@ -393,15 +481,25 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     employeeDetails.append(employeeName, employeeRole);
 
     const employeeTeam = document.createElement("span");
-    employeelassName = "employee-team";
+    employeeTeam.className = "employee-team";
     employeeTeam.textContent = team;
 
     employeeRow.append(avatar, employeeDetails, employeeTeam);
     Object.entries({ name, role, team, ...profileData }).forEach(
       ([key, value]) => {
-        employeeRow.dataset[key] = value;
+        employeeRow.dataset[key] = Array.isArray(value)
+          ? JSON.stringify(value)
+          : value;
       },
     );
+    try {
+      sessionStorage.setItem(
+        `employee-profile:${profileData.email.toLowerCase()}`,
+        JSON.stringify({ name, role, team, ...profileData }),
+      );
+    } catch {
+      // The manager's in-page employee profile still works without storage.
+    }
     addEmployeeActions(employeeRow);
     employeeDirectory.append(employeeRow);
     window.refreshAttendanceEmployeeList?.();
@@ -412,6 +510,116 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     addEmployeeForm.hidden = true;
     showAddEmployeeButton.hidden = false;
   });
+}
+
+const currentEmployeeProfile = document.getElementById(
+  "current-employee-profile",
+);
+if (currentEmployeeProfile) {
+  let employeeProfile = null;
+  try {
+    const currentEmail = sessionStorage.getItem("current-employee-email");
+    if (currentEmail) {
+      employeeProfile = JSON.parse(
+        sessionStorage.getItem(`employee-profile:${currentEmail}`) || "null",
+      );
+    }
+  } catch {
+    employeeProfile = null;
+  }
+
+  if (employeeProfile) {
+    document.getElementById("sample-employee-profile").hidden = true;
+    currentEmployeeProfile.hidden = false;
+
+    const setProfileText = (id, value) => {
+      document.getElementById(id).textContent = value || "Not provided";
+    };
+    const initials = employeeProfile.name
+      .split(/\s+/)
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+    setProfileText("current-profile-avatar", initials);
+    setProfileText("current-profile-name", employeeProfile.name);
+    setProfileText("current-profile-role", employeeProfile.role);
+    setProfileText(
+      "current-profile-id",
+      `Employee ID: ${employeeProfile.employeeId || "Not provided"}`,
+    );
+    setProfileText("current-profile-email", employeeProfile.email);
+    setProfileText("current-profile-contact", employeeProfile.contact);
+    setProfileText("current-profile-location", employeeProfile.location);
+
+    const profileDetails = document.getElementById("current-profile-details");
+    [
+      ["Employee ID", "employeeId"],
+      ["Name", "name"],
+      ["Father's Name", "fatherName"],
+      ["Correspondence Address", "correspondenceAddress"],
+      ["Permanent Address", "permanentAddress"],
+      ["Job Title", "role"],
+      ["Team", "team"],
+      ["Email", "email"],
+      ["Contact Number", "contact"],
+      ["Job Location", "location"],
+      ["Aadhar Card Number", "aadhar"],
+      ["PAN Card Number", "pan"],
+      ["Bank Details", "bank"],
+      ["Emergency Contact Name", "emergencyContactName"],
+      ["Emergency Contact Number", "emergencyContactNumber"],
+      ["Joining Date", "joiningDate"],
+      ["Shift Start Time", "shiftStart"],
+      ["Shift End Time", "shiftEnd"],
+    ].forEach(([label, key]) => {
+      const term = document.createElement("dt");
+      term.textContent = label;
+      const description = document.createElement("dd");
+      description.textContent = employeeProfile[key] || "Not provided";
+      profileDetails.append(term, description);
+    });
+
+    const renderProfileEntries = (elementId, heading, entries) => {
+      const list = document.getElementById(elementId);
+      list.replaceChildren();
+      if (!entries?.length) {
+        const emptyState = document.createElement("p");
+        emptyState.textContent = "Not provided";
+        list.append(emptyState);
+        return;
+      }
+
+      entries.forEach((entry, index) => {
+        const row = document.createElement("div");
+        row.className = "profile-entry-row";
+        const title = document.createElement("strong");
+        title.textContent = `${heading} ${index + 1}`;
+        const details = document.createElement("dl");
+        details.className = "profile-entry-row-details";
+        Object.entries(entry).forEach(([label, value]) => {
+          const term = document.createElement("dt");
+          term.textContent = label;
+          const description = document.createElement("dd");
+          description.textContent = value || "Not provided";
+          details.append(term, description);
+        });
+        row.append(title, details);
+        list.append(row);
+      });
+    };
+
+    renderProfileEntries(
+      "current-profile-education",
+      "Education",
+      employeeProfile.education,
+    );
+    renderProfileEntries(
+      "current-profile-experience",
+      "Experience",
+      employeeProfile.experience,
+    );
+  }
 }
 
 const teamView = document.getElementById("teams-view");

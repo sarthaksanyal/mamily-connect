@@ -234,7 +234,7 @@
           <div class="page-section-header">
             <div>
               <p class="dashboard-kicker">Employee Directory</p>
-              <p>Employees and the team they belong to.</p>
+              <p>Employees and The Team They Belong To.</p>
             </div>
             <div class="page-section-actions">
               <span class="team-count" id="employee-count">6 employees</span>
@@ -268,7 +268,7 @@
                 data-close-requisition-form
                 aria-label="Close manpower requisition form"
               >
-                &times;
+                x
               </button>
             </div>
             <form
@@ -373,7 +373,7 @@
                 class="close-form-button"
                 id="cancel-add-employee"
               >
-                —
+                x
               </button>
             </div>
             <div class="employee-form-grid">
@@ -393,6 +393,33 @@
                   id="new-employee-name"
                   required
                   placeholder="Enter Full Name"
+                />
+              </label>
+              <label>
+                Father's Name
+                <input
+                  type="text"
+                  id="new-employee-father-name"
+                  required
+                  placeholder="Enter Father's Name"
+                />
+              </label>
+              <label>
+                Correspondence Address
+                <input
+                  type="text"
+                  id="new-employee-correspondence-address"
+                  required
+                  placeholder="Enter Correspondence Address"
+                />
+              </label>
+              <label>
+                Permanent Address
+                <input
+                  type="text"
+                  id="new-employee-permanent-address"
+                  required
+                  placeholder="Enter Permanent Address"
                 />
               </label>
               <label
@@ -442,12 +469,48 @@
                 />
               </label>
               <label>
+                Aadhar Card Number
+                <input
+                  type="text"
+                  id="new-employee-aadhar-number"
+                  required
+                  placeholder="Enter Aadhar Card Number"
+                />
+              </label>
+              <label>
+                Pan Card Number
+                <input
+                  type="text"
+                  id="new-employee-pan-number"
+                  required
+                  placeholder="Enter Pan Card Number"
+                />
+              </label>
+              <label>
                 Bank Details
                 <input
                   type="text"
                   id="bank-account"
                   required
                   placeholder="Enter Account Number"
+                />
+              </label>
+              <label>
+                Emergency Contact Name
+                <input
+                  type="text"
+                  id="emergency-contact-name"
+                  required
+                  placeholder="Enter Emergency Contact Name"
+                />
+              </label>
+              <label>
+                Emergency Contact Number
+                <input
+                  type="number"
+                  id="emergency-contact-number"
+                  required
+                  placeholder="Enter Emergency Contact Number"
                 />
               </label>
               <label>
@@ -477,6 +540,302 @@
                   placeholder="Enter Shift End TIme"
                 />
               </label>
+              <div class="employee-entry-field">
+                <table class="employee-entry-table">
+                  <caption>
+                    Educational Details
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Degree</th>
+                      <th scope="col">University/Institute</th>
+                      <th scope="col">Year of Passing</th>
+                      <th scope="col">Percentage/CGPA</th>
+                      <th scope="col">Specialization</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input
+                          type="text"
+                          name="education-degree"
+                          aria-label="Degree"
+                          placeholder="Enter degree"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="education-institute"
+                          aria-label="University or institute"
+                          placeholder="Enter university or institute"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="education-year"
+                          aria-label="Year of passing"
+                          placeholder="YYYY"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="education-grade"
+                          aria-label="Percentage or CGPA"
+                          placeholder="Enter grade"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="education-specialization"
+                          aria-label="Specialization"
+                          placeholder="Enter specialization"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input
+                          type="text"
+                          name="education-degree"
+                          aria-label="Degree"
+                          placeholder="Enter degree"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="education-institute"
+                          aria-label="University or institute"
+                          placeholder="Enter university or institute"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="education-year"
+                          aria-label="Year of passing"
+                          placeholder="YYYY"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="education-grade"
+                          aria-label="Percentage or CGPA"
+                          placeholder="Enter grade"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="education-specialization"
+                          aria-label="Specialization"
+                          placeholder="Enter specialization"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input
+                          type="text"
+                          name="education-degree"
+                          aria-label="Degree"
+                          placeholder="Enter degree"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="education-institute"
+                          aria-label="University or institute"
+                          placeholder="Enter university or institute"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="education-year"
+                          aria-label="Year of passing"
+                          placeholder="YYYY"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="education-grade"
+                          aria-label="Percentage or CGPA"
+                          placeholder="Enter grade"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="education-specialization"
+                          aria-label="Specialization"
+                          placeholder="Enter specialization"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="employee-entry-field">
+                <table class="employee-entry-table">
+                  <caption>
+                    Employment Experience
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Company Name</th>
+                      <th scope="col">Position</th>
+                      <th scope="col">Duration</th>
+                      <th scope="col">Job Role</th>
+                      <th scope="col">Key Responsibilities</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-company"
+                          aria-label="Company name"
+                          placeholder="Enter company"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-position"
+                          aria-label="Position"
+                          placeholder="Enter position"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-duration"
+                          aria-label="Duration"
+                          placeholder="e.g. 2 years"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-role"
+                          aria-label="Job role"
+                          placeholder="Enter job role"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-responsibilities"
+                          aria-label="Key responsibilities"
+                          placeholder="Enter responsibilities"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-company"
+                          aria-label="Company name"
+                          placeholder="Enter company"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-position"
+                          aria-label="Position"
+                          placeholder="Enter position"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-duration"
+                          aria-label="Duration"
+                          placeholder="e.g. 2 years"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-role"
+                          aria-label="Job role"
+                          placeholder="Enter job role"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-responsibilities"
+                          aria-label="Key responsibilities"
+                          placeholder="Enter responsibilities"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-company"
+                          aria-label="Company name"
+                          placeholder="Enter company"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-position"
+                          aria-label="Position"
+                          placeholder="Enter position"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-duration"
+                          aria-label="Duration"
+                          placeholder="e.g. 2 years"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-role"
+                          aria-label="Job role"
+                          placeholder="Enter job role"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="experience-responsibilities"
+                          aria-label="Key responsibilities"
+                          placeholder="Enter responsibilities"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
             <button type="submit" class="save-employee-button">
               Add Employee
