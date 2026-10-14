@@ -1,0 +1,201 @@
+<section id="teams-view" class="employees-view teams-view" hidden>
+  <div class="page-section-header teams-page-header">
+    <div>
+      <p class="dashboard-kicker">Team Directory</p>
+      <p>Manage and Create Teams</p>
+    </div>
+    <div class="page-section-actions">
+      <span class="team-count">4 teams</span>
+      <button type="button" class="add-employee-button" id="show-create-team">
+        <span>+</span> Add Team
+      </button>
+    </div>
+  </div>
+  <form class="add-employee-form team-create-form" id="create-team" hidden>
+    <div class="form-heading">
+      <div>
+        <p class="dashboard-kicker">New Team</p>
+        <h3>Create a team</h3>
+      </div>
+      <div class="team-form-actions">
+        <span class="team-form-note">Select one or more employees</span>
+        <button type="button" class="close-form-button" id="cancel-create-team">
+          —
+        </button>
+      </div>
+    </div>
+    <div class="employee-form-grid">
+      <label>
+        Team name
+        <input
+          type="text"
+          name="team-name"
+          required
+          placeholder="e.g. Product Design"
+        />
+      </label>
+      <label>
+        Team lead
+        <select name="team-lead">
+          <option value="">Select a team lead</option>
+          <option>Sarthak Sanyal</option>
+          <option>Ananya Roy</option>
+          <option>Mandeep Kaur</option>
+          <option>Neha Kapoor</option>
+          <option>Daksh Ojha</option>
+        </select>
+      </label>
+      <label>
+        Add employees
+        <select name="team-employees" multiple size="4">
+          <option>Sarthak Sanyal</option>
+          <option>Ananya Roy</option>
+          <option>Mandeep Kaur</option>
+          <option>Jaya Patel</option>
+          <option>Neha Kapoor</option>
+          <option>Daksh Ojha</option>
+        </select>
+      </label>
+    </div>
+    <button type="submit" class="save-employee-button">Create Team</button>
+  </form>
+  <div class="team-grid">
+    <article class="team-card">
+      <div class="team-card-header">
+        <div>
+          <h2>HR</h2>
+          <p>Led by Ananya Roy</p>
+        </div>
+        <span class="team-count">2 members</span>
+      </div>
+      <div class="team-members-list">
+        <div class="team-member">
+          <span class="member-avatar">SS</span>
+          <div class="team-member-details">
+            <strong>Sarthak Sanyal</strong><span>Software Intern</span>
+          </div>
+          <button type="button" class="employee-action-button">Remove</button>
+        </div>
+        <div class="team-member">
+          <span class="member-avatar avatar-pink">AR</span>
+          <div class="team-member-details">
+            <strong>Ananya Roy</strong><span>HR Manager</span>
+          </div>
+          <button type="button" class="employee-action-button">Remove</button>
+        </div>
+      </div>
+      <form class="team-member-form">
+        <label for="software-support-member">Add a member</label>
+        <div>
+          <select id="software-support-member">
+            <option>Select an employee</option>
+            <option>Mandeep Kaur</option>
+            <option>Jaya Patel</option>
+            <option>Neha Kapoor</option>
+            <option>Daksh Ojha</option></select
+          ><button type="submit" class="secondary-button">Add</button>
+        </div>
+      </form>
+    </article>
+    <article class="team-card">
+      <div class="team-card-header">
+        <div>
+          <h2>Customer Success</h2>
+          <p>Led by Mandeep Kaur</p>
+        </div>
+        <span class="team-count">2 members</span>
+      </div>
+      <div class="team-members-list">
+        <div class="team-member">
+          <span class="member-avatar avatar-green">MK</span>
+          <div class="team-member-details">
+            <strong>Mandeep Kaur</strong
+            ><span>Customer Support Specialist</span>
+          </div>
+          <button type="button" class="employee-action-button">Remove</button>
+        </div>
+        <div class="team-member">
+          <span class="member-avatar avatar-gold">JP</span>
+          <div class="team-member-details">
+            <strong>Jaya Patel</strong><span>Customer Support Specialist</span>
+          </div>
+          <button type="button" class="employee-action-button">Remove</button>
+        </div>
+      </div>
+      <form class="team-member-form">
+        <label for="customer-success-member">Add a member</label>
+        <div>
+          <select id="customer-success-member">
+            <option>Select an employee</option>
+            <option>Sarthak Sanyal</option>
+            <option>Ananya Roy</option>
+            <option>Neha Kapoor</option>
+            <option>Daksh Ojha</option></select
+          ><button type="submit" class="secondary-button">Add</button>
+        </div>
+      </form>
+    </article>
+    <article class="team-card">
+      <div class="team-card-header">
+        <div>
+          <h2>Operations</h2>
+          <p>Led by Neha Kapoor</p>
+        </div>
+        <span class="team-count">1 member</span>
+      </div>
+      <div class="team-members-list">
+        <div class="team-member">
+          <span class="member-avatar avatar-purple">NK</span>
+          <div class="team-member-details">
+            <strong>Neha Kapoor</strong><span>People Operations Associate</span>
+          </div>
+          <button type="button" class="employee-action-button">Remove</button>
+        </div>
+      </div>
+      <form class="team-member-form">
+        <label for="people-operations-member">Add a member</label>
+        <div>
+          <select id="people-operations-member">
+            <option>Select an employee</option>
+            <option>Sarthak Sanyal</option>
+            <option>Ananya Roy</option>
+            <option>Mandeep Kaur</option>
+            <option>Jaya Patel</option>
+            <option>Daksh Ojha</option></select
+          ><button type="submit" class="secondary-button">Add</button>
+        </div>
+      </form>
+    </article>
+    <article class="team-card">
+      <div class="team-card-header">
+        <div>
+          <h2>Finance</h2>
+          <p>Led by Daksh Ojha</p>
+        </div>
+        <span class="team-count">1 member</span>
+      </div>
+      <div class="team-members-list">
+        <div class="team-member">
+          <span class="member-avatar avatar-teal">DO</span>
+          <div class="team-member-details">
+            <strong>Daksh Ojha</strong><span>Finance Analyst</span>
+          </div>
+          <button type="button" class="employee-action-button">Remove</button>
+        </div>
+      </div>
+      <form class="team-member-form">
+        <label for="finance-member">Add a member</label>
+        <div>
+          <select id="finance-member">
+            <option>Select an employee</option>
+            <option>Sarthak Sanyal</option>
+            <option>Ananya Roy</option>
+            <option>Mandeep Kaur</option>
+            <option>Jaya Patel</option>
+            <option>Neha Kapoor</option></select
+          ><button type="submit" class="secondary-button">Add</button>
+        </div>
+      </form>
+    </article>
+  </div>
+</section>

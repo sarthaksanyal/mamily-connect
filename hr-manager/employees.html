@@ -1,0 +1,745 @@
+<section id="employees-view" class="employees-view" hidden>
+  <div class="page-section-header">
+    <div>
+      <p class="dashboard-kicker">Employee Directory</p>
+      <p>Employees and The Team They Belong To.</p>
+    </div>
+    <div class="page-section-actions">
+      <span class="team-count" id="employee-count">6 employees</span>
+      <button
+        type="button"
+        class="add-employee-button"
+        id="show-requisition-form"
+      >
+        Manpower Requisition Form
+      </button>
+      <button type="button" class="add-employee-button" id="show-add-employee">
+        <span>+</span> Add Employee
+      </button>
+    </div>
+  </div>
+  <p
+    class="notification-form-status requisition-status"
+    data-requisition-status
+    role="status"
+  ></p>
+  <section class="notification-panel requisition-panel" hidden>
+    <div class="panel-header">
+      <h2>Manpower Requisition Form</h2>
+      <button
+        type="button"
+        class="close-form-button"
+        data-close-requisition-form
+        aria-label="Close manpower requisition form"
+      >
+        x
+      </button>
+    </div>
+    <form class="notification-form requisition-form" data-requisition-form>
+      <label>
+        Job Title
+        <input
+          name="jobTitle"
+          maxlength="100"
+          required
+          placeholder="e.g. Customer Support Specialist"
+        />
+      </label>
+      <label>
+        Department / Team
+        <input
+          name="team"
+          maxlength="100"
+          required
+          placeholder="e.g. Customer Success"
+        />
+      </label>
+      <label>
+        Number of Positions
+        <input name="positions" type="number" min="1" max="100" required />
+      </label>
+      <label>
+        Employment Type
+        <select name="employmentType" required>
+          <option value="">Select employment type</option>
+          <option>Full-time</option>
+          <option>Part-time</option>
+          <option>Contract</option>
+          <option>Internship</option>
+        </select>
+      </label>
+      <label>
+        Work Location
+        <input
+          name="location"
+          maxlength="100"
+          required
+          placeholder="Office or location"
+        />
+      </label>
+      <label>
+        Priority
+        <select name="priority" required>
+          <option>Standard</option>
+          <option>High</option>
+          <option>Urgent</option>
+        </select>
+      </label>
+      <label>
+        Business Justification
+        <textarea
+          name="justification"
+          rows="4"
+          maxlength="500"
+          required
+          placeholder="Explain the hiring need"
+        ></textarea>
+      </label>
+      <div class="requisition-form-actions">
+        <button
+          type="button"
+          class="secondary-button"
+          data-cancel-requisition-form
+        >
+          Cancel
+        </button>
+        <button type="submit" class="save-employee-button">
+          Submit Requisition
+        </button>
+      </div>
+    </form>
+  </section>
+  <div class="employee-directory-toolbar">
+    <label class="employee-search" for="employee-search">
+      <span>Search employees</span>
+      <input
+        type="search"
+        id="employee-search"
+        placeholder="Search by Name, Role or Team Name"
+        autocomplete="off"
+      />
+    </label>
+  </div>
+  <form class="add-employee-form" id="add-employee-form" hidden>
+    <div class="form-heading">
+      <h3>Add Employee</h3>
+      <button type="button" class="close-form-button" id="cancel-add-employee">
+        x
+      </button>
+    </div>
+    <div class="employee-form-grid">
+      <label>
+        Employee ID
+        <input
+          type="text"
+          id="employee-id"
+          required
+          placeholder="Enter Employee ID"
+        />
+      </label>
+      <label>
+        Employee Name
+        <input
+          type="text"
+          id="new-employee-name"
+          required
+          placeholder="Enter Full Name"
+        />
+      </label>
+      <label>
+        Father's Name
+        <input
+          type="text"
+          id="new-employee-father-name"
+          required
+          placeholder="Enter Father's Name"
+        />
+      </label>
+      <label>
+        Correspondence Address
+        <input
+          type="text"
+          id="new-employee-correspondence-address"
+          required
+          placeholder="Enter Correspondence Address"
+        />
+      </label>
+      <label>
+        Permanent Address
+        <input
+          type="text"
+          id="new-employee-permanent-address"
+          required
+          placeholder="Enter Permanent Address"
+        />
+      </label>
+      <label
+        >Job Title
+        <input
+          type="text"
+          id="new-employee-role"
+          required
+          placeholder="Enter Job Title"
+        />
+      </label>
+      <label>
+        Team
+        <select id="new-employee-team" required>
+          <option value="">Select a team</option>
+          <option>Tech Team</option>
+          <option>Operations</option>
+          <option>Marketing</option>
+          <option>Finance</option>
+        </select>
+      </label>
+      <label>
+        Email
+        <input
+          type="email"
+          id="email-id"
+          required
+          placeholder="Enter Email Id"
+        />
+      </label>
+      <label>
+        Contact Number
+        <input
+          type="number"
+          id="contact-number"
+          required
+          placeholder="Enter Contact Number"
+        />
+      </label>
+      <label>
+        Job Location
+        <input
+          type="text"
+          id="job-location"
+          required
+          placeholder="Enter Job Location"
+        />
+      </label>
+      <label>
+        Aadhar Card Number
+        <input
+          type="text"
+          id="new-employee-aadhar-number"
+          required
+          placeholder="Enter Aadhar Card Number"
+        />
+      </label>
+      <label>
+        Pan Card Number
+        <input
+          type="text"
+          id="new-employee-pan-number"
+          required
+          placeholder="Enter Pan Card Number"
+        />
+      </label>
+      <label>
+        Bank Details
+        <input
+          type="text"
+          id="bank-account"
+          required
+          placeholder="Enter Account Number"
+        />
+      </label>
+      <label>
+        Emergency Contact Name
+        <input
+          type="text"
+          id="emergency-contact-name"
+          required
+          placeholder="Enter Emergency Contact Name"
+        />
+      </label>
+      <label>
+        Emergency Contact Number
+        <input
+          type="number"
+          id="emergency-contact-number"
+          required
+          placeholder="Enter Emergency Contact Number"
+        />
+      </label>
+      <label>
+        Joining Date
+        <input
+          type="date"
+          id="joining-date"
+          required
+          placeholder="Select Date"
+        />
+      </label>
+      <label>
+        Shift Start Time
+        <input
+          type="time"
+          id="shift-timing"
+          required
+          placeholder="Enter Shift Start TIme"
+        />
+      </label>
+      <label>
+        Shift End Time
+        <input
+          type="time"
+          id="shift-end-time"
+          required
+          placeholder="Enter Shift End TIme"
+        />
+      </label>
+      <div class="employee-entry-field">
+        <table class="employee-entry-table">
+          <caption>
+            Educational Details
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Degree</th>
+              <th scope="col">University/Institute</th>
+              <th scope="col">Year of Passing</th>
+              <th scope="col">Percentage/CGPA</th>
+              <th scope="col">Specialization</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  name="education-degree"
+                  aria-label="Degree"
+                  placeholder="Enter degree"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="education-institute"
+                  aria-label="University or institute"
+                  placeholder="Enter university or institute"
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  name="education-year"
+                  aria-label="Year of passing"
+                  placeholder="YYYY"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="education-grade"
+                  aria-label="Percentage or CGPA"
+                  placeholder="Enter grade"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="education-specialization"
+                  aria-label="Specialization"
+                  placeholder="Enter specialization"
+                />
+              </td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  name="education-degree"
+                  aria-label="Degree"
+                  placeholder="Enter degree"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="education-institute"
+                  aria-label="University or institute"
+                  placeholder="Enter university or institute"
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  name="education-year"
+                  aria-label="Year of passing"
+                  placeholder="YYYY"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="education-grade"
+                  aria-label="Percentage or CGPA"
+                  placeholder="Enter grade"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="education-specialization"
+                  aria-label="Specialization"
+                  placeholder="Enter specialization"
+                />
+              </td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  name="education-degree"
+                  aria-label="Degree"
+                  placeholder="Enter degree"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="education-institute"
+                  aria-label="University or institute"
+                  placeholder="Enter university or institute"
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  name="education-year"
+                  aria-label="Year of passing"
+                  placeholder="YYYY"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="education-grade"
+                  aria-label="Percentage or CGPA"
+                  placeholder="Enter grade"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="education-specialization"
+                  aria-label="Specialization"
+                  placeholder="Enter specialization"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="employee-entry-field">
+        <table class="employee-entry-table">
+          <caption>
+            Employment Experience
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Company Name</th>
+              <th scope="col">Position</th>
+              <th scope="col">Duration</th>
+              <th scope="col">Job Role</th>
+              <th scope="col">Key Responsibilities</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  name="experience-company"
+                  aria-label="Company name"
+                  placeholder="Enter company"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="experience-position"
+                  aria-label="Position"
+                  placeholder="Enter position"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="experience-duration"
+                  aria-label="Duration"
+                  placeholder="e.g. 2 years"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="experience-role"
+                  aria-label="Job role"
+                  placeholder="Enter job role"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="experience-responsibilities"
+                  aria-label="Key responsibilities"
+                  placeholder="Enter responsibilities"
+                />
+              </td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  name="experience-company"
+                  aria-label="Company name"
+                  placeholder="Enter company"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="experience-position"
+                  aria-label="Position"
+                  placeholder="Enter position"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="experience-duration"
+                  aria-label="Duration"
+                  placeholder="e.g. 2 years"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="experience-role"
+                  aria-label="Job role"
+                  placeholder="Enter job role"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="experience-responsibilities"
+                  aria-label="Key responsibilities"
+                  placeholder="Enter responsibilities"
+                />
+              </td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  name="experience-company"
+                  aria-label="Company name"
+                  placeholder="Enter company"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="experience-position"
+                  aria-label="Position"
+                  placeholder="Enter position"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="experience-duration"
+                  aria-label="Duration"
+                  placeholder="e.g. 2 years"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="experience-role"
+                  aria-label="Job role"
+                  placeholder="Enter job role"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="experience-responsibilities"
+                  aria-label="Key responsibilities"
+                  placeholder="Enter responsibilities"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <button type="submit" class="save-employee-button">Add Employee</button>
+  </form>
+  <div class="employee-directory" id="employee-directory"></div>
+  <dialog class="employee-profile-dialog" id="employee-profile-dialog">
+    <div class="profile-dialog-header">
+      <div>
+        <p class="dashboard-kicker">Employee Profile</p>
+        <h2 id="profile-dialog-title">Employee Profile</h2>
+      </div>
+      <button type="button" class="close-form-button" id="close-profile-dialog">
+        —
+      </button>
+    </div>
+    <div class="profile-view" id="profile-view">
+      <dl class="profile-details" id="profile-details"></dl>
+    </div>
+    <form class="profile-edit-form" id="profile-edit-form" hidden>
+      <div class="employee-form-grid">
+        <label>
+          Employee ID
+          <input type="text" id="profile-employee-id" />
+        </label>
+        <label>
+          Employee Name
+          <input type="text" id="profile-name" required />
+        </label>
+        <label>
+          Father's Name
+          <input type="text" id="profile-father-name" />
+        </label>
+        <label>
+          Correspondence Address
+          <input type="text" id="profile-correspondence-address" />
+        </label>
+        <label>
+          Permanent Address
+          <input type="text" id="profile-permanent-address" />
+        </label>
+        <label>
+          Job Title
+          <input type="text" id="profile-role" required />
+        </label>
+        <label>
+          Team
+          <input type="text" id="profile-team" required />
+        </label>
+        <label>
+          Email
+          <input type="email" id="profile-email" required />
+        </label>
+        <label>
+          Contact Number
+          <input type="tel" id="profile-contact" />
+        </label>
+        <label>
+          Job Location
+          <input type="text" id="profile-location" />
+        </label>
+        <label>
+          Aadhar Card Number
+          <input type="text" id="profile-aadhar" />
+        </label>
+        <label>
+          PAN Card Number
+          <input type="text" id="profile-pan" />
+        </label>
+        <label>
+          Bank Details
+          <input type="text" id="profile-bank" />
+        </label>
+        <label>
+          Emergency Contact Name
+          <input type="text" id="profile-emergency-contact-name" />
+        </label>
+        <label>
+          Emergency Contact Number
+          <input type="tel" id="profile-emergency-contact-number" />
+        </label>
+        <label>
+          Joining Date
+          <input type="date" id="profile-joining-date" />
+        </label>
+        <label>
+          Shift Start Time
+          <input type="time" id="profile-shift-start" />
+        </label>
+        <label>
+          Shift End Time
+          <input type="time" id="profile-shift-end" />
+        </label>
+        <div id="profile-education-entries"></div>
+        <div id="profile-experience-entries"></div>
+      </div>
+      <div class="profile-dialog-actions">
+        <button type="button" class="secondary-button" id="cancel-profile-edit">
+          Cancel
+        </button>
+        <button type="submit" class="save-employee-button">Save Changes</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog
+    class="employee-profile-dialog employee-documents-dialog"
+    id="employee-documents-dialog"
+  >
+    <div class="profile-dialog-header">
+      <div>
+        <p class="dashboard-kicker">Employee Documents</p>
+        <h2 id="employee-documents-title">Employee</h2>
+      </div>
+      <button
+        type="button"
+        class="close-form-button"
+        id="close-employee-documents"
+        aria-label="Close employee documents"
+      >
+        ×
+      </button>
+    </div>
+    <div
+      class="employee-document-identifiers"
+      data-employee-document-identifiers
+    ></div>
+    <form id="employee-document-form" class="employee-document-form">
+      <label>
+        Document type
+        <select name="category" required>
+          <option value="Aadhar Card">Aadhar Card</option>
+          <option value="PAN Card">PAN Card</option>
+          <option value="Joining Letter">Joining Letter</option>
+          <option value="Salary Slip">Salary Slip</option>
+          <option value="Other">Other</option>
+        </select>
+      </label>
+      <label>
+        Choose Documents
+        <input name="file" type="file" multiple required />
+      </label>
+      <button type="submit" class="save-employee-button">
+        Upload Documents
+      </button>
+    </form>
+    <section class="employee-document-section">
+      <div class="employee-document-heading">
+        <h3>Documents</h3>
+        <span data-employee-document-status role="status"></span>
+      </div>
+      <div
+        class="employee-document-list"
+        data-employee-document-list
+        aria-live="polite"
+      ></div>
+    </section>
+  </dialog>
+</section>

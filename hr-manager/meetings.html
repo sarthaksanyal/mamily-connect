@@ -1,0 +1,97 @@
+<section id="meetings" class="meetings-view" hidden>
+  <div class="page-section-header">
+    <div>
+      <p>View Scheduled Meetings and Create Meetings.</p>
+    </div>
+    <div class="page-section-actions">
+      <span class="team-count" id="meeting-count">0 Meetings</span>
+      <button
+        type="button"
+        class="add-employee-button"
+        id="show-schedule-meeting"
+      >
+        <span>+</span> Schedule Meeting
+      </button>
+    </div>
+  </div>
+  <form
+    class="add-employee-form meeting-form"
+    id="schedule-meeting-form"
+    hidden
+  >
+    <div class="form-heading">
+      <h3>Schedule a Meeting</h3>
+      <button
+        type="button"
+        class="close-form-button"
+        id="cancel-schedule-meeting"
+        aria-label="Cancel scheduling"
+      >
+        &times;
+      </button>
+    </div>
+    <div class="employee-form-grid">
+      <label>
+        Meeting Title
+        <input
+          type="text"
+          name="title"
+          required
+          maxlength="100"
+          placeholder="e.g. Weekly team sync"
+        />
+      </label>
+      <label>
+        Date
+        <input type="date" name="date" required />
+      </label>
+      <label>
+        Time
+        <input type="time" name="time" required />
+      </label>
+      <label>
+        Location or Meeting Link
+        <input
+          type="text"
+          name="location"
+          maxlength="160"
+          placeholder="e.g. Conference Room 2"
+        />
+      </label>
+    </div>
+    <fieldset class="meeting-attendees">
+      <legend>Employees to Invite</legend>
+      <div class="meeting-attendee-toolbar">
+        <label for="meeting-team-filter">
+          Team
+          <select id="meeting-team-filter">
+            <option value="">All teams</option>
+          </select>
+        </label>
+        <label for="meeting-role-filter">
+          Role
+          <select id="meeting-role-filter">
+            <option value="">All roles</option>
+          </select>
+        </label>
+        <button type="button" class="secondary-button" id="meeting-select-all">
+          Select all
+        </button>
+      </div>
+      <div class="meeting-employee-options" id="meeting-employee-options"></div>
+    </fieldset>
+    <div class="meeting-form-actions">
+      <button
+        type="button"
+        class="secondary-button"
+        id="dismiss-schedule-meeting"
+      >
+        Cancel
+      </button>
+      <button type="submit" class="save-employee-button">
+        Schedule Meeting
+      </button>
+    </div>
+  </form>
+  <div class="meeting-list" id="meeting-list" aria-live="polite"></div>
+</section>

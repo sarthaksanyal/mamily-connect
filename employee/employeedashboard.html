@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Dashboard</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-shell">
+      <aside class="dashboard-sidebar">
+        <div class="brand-block">
+          <img src="../logo.png" alt="mamily-logo" class="brand-logo" />
+          <div class="brand-name">Mamily - Connect</div>
+        </div>
+        <nav class="sidebar-nav">
+          <a
+            href="#dashboard"
+            class="nav-item active"
+            data-view="dashboard-view"
+            data-title="Employee Dashboard"
+            >Dashboard</a
+          >
+          <div class="nav-section">
+            <p class="nav-section-label">My Work</p>
+            <a
+              href="#"
+              class="nav-item"
+              data-view="tasks-view"
+              data-title="Tasks"
+              >Tasks</a
+            >
+            <a
+              href="#"
+              class="nav-item"
+              data-view="worklog"
+              data-title="Work Log"
+              >Work Log</a
+            >
+            <a
+              href="#"
+              class="nav-item"
+              data-view="attendance"
+              data-title="Attendance"
+              >Attendance</a
+            >
+            <a
+              href="#"
+              class="nav-item"
+              data-view="performance-view"
+              data-title="Performance"
+              >Performance</a
+            >
+          </div>
+          <div class="nav-section">
+            <p class="nav-section-label">My Team</p>
+            <a
+              href="#team-members"
+              class="nav-item"
+              data-view="team-members-view"
+              data-title="Team Members"
+              >Team Members</a
+            >
+            <a
+              href="#"
+              class="nav-item"
+              data-view="feedback"
+              data-title="Feedback"
+              >Feedback</a
+            >
+          </div>
+          <details class="nav-dropdown">
+            <summary>Employee Self Service</summary>
+            <div class="nav-dropdown-links">
+              <a href="#" class="nav-item" data-view="leaves" data-title="Leave"
+                >Leave</a
+              >
+              <a
+                href="#"
+                class="nav-item"
+                data-view="employee-self-service"
+                data-title="Resignation Form"
+                >Resignation Form</a
+              >
+              <a
+                href="#"
+                class="nav-item"
+                data-view="profile"
+                data-title="Profile"
+                >Profile</a
+              >
+            </div>
+          </details>
+        </nav>
+        <a href="../index.html" class="logout-button">Sign Out</a>
+      </aside>
+      <main class="dashboard-main">
+        <header class="topbar-dashboard">
+          <div>
+            <p class="dashboard-kicker">Welcome Back</p>
+            <h1>Employee Dashboard</h1>
+          </div>
+          <div class="topbar-actions">
+            <button
+              type="button"
+              class="notification-bell"
+              data-dashboard-view="notifications"
+              data-title="Notifications"
+              aria-label="Notifications"
+              title="Notifications"
+            >
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"
+                />
+              </svg>
+            </button>
+            <div
+              class="user-chip"
+              data-employee-email="sarthak.sanyal@mamily.com"
+            >
+              <span class="user-avatar">SS</span>
+              <div>
+                <strong>Sarthak Sanyal</strong>
+                <small>Software Intern</small>
+              </div>
+            </div>
+          </div>
+        </header>
+        <div id="dashboard-view" class="dashboard-view">
+          <section class="stats-grid">
+            <button
+              type="button"
+              class="stat-card highlight"
+              data-dashboard-view="attendance"
+            >
+              <span>Attendance</span>
+              <strong>96%</strong>
+              <small>+4% this month</small>
+            </button>
+            <button
+              type="button"
+              class="stat-card"
+              data-dashboard-view="leaves"
+            >
+              <span>Leave Balance</span>
+              <strong>12 Days</strong>
+              <small>6 approved</small>
+            </button>
+            <button
+              type="button"
+              class="stat-card"
+              data-dashboard-view="performance-view"
+            >
+              <span>Performance</span>
+              <strong>Excellent</strong>
+              <small>Top 10% team</small>
+            </button>
+            <button
+              type="button"
+              class="stat-card"
+              data-dashboard-view="notifications"
+            >
+              <span>Notifications</span>
+              <strong>5</strong>
+              <small>From Manager</small>
+            </button>
+            <button
+              type="button"
+              class="stat-card"
+              data-dashboard-view="dashboard-view"
+              data-scroll-target="schedule-panel"
+            >
+              <span>Meetings</span>
+              <strong>1</strong>
+              <small>Meeting Room</small>
+            </button>
+          </section>
+          <section class="content-grid">
+            <article class="panel" id="schedule-panel">
+              <div class="panel-header">
+                <h2>Today's Schedule</h2>
+                <a href="#">View All</a>
+              </div>
+              <ul class="schedule-list">
+                <li>
+                  <span class="time">9:00</span>
+                  <div>
+                    <strong>Team Meeting</strong>
+                    <small>Operations HUb</small>
+                  </div>
+                </li>
+                <li>
+                  <span class="time">11:30</span>
+                  <div>
+                    <strong>Client Follow-up</strong>
+                    <small>Priority Support Queue</small>
+                  </div>
+                </li>
+                <li>
+                  <span class="time">14:00</span>
+                  <div>
+                    <strong>Training Sessions</strong>
+                    <small>Front Office</small>
+                  </div>
+                </li>
+              </ul>
+            </article>
+            <article class="panel highlight-panel">
+              <div class="panel-header">
+                <h2>Quick Actions</h2>
+              </div>
+              <div class="quick-actions">
+                <button type="button">Leave Request</button>
+                <button type="button">Attendance</button>
+                <button type="button">Tasks</button>
+                <button type="button">Profile</button>
+              </div>
+            </article>
+          </section>
+        </div>
+
+        <section
+          id="employee-self-service"
+          class="employees-view employee-self-service-view"
+          hidden
+        >
+          <div class="page-section-header">
+            <div>
+              <p class="dashboard-kicker">Employee Self Service</p>
+              <p>Manage your employment requests.</p>
+            </div>
+          </div>
+          <section class="content-grid resignation-grid">
+            <article class="panel resignation-panel">
+              <div class="panel-header">
+                <h2>Submit Resignation</h2>
+              </div>
+              <form
+                class="notification-form resignation-form"
+                data-resignation-form
+              >
+                <label>
+                  Employee Name
+                  <input name="employeeName" value="Sarthak Sanyal" readonly />
+                </label>
+                <label>
+                  Job Title
+                  <input name="employeeRole" value="Software Intern" readonly />
+                </label>
+                <label>
+                  Proposed Last Working Day
+                  <input name="lastWorkingDay" type="date" required />
+                </label>
+                <label>
+                  Reason for Resignation
+                  <textarea
+                    name="reason"
+                    rows="4"
+                    maxlength="500"
+                    required
+                    placeholder="Share the reason for your resignation"
+                  ></textarea>
+                </label>
+                <button type="submit" class="save-employee-button">
+                  Submit Resignation
+                </button>
+                <p
+                  class="notification-form-status"
+                  data-resignation-status
+                  role="status"
+                ></p>
+              </form>
+            </article>
+          </section>
+        </section>
+        <div data-dashboard-fragments></div>
+      </main>
+    </div>
+    <script src="../script.js/fragmentloader.js"></script>
+  </body>
+</html>

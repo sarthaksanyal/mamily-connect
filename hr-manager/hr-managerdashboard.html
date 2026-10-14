@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HR Manager Dashboard</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-shell">
+      <aside class="dashboard-sidebar manager-sidebar">
+        <div class="brand-block">
+          <img src="../logo.png" alt="Mamily logo" class="brand-logo" />
+          <div class="brand-name">Mamily - Connect</div>
+        </div>
+        <nav class="sidebar-nav">
+          <a
+            href="#dashboard"
+            class="nav-item active"
+            data-view="dashboard-view"
+            data-title="HR & Manager Dashboard"
+            >Dashboard</a
+          >
+          <div class="nav-section">
+            <p class="nav-section-label">Operations</p>
+            <a
+              href="#"
+              class="nav-item"
+              data-view="tasks-view"
+              data-title="Tasks"
+              >Tasks</a
+            >
+            <a
+              href="#"
+              class="nav-item"
+              data-view="work-log"
+              data-title="Work Log"
+              >Work Log</a
+            >
+            <a
+              href="#"
+              class="nav-item"
+              data-view="meetings"
+              data-title="Meetings"
+              >Meetings</a
+            >
+          </div>
+          <div class="nav-section">
+            <p class="nav-section-label">Organization</p>
+            <a
+              href="#employees"
+              class="nav-item"
+              data-view="employees-view"
+              data-title="Employees"
+              >Employees</a
+            >
+            <a
+              href="#teams"
+              class="nav-item"
+              data-view="teams-view"
+              data-title="Teams"
+              >Teams</a
+            >
+          </div>
+          <div class="nav-section">
+            <p class="nav-section-label">Approvals</p>
+            <a
+              href="#"
+              class="nav-item"
+              data-view="attendance"
+              data-title="Attendance Logs"
+              >Attendance Logs</a
+            >
+            <a
+              href="#"
+              class="nav-item"
+              data-view="leave-requests"
+              data-title="Leave Requests"
+              >Leave Requests</a
+            >
+          </div>
+          <details class="nav-dropdown">
+            <summary>HR Services</summary>
+            <div class="nav-dropdown-links">
+              <a
+                href="#"
+                class="nav-item"
+                data-view="performance-view"
+                data-title="Performance"
+                >Performance</a
+              >
+              <a
+                href="#"
+                class="nav-item"
+                data-view="feedback"
+                data-title="Feedback Admin"
+                >Feedback Admin</a
+              >
+              <a
+                href="#"
+                class="nav-item"
+                data-view="resignation-queue"
+                data-title="Resignation Queue"
+                >Resignation Queue</a
+              >
+            </div>
+          </details>
+        </nav>
+        <a href="../index.html" class="logout-button">Sign Out</a>
+      </aside>
+      <main class="dashboard-main">
+        <header class="topbar-dashboard">
+          <div>
+            <p class="dashboard-kicker">Welcome Back</p>
+            <h1>HR & Manager Dashboard</h1>
+          </div>
+          <div class="topbar-actions">
+            <button
+              type="button"
+              class="notification-bell"
+              data-dashboard-view="notifications"
+              data-title="Notifications"
+              aria-label="Notifications"
+              title="Notifications"
+            >
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"
+                />
+              </svg>
+            </button>
+            <div class="user-chip manager-chip">
+              <span class="user-avatar">HR</span>
+              <div>
+                <strong>Ananya Roy</strong>
+                <small>HR Manager</small>
+              </div>
+            </div>
+          </div>
+        </header>
+        <div id="dashboard-view" class="dashboard-view">
+          <section class="stats-grid">
+            <button
+              type="button"
+              class="stat-card highlight"
+              data-dashboard-view="employees-view"
+            >
+              <span>Total Employees</span>
+              <strong>6</strong>
+              <small>+2 this quarter</small>
+            </button>
+            <button
+              type="button"
+              class="stat-card"
+              data-dashboard-view="leave-requests"
+            >
+              <span>Pending Requests</span>
+              <strong>21</strong>
+              <small>8 urgent</small>
+            </button>
+            <button
+              type="button"
+              class="stat-card"
+              data-dashboard-view="performance-view"
+            >
+              <span>Overall Performance</span>
+              <strong>92%</strong>
+              <small>+2% than last quarter</small>
+            </button>
+            <button
+              type="button"
+              class="stat-card"
+              data-dashboard-view="attendance"
+            >
+              <span>Team Attendance</span>
+              <strong>94%</strong>
+              <small>2 absences today</small>
+            </button>
+            <button
+              type="button"
+              class="stat-card"
+              data-dashboard-view="dashboard-view"
+              data-scroll-target="hiring-pipeline"
+            >
+              <span>Open Positions</span>
+              <strong>5</strong>
+              <small>2 interviews booked</small>
+            </button>
+          </section>
+          <section class="content-grid">
+            <article class="panel">
+              <div class="panel-header">
+                <h2>Approval Queue</h2>
+                <a href="#">View All</a>
+              </div>
+              <ul class="schedule-list">
+                <li>
+                  <span class="time">Pending</span>
+                  <div>
+                    <strong>Annual Leave</strong>
+                    <small>3 employees waiting for approval</small>
+                  </div>
+                </li>
+                <li>
+                  <span class="time">Review</span>
+                  <div>
+                    <strong>Performance Review</strong>
+                    <small>2 employees due this week</small>
+                  </div>
+                </li>
+                <li>
+                  <span class="time">Action</span>
+                  <div>
+                    <strong id="hiring-pipeline">Hiring Pipeline</strong>
+                    <small>Candidates shortlisted</small>
+                  </div>
+                </li>
+              </ul>
+            </article>
+            <article class="panel highlight-panel manager-panel">
+              <div class="panel-header">
+                <h2>Manager Tools</h2>
+              </div>
+              <div class="quick-actions">
+                <button type="button">Create Announcement</button>
+                <button type="button">Review Attendance</button>
+                <button type="button">Approve Leaves</button>
+              </div>
+            </article>
+          </section>
+        </div>
+        <div data-dashboard-fragments></div>
+      </main>
+    </div>
+    <script src="../script.js/fragmentloader.js"></script>
+  </body>
+</html>

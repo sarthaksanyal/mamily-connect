@@ -1,0 +1,33 @@
+<section id="attendance" class="attendance-view" hidden>
+  <div class="page-section-header">
+    <div>
+      <p class="dashboard-kicker">Attendance Record</p>
+      <p>Your Daily Attendance & Check-in and Check-out Time</p>
+    </div>
+  </div>
+  <div class="attendance-summary" data-attendance-summary></div>
+  <section class="attendance-calendar-panel">
+    <div class="attendance-calendar-toolbar">
+      <select
+        class="attendance-month-select"
+        data-month-select
+        aria-label="Attendance month"
+      ></select>
+      <select
+        class="attendance-year-select"
+        data-year-select
+        aria-label="Attendance year"
+      ></select>
+    </div>
+    <div class="attendance-weekdays">
+      <span>Mon</span><span>Tue</span><span>Wed</span><span>Thurs</span
+      ><span>Fri</span><span>Sat</span><span>Sun</span>
+    </div>
+    <div class="attendance-calendar" data-attendance-calendar></div>
+    <div class="attendance-legend">
+      <span><i class="status-sign present"></i>Present</span>
+      <span><i class="status-sign absent"></i>Absent</span>
+      <span> <i class="status-sign neutral"></i>Weekend/Upcoming </span>
+    </div>
+  </section>
+</section>

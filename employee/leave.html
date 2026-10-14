@@ -1,0 +1,138 @@
+<section
+  id="leaves"
+  class="employees-view leave-view employee-leave-view"
+  hidden
+>
+  <div class="page-section-header">
+    <div>
+      <p class="dashboard-kicker">Leave Overview</p>
+      <p>Review Leave balance and Submit Leave Requests</p>
+    </div>
+  </div>
+  <section class="stats-grid">
+    <article class="stat-card highlight">
+      <span>Available Leaves</span>
+      <strong>12</strong>
+      <small>Remaining balance</small>
+    </article>
+    <article class="stat-card">
+      <span>Total Leaves</span>
+      <strong>18</strong>
+      <small>For the current year</small>
+    </article>
+    <article class="stat-card">
+      <span>Used Leaves</span>
+      <strong>6</strong>
+      <small>Approved this year</small>
+    </article>
+  </section>
+  <section class="panel">
+    <div class="panel-header">
+      <h2 id="employee-leave-balance-title">Leaves Available</h2>
+    </div>
+    <table>
+      <caption>
+        Leaves taken and remaining leaves
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Leave type</th>
+          <th scope="col">Total</th>
+          <th scope="col">Used</th>
+          <th scope="col">Available</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Casual Leave</th>
+          <td>8</td>
+          <td>3</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <th scope="row">Sick Leave</th>
+          <td>6</td>
+          <td>2</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <th scope="row">Earned Leave</th>
+          <td>4</td>
+          <td>1</td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <th scope="row">Total</th>
+          <td>18</td>
+          <td>6</td>
+          <td>12</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="panel">
+    <div class="panel-header">
+      <h2 id="leave-application-title">Apply for a Leave</h2>
+    </div>
+    <form id="leave-application-form" class="leave-application-form">
+      <div class="employee-form-grid">
+        <label>
+          Leave Type
+          <select name="leave-type" required>
+            <option value="">Select a Leave Type</option>
+            <option value="casual">Casual Leave</option>
+            <option value="sick">Sick Leave</option>
+          </select>
+        </label>
+        <label>
+          Start date
+          <input type="date" name="start-date" required />
+        </label>
+        <label>
+          End date
+          <input type="date" name="end-date" required />
+        </label>
+      </div>
+      <fieldset>
+        <legend>Leave Duration</legend>
+        <label>
+          <input type="radio" name="leave-duration" value="full-day" checked />
+          Full Day
+        </label>
+        <label>
+          <input type="radio" name="leave-duration" value="half-day" />
+          Half Day
+        </label>
+        <label>
+          <input type="radio" name="leave-duration" value="short-leave" />
+          Short Leave
+        </label>
+      </fieldset>
+      <div class="employee-form-grid">
+        <label>
+          Choose Session
+          <select name="half-day-session">
+            <option value="select-an-option">Select an Option</option>
+            <option value="first-half">First Half</option>
+            <option value="second-half">Second Half</option>
+          </select>
+        </label>
+        <label>
+          Short Leave Start Time
+          <input type="time" name="short-leave-start" />
+        </label>
+        <label>
+          Short Leave End Time
+          <input type="time" name="short-leave-end" />
+        </label>
+      </div>
+      <label>
+        Reason for Leave
+        <textarea name="reason" rows="4" required></textarea>
+      </label>
+      <button type="button" class="save-employee-button">
+        Submit Leave Request
+      </button>
+    </form>
+  </section>
+</section>

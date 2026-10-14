@@ -1,0 +1,54 @@
+<section id="profile" class="profile-view" hidden>
+  <div class="page-section-header">
+    <div>
+      <p class="dashboard-kicker">My Profile</p>
+      <p>Personal Details</p>
+    </div>
+  </div>
+  <p class="profile-empty-state" id="profile-unavailable">
+    No employee profile is available for this sign-in.
+  </p>
+  <div class="profile-layout" id="current-employee-profile" hidden>
+    <article class="profile-card profile-summary">
+      <div class="profile-banner">
+        <span class="profile-avatar" id="current-profile-avatar"></span>
+        <div>
+          <h2 id="current-profile-name"></h2>
+          <p id="current-profile-role"></p>
+        </div>
+      </div>
+      <div class="profile-status-row">
+        <span class="status-pill" id="current-profile-id"></span>
+      </div>
+      <ul class="profile-contact-list">
+        <li>
+          <span class="contact-label">Email</span>
+          <strong id="current-profile-email"></strong>
+        </li>
+        <li>
+          <span class="contact-label">Phone</span>
+          <strong id="current-profile-contact"></strong>
+        </li>
+        <li>
+          <span class="contact-label">Location</span>
+          <strong id="current-profile-location"></strong>
+        </li>
+      </ul>
+    </article>
+    <article class="profile-card">
+      <h3>Personal & Employment Details</h3>
+      <dl
+        class="profile-details profile-record-details"
+        id="current-profile-details"
+      ></dl>
+    </article>
+    <article class="profile-card">
+      <h3>Educational Details</h3>
+      <div class="profile-entry-list" id="current-profile-education"></div>
+    </article>
+    <article class="profile-card">
+      <h3>Employment Experience</h3>
+      <div class="profile-entry-list" id="current-profile-experience"></div>
+    </article>
+  </div>
+</section>
