@@ -34,30 +34,25 @@ navigationItems.forEach((item) => {
   });
 });
 
-document.querySelectorAll(".notification-bell").forEach((button) => {
-  button.addEventListener("click", () => {
-    showDashboardView(button.dataset.dashboardView, button.dataset.title);
-  });
-});
-
-document.querySelectorAll(".stat-card[data-dashboard-view]").forEach((card) => {
-  card.addEventListener("click", () => {
+document.querySelectorAll("[data-dashboard-view]").forEach((control) => {
+  control.addEventListener("click", (event) => {
+    event.preventDefault();
     const navigationItem = [...navigationItems].find(
-      (item) => item.dataset.view === card.dataset.dashboardView,
+      (item) => item.dataset.view === control.dataset.dashboardView,
     );
     if (navigationItem) {
       navigationItem.click();
     } else {
       const fallbackTitle =
-        card.dataset.title ||
-        (card.dataset.dashboardView === "notifications"
+        control.dataset.title ||
+        (control.dataset.dashboardView === "notifications"
           ? "Notifications"
           : "Dashboard");
-      showDashboardView(card.dataset.dashboardView, fallbackTitle);
+      showDashboardView(control.dataset.dashboardView, fallbackTitle);
     }
 
-    if (card.dataset.scrollTarget) {
-      document.getElementById(card.dataset.scrollTarget)?.scrollIntoView({
+    if (control.dataset.scrollTarget) {
+      document.getElementById(control.dataset.scrollTarget)?.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });
@@ -70,12 +65,14 @@ const currentEmployeeProfile = document.getElementById(
 );
 if (currentEmployeeProfile) {
   const profileUnavailable = document.getElementById("profile-unavailable");
+  const userChip = document.querySelector(".user-chip");
+  let currentEmail = "";
   let employeeProfile = null;
   try {
-    const currentEmail =
+    currentEmail =
       normalizeEmployeeEmail(
         sessionStorage.getItem("current-employee-email"),
-      ) || document.querySelector(".user-chip")?.dataset.employeeEmail;
+      ) || userChip?.dataset.employeeEmail;
     if (currentEmail) {
       employeeProfile = JSON.parse(
         localStorage.getItem(`employee-profile:${currentEmail}`) || "null",
@@ -85,30 +82,112 @@ if (currentEmployeeProfile) {
     employeeProfile = null;
   }
 
+  if (!employeeProfile && userChip) {
+    employeeProfile = {
+      name: userChip.querySelector("strong")?.textContent.trim() || "Employee",
+      role: userChip.querySelector("small")?.textContent.trim() || "",
+      email: currentEmail,
+      team: "Software Support",
+      contact: "",
+      location: "",
+    };
+  }
+
   if (employeeProfile) {
     profileUnavailable.hidden = true;
-    const userChip = document.querySelector(".user-chip");
     if (userChip) {
       userChip.querySelector("strong").textContent = employeeProfile.name;
-      userChip.querySelector(".user-avatar").textContent = employeeProfile.name
-        .split(/\s+/)
-        .map((part) => part[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase();
     }
     currentEmployeeProfile.hidden = false;
 
-    const setProfileText = (id, value) => {
-      document.getElementById(id).textContent = value || "Not provided";
-    };
     const initials = employeeProfile.name
       .split(/\s+/)
       .map((part) => part[0])
       .join("")
       .slice(0, 2)
       .toUpperCase();
-    setProfileText("current-profile-avatar", initials);
+    const setAvatar = (element, photo) => {
+      if (photo) {
+        const image = document.createElement("img");
+        image.src = photo;
+        image.alt = `${employeeProfile.name} profile photo`;
+        element.replaceChildren(image);
+      } else {
+        element.textContent = initials;
+      }
+    };
+    const userAvatar = userChip?.querySelector(".user-avatar");
+    const profileAvatar = document.getElementById("current-profile-avatar");
+    setAvatar(userAvatar, employeeProfile.photo);
+    setAvatar(profileAvatar, employeeProfile.photo);
+    const photoInput = document.getElementById("current-profile-photo-input");
+    const removePhotoButton = document.getElementById("remove-profile-photo");
+    const photoStatus = document.getElementById("profile-photo-status");
+    const saveEmployeeProfile = () => {
+      try {
+        localStorage.setItem(
+          `employee-profile:${currentEmail}`,
+          JSON.stringify(employeeProfile),
+        );
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    removePhotoButton.hidden = !employeeProfile.photo;
+    photoInput.addEventListener("change", async () => {
+      const file = photoInput.files?.[0];
+      if (!file) {
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        photoStatus.textContent = "Choose an image file.";
+        photoInput.value = "";
+        return;
+      }
+      try {
+        const image = await createImageBitmap(file);
+        const scale = Math.min(1, 320 / Math.max(image.width, image.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(image.width * scale));
+        canvas.height = Math.max(1, Math.round(image.height * scale));
+        canvas
+          .getContext("2d")
+          .drawImage(image, 0, 0, canvas.width, canvas.height);
+        image.close();
+        employeeProfile.photo = canvas.toDataURL("image/jpeg", 0.82);
+        if (!saveEmployeeProfile()) {
+          throw new Error("storage");
+        }
+        setAvatar(userAvatar, employeeProfile.photo);
+        setAvatar(profileAvatar, employeeProfile.photo);
+        removePhotoButton.hidden = false;
+        photoStatus.textContent = "Profile photo updated.";
+        window.refreshOrgChart?.();
+      } catch {
+        photoStatus.textContent =
+          "The photo could not be saved in this browser.";
+      }
+      photoInput.value = "";
+    });
+
+    removePhotoButton.addEventListener("click", () => {
+      delete employeeProfile.photo;
+      if (!saveEmployeeProfile()) {
+        photoStatus.textContent = "The photo could not be removed.";
+        return;
+      }
+      setAvatar(userAvatar, "");
+      setAvatar(profileAvatar, "");
+      removePhotoButton.hidden = true;
+      photoStatus.textContent = "Profile photo removed.";
+      window.refreshOrgChart?.();
+    });
+
+    const setProfileText = (id, value) => {
+      document.getElementById(id).textContent = value || "Not provided";
+    };
     setProfileText("current-profile-name", employeeProfile.name);
     setProfileText("current-profile-role", employeeProfile.role);
     setProfileText(

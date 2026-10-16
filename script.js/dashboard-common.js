@@ -783,6 +783,9 @@ if (performanceView) {
     "Dec",
   ];
   const chart = performanceView.querySelector("[data-performance-chart]");
+  const performanceLineChart = window.google?.visualization?.LineChart
+    ? new google.visualization.LineChart(chart)
+    : null;
   const summary = performanceView.querySelector("[data-performance-summary]");
   const roster = performanceView.querySelector("[data-performance-roster]");
   const legend = performanceView.querySelector("[data-performance-legend]");
@@ -828,76 +831,60 @@ if (performanceView) {
     );
   }
 
+  let pendingPerformanceSeries = [];
+
   function renderPerformanceChart(series) {
-    const width = 760;
-    const height = 300;
-    const plot = { left: 42, right: 18, top: 18, bottom: 38 };
-    const plotWidth = width - plot.left - plot.right;
-    const plotHeight = height - plot.top - plot.bottom;
-    const yForScore = (score) => plot.top + ((100 - score) / 50) * plotHeight;
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-    svg.setAttribute("role", "img");
+    pendingPerformanceSeries = series;
+    if (performanceView.hidden) {
+      return;
+    }
+    if (!performanceLineChart) {
+      chart.textContent = "Performance chart could not be loaded.";
+      return;
+    }
 
-    [50, 60, 70, 80, 90, 100].forEach((score) => {
-      const y = yForScore(score);
-      const gridLine = document.createElementNS(svg.namespaceURI, "line");
-      gridLine.setAttribute("x1", String(plot.left));
-      gridLine.setAttribute("x2", String(width - plot.right));
-      gridLine.setAttribute("y1", String(y));
-      gridLine.setAttribute("y2", String(y));
-      gridLine.setAttribute("class", "performance-grid-line");
-      svg.append(gridLine);
-      const scoreLabel = document.createElementNS(svg.namespaceURI, "text");
-      scoreLabel.setAttribute("x", String(plot.left - 10));
-      scoreLabel.setAttribute("y", String(y + 4));
-      scoreLabel.setAttribute("text-anchor", "end");
-      scoreLabel.setAttribute("class", "performance-axis-label");
-      scoreLabel.textContent = String(score);
-      svg.append(scoreLabel);
-    });
+    const data = new google.visualization.DataTable();
+    data.addColumn("string", "Month");
+    series.forEach(({ name }) => data.addColumn("number", name));
     monthLabels.forEach((month, monthIndex) => {
-      const x = plot.left + (monthIndex / (monthLabels.length - 1)) * plotWidth;
-      const monthLabel = document.createElementNS(svg.namespaceURI, "text");
-      monthLabel.setAttribute("x", String(x));
-      monthLabel.setAttribute("y", String(height - 10));
-      monthLabel.setAttribute("text-anchor", "middle");
-      monthLabel.setAttribute("class", "performance-axis-label");
-      monthLabel.textContent = month;
-      svg.append(monthLabel);
-    });
-    series.forEach(({ name, scores, color }) => {
-      const points = scores.map((score, monthIndex) => {
-        const x =
-          plot.left + (monthIndex / (monthLabels.length - 1)) * plotWidth;
-        return `${x},${yForScore(score)}`;
-      });
-      const line = document.createElementNS(svg.namespaceURI, "polyline");
-      line.setAttribute("points", points.join(" "));
-      line.setAttribute("stroke", color);
-      line.setAttribute("class", "performance-line");
-      svg.append(line);
-      scores.forEach((score, monthIndex) => {
-        const point = document.createElementNS(svg.namespaceURI, "circle");
-        point.setAttribute(
-          "cx",
-          String(
-            plot.left + (monthIndex / (monthLabels.length - 1)) * plotWidth,
-          ),
-        );
-        point.setAttribute("cy", String(yForScore(score)));
-        point.setAttribute("r", series.length === 1 ? "4" : "3");
-        point.setAttribute("fill", color);
-        point.setAttribute("class", "performance-point");
-        const pointTitle = document.createElementNS(svg.namespaceURI, "title");
-        pointTitle.textContent = `${name}, ${monthLabels[monthIndex]}: ${score}%`;
-        point.append(pointTitle);
-        svg.append(point);
-      });
+      data.addRow([
+        month,
+        ...series.map((employee) => employee.scores[monthIndex]),
+      ]);
     });
 
-    chart.replaceChildren(svg);
+    performanceLineChart.draw(data, {
+      backgroundColor: "transparent",
+      chartArea: { left: 48, top: 18, width: "90%", height: "78%" },
+      colors: series.map((employee) => employee.color),
+      fontName: "Arial",
+      hAxis: { textStyle: { color: "#667085", fontSize: 11 } },
+      legend: { position: "none" },
+      lineWidth: 3,
+      pointSize: 5,
+      vAxis: {
+        gridlines: { color: "#e6ebf2" },
+        textStyle: { color: "#667085", fontSize: 11 },
+        ticks: [50, 60, 70, 80, 90, 100],
+        viewWindow: { min: 50, max: 100 },
+      },
+    });
   }
+
+  const performanceViewObserver = new MutationObserver(() => {
+    if (!performanceView.hidden) {
+      renderPerformanceChart(pendingPerformanceSeries);
+    }
+  });
+  performanceViewObserver.observe(performanceView, {
+    attributes: true,
+    attributeFilter: ["hidden"],
+  });
+  window.addEventListener("resize", () => {
+    if (!performanceView.hidden && pendingPerformanceSeries.length) {
+      renderPerformanceChart(pendingPerformanceSeries);
+    }
+  });
 
   const chartSeries = employees.map((employee, index) => ({
     ...employee,
@@ -1475,7 +1462,6 @@ if (taskView) {
 
   const taskChatDialog = document.createElement("dialog");
   taskChatDialog.className = "task-chat-dialog";
-  taskChatDialog.setAttribute("aria-labelledby", "task-chat-title");
   const taskChatHeader = document.createElement("header");
   taskChatHeader.className = "task-chat-header";
   const taskChatHeading = document.createElement("div");
@@ -1486,7 +1472,6 @@ if (taskView) {
   const closeTaskChatButton = document.createElement("button");
   closeTaskChatButton.type = "button";
   closeTaskChatButton.className = "close-form-button";
-  closeTaskChatButton.setAttribute("aria-label", "Close task chat");
   closeTaskChatButton.textContent = "×";
   taskChatHeader.append(taskChatHeading, closeTaskChatButton);
   const taskChatMessages = document.createElement("div");
@@ -1501,7 +1486,6 @@ if (taskView) {
   taskChatInput.maxLength = 1000;
   taskChatInput.required = true;
   taskChatInput.placeholder = "Write a message about this task";
-  taskChatInput.setAttribute("aria-label", "Message");
   const sendTaskChatButton = document.createElement("button");
   sendTaskChatButton.type = "submit";
   sendTaskChatButton.className = "save-employee-button";
@@ -1670,7 +1654,6 @@ if (taskView) {
       : "Update task status";
     const statusSelect = document.createElement("select");
     statusSelect.dataset.taskStatus = "";
-    statusSelect.setAttribute("aria-label", `Status for ${task.title}`);
     ["Not Started", "In Progress", "Completed"].forEach((taskStatus) => {
       statusSelect.add(new Option(taskStatus, taskStatus));
     });
@@ -2414,4 +2397,282 @@ if (notificationList) {
 
   renderNotifications();
   renderResignationQueue();
+}
+
+const orgChartView = document.getElementById("organizational-chart-view");
+if (orgChartView) {
+  const chartCanvas = orgChartView.querySelector("[data-org-chart-canvas]");
+  const chartSearch = orgChartView.querySelector("[data-org-chart-search]");
+  const chartStatus = orgChartView.querySelector("[data-org-chart-status]");
+  const chartDialog = orgChartView.querySelector("[data-org-chart-dialog]");
+  const chartPeople = new Map();
+  let organizationChart = null;
+  let currentChartData = null;
+
+  function escapeChartHtml(value) {
+    return String(value || "").replace(/[&<>"']/g, (character) => {
+      const entities = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      };
+      return entities[character];
+    });
+  }
+
+  function getChartPeople() {
+    const records = (window.organizationEmployees || []).map((person) => ({
+      ...person,
+    }));
+    const employeeIndexes = new Map(
+      records.map((person, index) => [person.email.toLowerCase(), index]),
+    );
+
+    try {
+      Object.keys(localStorage)
+        .filter((key) => key.startsWith("employee-profile:"))
+        .forEach((key) => {
+          const savedProfile = JSON.parse(localStorage.getItem(key) || "null");
+          const email = savedProfile?.email?.toLowerCase();
+          if (!email) {
+            return;
+          }
+          const existingIndex = employeeIndexes.get(email);
+          if (existingIndex === undefined) {
+            employeeIndexes.set(email, records.length);
+            records.push(savedProfile);
+          } else {
+            records[existingIndex] = {
+              ...records[existingIndex],
+              ...savedProfile,
+            };
+          }
+        });
+    } catch {
+      return records;
+    }
+
+    return records.filter((person) => person.name);
+  }
+
+  function getPersonId(person) {
+    return person.email
+      ? person.email.toLowerCase()
+      : `person:${person.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+  }
+
+  function makeChartNode(person, isTeam = false) {
+    const initials = person.name
+      .split(/\s+/)
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+    const photo = /^data:image\/(png|jpeg|webp|gif);base64,/i.test(
+      person.photo || "",
+    )
+      ? `<img src="${person.photo}" alt="" />`
+      : `<span>${escapeChartHtml(initials)}</span>`;
+    const title = isTeam ? "Team" : person.role || "Position not provided";
+    return `<div class="org-chart-node ${isTeam ? "org-chart-team-node" : ""}">${photo}<div><strong>${escapeChartHtml(person.name)}</strong><small>${escapeChartHtml(title)}</small></div></div>`;
+  }
+
+  function drawOrganizationChart() {
+    if (!window.google?.visualization?.OrgChart) {
+      chartStatus.textContent = "The organizational chart could not be loaded.";
+      return;
+    }
+
+    const people = getChartPeople();
+    chartPeople.clear();
+    if (!people.length) {
+      chartCanvas.replaceChildren();
+      chartStatus.textContent = "No employee records are available.";
+      return;
+    }
+
+    const root =
+      people.find((person) =>
+        /manager|director|head/i.test(person.role || ""),
+      ) || people[0];
+    const teamGroups = new Map();
+    people
+      .filter((person) => person !== root)
+      .forEach((person) => {
+        const team = person.team || "Other Teams";
+        if (!teamGroups.has(team)) {
+          teamGroups.set(team, []);
+        }
+        teamGroups.get(team).push(person);
+      });
+
+    const teamIdByName = new Map(
+      [...teamGroups.keys()].map((team) => [team, `team:${team}`]),
+    );
+    const leadByTeam = new Map();
+    teamGroups.forEach((members, team) => {
+      leadByTeam.set(
+        team,
+        members.find((person) =>
+          /lead|manager|director|head/i.test(person.role || ""),
+        ) || null,
+      );
+    });
+
+    const search = chartSearch.value.trim().toLowerCase();
+    const matches = new Set(
+      search
+        ? people
+            .filter((person) =>
+              `${person.name} ${person.role || ""}`
+                .toLowerCase()
+                .includes(search),
+            )
+            .map(getPersonId)
+        : people.map(getPersonId),
+    );
+    const included = new Set([getPersonId(root)]);
+    const includeAncestors = (person) => {
+      included.add(getPersonId(person));
+      const team = person.team || "Other Teams";
+      included.add(teamIdByName.get(team));
+      const lead = leadByTeam.get(team);
+      if (lead && lead !== person) {
+        included.add(getPersonId(lead));
+      }
+    };
+    people.forEach((person) => {
+      if (matches.has(getPersonId(person))) {
+        includeAncestors(person);
+      }
+    });
+
+    const rows = [];
+    const addRow = (person, parentId, isTeam = false) => {
+      const id = isTeam ? person.id : getPersonId(person);
+      if (id !== getPersonId(root) && !included.has(id)) {
+        return;
+      }
+      if (!isTeam) {
+        chartPeople.set(id, person);
+      }
+      rows.push([
+        { v: id, f: makeChartNode(person, isTeam) },
+        parentId,
+        isTeam
+          ? `${person.name} team`
+          : `${person.name}, ${person.role || "position not provided"}`,
+      ]);
+    };
+
+    addRow(root, "");
+    teamGroups.forEach((members, team) => {
+      const teamId = teamIdByName.get(team);
+      const teamPerson = { id: teamId, name: team };
+      if (included.has(teamId)) {
+        addRow(teamPerson, getPersonId(root), true);
+      }
+      const lead = leadByTeam.get(team);
+      members.forEach((person) => {
+        const parentId = lead && lead !== person ? getPersonId(lead) : teamId;
+        addRow(person, parentId);
+      });
+    });
+
+    chartStatus.textContent =
+      search && matches.size === 0
+        ? "No employees match that search."
+        : `${people.length} employees · ${teamGroups.size} teams`;
+    const data = new google.visualization.DataTable();
+    data.addColumn("string", "Name");
+    data.addColumn("string", "Reports to");
+    data.addColumn("string", "Position");
+    data.addRows(rows);
+    currentChartData = data;
+    if (!organizationChart) {
+      organizationChart = new google.visualization.OrgChart(chartCanvas);
+      google.visualization.events.addListener(
+        organizationChart,
+        "select",
+        () => {
+          const selection = organizationChart.getSelection()[0];
+          const person = selection
+            ? chartPeople.get(currentChartData.getValue(selection.row, 0))
+            : null;
+          if (person) {
+            showChartProfile(person);
+          }
+        },
+      );
+    }
+    organizationChart.draw(data, {
+      allowHtml: true,
+      allowCollapse: true,
+      nodeClass: "org-chart-google-node",
+    });
+  }
+
+  function showChartProfile(person) {
+    const initials = person.name
+      .split(/\s+/)
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+    const avatar = orgChartView.querySelector("[data-org-chart-avatar]");
+    const photo = /^data:image\/(png|jpeg|webp|gif);base64,/i.test(
+      person.photo || "",
+    );
+    if (photo) {
+      const image = document.createElement("img");
+      image.src = person.photo;
+      image.alt = `${person.name} profile photo`;
+      avatar.replaceChildren(image);
+    } else {
+      avatar.textContent = initials;
+    }
+    orgChartView.querySelector("[data-org-chart-name]").textContent =
+      person.name;
+    orgChartView.querySelector("[data-org-chart-role]").textContent =
+      person.role || "Position not provided";
+    orgChartView.querySelector("[data-org-chart-team]").textContent =
+      person.team || "Not provided";
+    const email = orgChartView.querySelector("[data-org-chart-email]");
+    email.replaceChildren();
+    if (person.email) {
+      const emailLink = document.createElement("a");
+      emailLink.href = `mailto:${person.email}`;
+      emailLink.textContent = person.email;
+      email.append(emailLink);
+    } else {
+      email.textContent = "Not provided";
+    }
+    const phone = orgChartView.querySelector("[data-org-chart-phone]");
+    phone.replaceChildren();
+    if (person.contact) {
+      const phoneLink = document.createElement("a");
+      phoneLink.href = `tel:${person.contact.replace(/[^+\d]/g, "")}`;
+      phoneLink.textContent = person.contact;
+      phone.append(phoneLink);
+    } else {
+      phone.textContent = "Not provided";
+    }
+    orgChartView.querySelector("[data-org-chart-location]").textContent =
+      person.location || "Not provided";
+    chartDialog.showModal();
+  }
+
+  chartSearch.addEventListener("input", drawOrganizationChart);
+  orgChartView
+    .querySelector("[data-org-chart-close]")
+    .addEventListener("click", () => chartDialog.close());
+  window.addEventListener("resize", () => {
+    if (!orgChartView.hidden) {
+      drawOrganizationChart();
+    }
+  });
+  window.refreshOrgChart = drawOrganizationChart;
+  drawOrganizationChart();
 }

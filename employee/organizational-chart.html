@@ -1,0 +1,54 @@
+<section
+  id="organizational-chart-view"
+  class="organizational-chart-view"
+  hidden
+>
+  <div class="page-section-header">
+    <div>
+      <p class="dashboard-kicker">People & Teams</p>
+    </div>
+    <label class="org-chart-search">
+      <span>Search by name or position</span>
+      <input
+        type="search"
+        data-org-chart-search
+        placeholder="Search people or roles"
+        autocomplete="off"
+      />
+    </label>
+  </div>
+  <p class="org-chart-status" data-org-chart-status role="status"></p>
+  <div class="org-chart-scroll" data-org-chart-scroll>
+    <div class="org-chart-canvas" data-org-chart-canvas></div>
+  </div>
+  <dialog class="org-chart-profile-dialog" data-org-chart-dialog>
+    <div class="org-chart-profile-heading">
+      <div class="org-chart-profile-avatar" data-org-chart-avatar></div>
+      <div>
+        <h2 data-org-chart-name></h2>
+        <p data-org-chart-role></p>
+      </div>
+      <button type="button" class="close-form-button" data-org-chart-close>
+        ×
+      </button>
+    </div>
+    <dl class="org-chart-contact-details">
+      <div>
+        <dt>Team</dt>
+        <dd data-org-chart-team></dd>
+      </div>
+      <div>
+        <dt>Email</dt>
+        <dd data-org-chart-email></dd>
+      </div>
+      <div>
+        <dt>Phone</dt>
+        <dd data-org-chart-phone></dd>
+      </div>
+      <div>
+        <dt>Location</dt>
+        <dd data-org-chart-location></dd>
+      </div>
+    </dl>
+  </dialog>
+</section>

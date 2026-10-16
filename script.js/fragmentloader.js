@@ -9,6 +9,7 @@
   const isManager = Boolean(document.querySelector(".manager-sidebar"));
   const fragments = isManager
     ? [
+        ["organizational-chart-view", "organizational-chart.html"],
         ["tasks-view", "tasks.html"],
         ["work-log", "worklog.html"],
         ["meetings", "meetings.html"],
@@ -22,6 +23,7 @@
         ["notifications", "notification.html"],
       ]
     : [
+        ["organizational-chart-view", "organizational-chart.html"],
         ["tasks-view", "tasks.html"],
         ["worklog", "work-log.html"],
         ["attendance", "attendance.html"],
@@ -40,6 +42,14 @@
       script.onload = resolve;
       script.onerror = () => reject(new Error(`Unable to load ${source}.`));
       document.body.append(script);
+    });
+  }
+
+  async function loadGoogleCharts() {
+    await loadScript("https://www.gstatic.com/charts/loader.js");
+    await new Promise((resolve) => {
+      google.charts.load("current", { packages: ["corechart", "orgchart"] });
+      google.charts.setOnLoadCallback(resolve);
     });
   }
 
@@ -82,7 +92,15 @@
     const router = isManager ? "hr-managerrouter.js" : "employeerouter.js";
     try {
       await loadScript(new URL("script.js/finalscript.js", projectRoot).href);
+      await loadScript(
+        new URL("script.js/organization-data.js", projectRoot).href,
+      );
       await loadScript(new URL(`script.js/${router}`, projectRoot).href);
+      try {
+        await loadGoogleCharts();
+      } catch (error) {
+        console.error("Google Charts could not be loaded:", error);
+      }
       await loadScript(
         new URL("script.js/dashboard-common.js", projectRoot).href,
       );

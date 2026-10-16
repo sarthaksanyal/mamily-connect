@@ -15,7 +15,7 @@
         </div>
         <nav class="sidebar-nav">
           <a
-            href="#dashboard"
+            href="#dashboard-view"
             class="nav-item active"
             data-view="dashboard-view"
             data-title="Employee Dashboard"
@@ -24,28 +24,28 @@
           <div class="nav-section">
             <p class="nav-section-label">My Work</p>
             <a
-              href="#"
+              href="#tasks-view"
               class="nav-item"
               data-view="tasks-view"
               data-title="Tasks"
               >Tasks</a
             >
             <a
-              href="#"
+              href="#worklog"
               class="nav-item"
               data-view="worklog"
               data-title="Work Log"
               >Work Log</a
             >
             <a
-              href="#"
+              href="#attendance"
               class="nav-item"
               data-view="attendance"
               data-title="Attendance"
               >Attendance</a
             >
             <a
-              href="#"
+              href="#performance-view"
               class="nav-item"
               data-view="performance-view"
               data-title="Performance"
@@ -55,14 +55,21 @@
           <div class="nav-section">
             <p class="nav-section-label">My Team</p>
             <a
-              href="#team-members"
+              href="#organizational-chart-view"
+              class="nav-item"
+              data-view="organizational-chart-view"
+              data-title="Organizational Chart"
+              >Organizational Chart</a
+            >
+            <a
+              href="#team-members-view"
               class="nav-item"
               data-view="team-members-view"
               data-title="Team Members"
               >Team Members</a
             >
             <a
-              href="#"
+              href="#feedback"
               class="nav-item"
               data-view="feedback"
               data-title="Feedback"
@@ -72,18 +79,22 @@
           <details class="nav-dropdown">
             <summary>Employee Self Service</summary>
             <div class="nav-dropdown-links">
-              <a href="#" class="nav-item" data-view="leaves" data-title="Leave"
+              <a
+                href="#leaves"
+                class="nav-item"
+                data-view="leaves"
+                data-title="Leave"
                 >Leave</a
               >
               <a
-                href="#"
+                href="#employee-self-service"
                 class="nav-item"
                 data-view="employee-self-service"
                 data-title="Resignation Form"
                 >Resignation Form</a
               >
               <a
-                href="#"
+                href="#profile"
                 class="nav-item"
                 data-view="profile"
                 data-title="Profile"
@@ -106,7 +117,6 @@
               class="notification-bell"
               data-dashboard-view="notifications"
               data-title="Notifications"
-              aria-label="Notifications"
               title="Notifications"
             >
               <svg viewBox="0 0 24 24">
@@ -180,7 +190,7 @@
             <article class="panel" id="schedule-panel">
               <div class="panel-header">
                 <h2>Today's Schedule</h2>
-                <a href="#">View All</a>
+                <a href="#schedule-panel">View All</a>
               </div>
               <ul class="schedule-list">
                 <li>
@@ -211,10 +221,18 @@
                 <h2>Quick Actions</h2>
               </div>
               <div class="quick-actions">
-                <button type="button">Leave Request</button>
-                <button type="button">Attendance</button>
-                <button type="button">Tasks</button>
-                <button type="button">Profile</button>
+                <button type="button" data-dashboard-view="leaves">
+                  Leave Request
+                </button>
+                <button type="button" data-dashboard-view="attendance">
+                  Attendance
+                </button>
+                <button type="button" data-dashboard-view="tasks-view">
+                  Tasks
+                </button>
+                <button type="button" data-dashboard-view="profile">
+                  Profile
+                </button>
               </div>
             </article>
           </section>

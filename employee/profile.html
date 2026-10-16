@@ -17,6 +17,25 @@
           <p id="current-profile-role"></p>
         </div>
       </div>
+      <div class="profile-photo-controls">
+        <label class="profile-photo-upload">
+          <span>Upload photo</span>
+          <input
+            id="current-profile-photo-input"
+            type="file"
+            accept="image/*"
+          />
+        </label>
+        <button
+          type="button"
+          class="secondary-button"
+          id="remove-profile-photo"
+          hidden
+        >
+          Remove photo
+        </button>
+        <p id="profile-photo-status" role="status" aria-live="polite"></p>
+      </div>
       <div class="profile-status-row">
         <span class="status-pill" id="current-profile-id"></span>
       </div>

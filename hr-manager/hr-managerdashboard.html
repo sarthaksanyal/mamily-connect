@@ -15,7 +15,7 @@
         </div>
         <nav class="sidebar-nav">
           <a
-            href="#dashboard"
+            href="#dashboard-view"
             class="nav-item active"
             data-view="dashboard-view"
             data-title="HR & Manager Dashboard"
@@ -24,21 +24,21 @@
           <div class="nav-section">
             <p class="nav-section-label">Operations</p>
             <a
-              href="#"
+              href="#tasks-view"
               class="nav-item"
               data-view="tasks-view"
               data-title="Tasks"
               >Tasks</a
             >
             <a
-              href="#"
+              href="#work-log"
               class="nav-item"
               data-view="work-log"
               data-title="Work Log"
               >Work Log</a
             >
             <a
-              href="#"
+              href="#meetings"
               class="nav-item"
               data-view="meetings"
               data-title="Meetings"
@@ -48,14 +48,21 @@
           <div class="nav-section">
             <p class="nav-section-label">Organization</p>
             <a
-              href="#employees"
+              href="#organizational-chart-view"
+              class="nav-item"
+              data-view="organizational-chart-view"
+              data-title="Organizational Chart"
+              >Organizational Chart</a
+            >
+            <a
+              href="#employees-view"
               class="nav-item"
               data-view="employees-view"
               data-title="Employees"
               >Employees</a
             >
             <a
-              href="#teams"
+              href="#teams-view"
               class="nav-item"
               data-view="teams-view"
               data-title="Teams"
@@ -65,14 +72,14 @@
           <div class="nav-section">
             <p class="nav-section-label">Approvals</p>
             <a
-              href="#"
+              href="#attendance"
               class="nav-item"
               data-view="attendance"
               data-title="Attendance Logs"
               >Attendance Logs</a
             >
             <a
-              href="#"
+              href="#leave-requests"
               class="nav-item"
               data-view="leave-requests"
               data-title="Leave Requests"
@@ -83,21 +90,21 @@
             <summary>HR Services</summary>
             <div class="nav-dropdown-links">
               <a
-                href="#"
+                href="#performance-view"
                 class="nav-item"
                 data-view="performance-view"
                 data-title="Performance"
                 >Performance</a
               >
               <a
-                href="#"
+                href="#feedback"
                 class="nav-item"
                 data-view="feedback"
                 data-title="Feedback Admin"
                 >Feedback Admin</a
               >
               <a
-                href="#"
+                href="#resignation-queue"
                 class="nav-item"
                 data-view="resignation-queue"
                 data-title="Resignation Queue"
@@ -120,7 +127,6 @@
               class="notification-bell"
               data-dashboard-view="notifications"
               data-title="Notifications"
-              aria-label="Notifications"
               title="Notifications"
             >
               <svg viewBox="0 0 24 24">
@@ -191,7 +197,12 @@
             <article class="panel">
               <div class="panel-header">
                 <h2>Approval Queue</h2>
-                <a href="#">View All</a>
+                <a
+                  href="#leave-requests"
+                  data-dashboard-view="leave-requests"
+                  data-title="Leave Requests"
+                  >View All</a
+                >
               </div>
               <ul class="schedule-list">
                 <li>
@@ -222,9 +233,27 @@
                 <h2>Manager Tools</h2>
               </div>
               <div class="quick-actions">
-                <button type="button">Create Announcement</button>
-                <button type="button">Review Attendance</button>
-                <button type="button">Approve Leaves</button>
+                <button
+                  type="button"
+                  data-dashboard-view="notifications"
+                  data-title="Notifications"
+                >
+                  Create Announcement
+                </button>
+                <button
+                  type="button"
+                  data-dashboard-view="attendance"
+                  data-title="Attendance Logs"
+                >
+                  Review Attendance
+                </button>
+                <button
+                  type="button"
+                  data-dashboard-view="leave-requests"
+                  data-title="Leave Requests"
+                >
+                  Approve Leaves
+                </button>
               </div>
             </article>
           </section>

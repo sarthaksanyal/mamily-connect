@@ -1,143 +1,4 @@
-const initialEmployees = [
-  {
-    employeeId: "",
-    name: "Sarthak Sanyal",
-    fatherName: "",
-    correspondenceAddress: "",
-    permanentAddress: "",
-    role: "Software Intern",
-    team: "Software Support",
-    email: "sarthak.sanyal@mamily.com",
-    contact: "",
-    location: "",
-    aadhar: "",
-    pan: "",
-    bank: "",
-    emergencyContactName: "",
-    emergencyContactNumber: "",
-    joiningDate: "",
-    shiftStart: "",
-    shiftEnd: "",
-    education: [],
-    experience: [],
-    avatarClass: "member-avatar",
-  },
-  {
-    employeeId: "",
-    name: "Ananya Roy",
-    fatherName: "",
-    correspondenceAddress: "",
-    permanentAddress: "",
-    role: "HR Manager",
-    team: "Software Support",
-    email: "ananya.roy@mamily.com",
-    contact: "",
-    location: "",
-    aadhar: "",
-    pan: "",
-    bank: "",
-    emergencyContactName: "",
-    emergencyContactNumber: "",
-    joiningDate: "",
-    shiftStart: "",
-    shiftEnd: "",
-    education: [],
-    experience: [],
-    avatarClass: "member-avatar avatar-pink",
-  },
-  {
-    employeeId: "",
-    name: "Mandeep Kaur",
-    fatherName: "",
-    correspondenceAddress: "",
-    permanentAddress: "",
-    role: "Customer Support Specialist",
-    team: "Customer Success",
-    email: "mandeep.kaur@mamily.com",
-    contact: "",
-    location: "",
-    aadhar: "",
-    pan: "",
-    bank: "",
-    emergencyContactName: "",
-    emergencyContactNumber: "",
-    joiningDate: "",
-    shiftStart: "",
-    shiftEnd: "",
-    education: [],
-    experience: [],
-    avatarClass: "member-avatar avatar-green",
-  },
-  {
-    employeeId: "",
-    name: "Jaya Patel",
-    fatherName: "",
-    correspondenceAddress: "",
-    permanentAddress: "",
-    role: "Customer Support Specialist",
-    team: "Customer Success",
-    email: "jaya.patel@mamily.com",
-    contact: "",
-    location: "",
-    aadhar: "",
-    pan: "",
-    bank: "",
-    emergencyContactName: "",
-    emergencyContactNumber: "",
-    joiningDate: "",
-    shiftStart: "",
-    shiftEnd: "",
-    education: [],
-    experience: [],
-    avatarClass: "member-avatar avatar-gold",
-  },
-  {
-    employeeId: "",
-    name: "Neha Kapoor",
-    fatherName: "",
-    correspondenceAddress: "",
-    permanentAddress: "",
-    role: "People Operations Associate",
-    team: "People Operations",
-    email: "neha.kapoor@mamily.com",
-    contact: "",
-    location: "",
-    aadhar: "",
-    pan: "",
-    bank: "",
-    emergencyContactName: "",
-    emergencyContactNumber: "",
-    joiningDate: "",
-    shiftStart: "",
-    shiftEnd: "",
-    education: [],
-    experience: [],
-    avatarClass: "member-avatar avatar-purple",
-  },
-  {
-    employeeId: "",
-    name: "Daksh Ojha",
-    fatherName: "",
-    correspondenceAddress: "",
-    permanentAddress: "",
-    role: "Finance Analyst",
-    team: "Finance",
-    email: "daksh.ojha@mamily.com",
-    contact: "",
-    location: "",
-    aadhar: "",
-    pan: "",
-    bank: "",
-    emergencyContactName: "",
-    emergencyContactNumber: "",
-    joiningDate: "",
-    shiftStart: "",
-    shiftEnd: "",
-    education: [],
-    experience: [],
-    avatarClass: "member-avatar avatar-teal",
-  },
-];
+const initialEmployees = window.organizationEmployees;
 
 const navigationItems = document.querySelectorAll(".nav-item[data-view]");
 const dashboardViews = document.querySelectorAll(
@@ -175,30 +36,25 @@ navigationItems.forEach((item) => {
   });
 });
 
-document.querySelectorAll(".notification-bell").forEach((button) => {
-  button.addEventListener("click", () => {
-    showDashboardView(button.dataset.dashboardView, button.dataset.title);
-  });
-});
-
-document.querySelectorAll(".stat-card[data-dashboard-view]").forEach((card) => {
-  card.addEventListener("click", () => {
+document.querySelectorAll("[data-dashboard-view]").forEach((control) => {
+  control.addEventListener("click", (event) => {
+    event.preventDefault();
     const navigationItem = [...navigationItems].find(
-      (item) => item.dataset.view === card.dataset.dashboardView,
+      (item) => item.dataset.view === control.dataset.dashboardView,
     );
     if (navigationItem) {
       navigationItem.click();
     } else {
       const fallbackTitle =
-        card.dataset.title ||
-        (card.dataset.dashboardView === "notifications"
+        control.dataset.title ||
+        (control.dataset.dashboardView === "notifications"
           ? "Notifications"
           : "Dashboard");
-      showDashboardView(card.dataset.dashboardView, fallbackTitle);
+      showDashboardView(control.dataset.dashboardView, fallbackTitle);
     }
 
-    if (card.dataset.scrollTarget) {
-      document.getElementById(card.dataset.scrollTarget)?.scrollIntoView({
+    if (control.dataset.scrollTarget) {
+      document.getElementById(control.dataset.scrollTarget)?.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });
@@ -556,7 +412,7 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
       .map((row) =>
         Object.fromEntries(
           [...row.querySelectorAll("input")].map((input) => [
-            input.getAttribute("aria-label"),
+            input.name || "unnamed-field",
             input.value.trim(),
           ]),
         ),
@@ -574,6 +430,7 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
       role: employeeRow.querySelector(".employee-details p").textContent,
       team: employeeRow.querySelector(".employee-team").textContent,
       email: employeeRow.dataset.email || "",
+      photo: employeeRow.dataset.photo || "",
       contact: employeeRow.dataset.contact || "",
       location: employeeRow.dataset.location || "",
       aadhar: employeeRow.dataset.aadhar || "",
@@ -617,7 +474,7 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
         const cell = document.createElement("td");
         const input = document.createElement("input");
         input.type = "text";
-        input.setAttribute("aria-label", field);
+        input.name = field;
         input.value = entries[index]?.[field] || "";
         cell.append(input);
         row.append(cell);
@@ -635,7 +492,7 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
       .map((row) =>
         Object.fromEntries(
           [...row.querySelectorAll("input")].map((input) => [
-            input.getAttribute("aria-label"),
+            input.name || "unnamed-field",
             input.value.trim(),
           ]),
         ),
