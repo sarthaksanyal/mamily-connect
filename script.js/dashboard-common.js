@@ -2422,6 +2422,26 @@ if (orgChartView) {
     });
   }
 
+  function normalizeChartPeople(records) {
+    return records
+      .filter(
+        (person) =>
+          person.name && !/^abcd(?:\s+employee)?$/i.test(person.name.trim()),
+      )
+      .map((person) =>
+        person.team?.trim().toLowerCase() === "cd"
+          ? { ...person, team: "Other Teams" }
+          : person,
+      );
+  }
+
+  function getEmployeeEmail(name) {
+    const person = (window.organizationEmployees || []).find(
+      (employee) => employee.name.toLowerCase() === name.toLowerCase(),
+    );
+    return person?.email || null;
+  }
+
   function getChartPeople() {
     const records = (window.organizationEmployees || []).map((person) => ({
       ...person,
@@ -2435,6 +2455,15 @@ if (orgChartView) {
         .filter((key) => key.startsWith("employee-profile:"))
         .forEach((key) => {
           const savedProfile = JSON.parse(localStorage.getItem(key) || "null");
+          const profileName = savedProfile?.name?.trim();
+          if (/^abcd(?:\s+employee)?$/i.test(profileName || "")) {
+            localStorage.removeItem(key);
+            return;
+          }
+          if (savedProfile?.team?.trim().toLowerCase() === "cd") {
+            savedProfile.team = "Other Teams";
+            localStorage.setItem(key, JSON.stringify(savedProfile));
+          }
           const email = savedProfile?.email?.toLowerCase();
           if (!email) {
             return;
@@ -2451,10 +2480,10 @@ if (orgChartView) {
           }
         });
     } catch {
-      return records;
+      return normalizeChartPeople(records);
     }
 
-    return records.filter((person) => person.name);
+    return normalizeChartPeople(records);
   }
 
   function getPersonId(person) {
@@ -2493,20 +2522,43 @@ if (orgChartView) {
       return;
     }
 
-    const root =
-      people.find((person) =>
-        /manager|director|head/i.test(person.role || ""),
-      ) || people[0];
+    const founders = people.filter((person) =>
+      /founder/i.test(person.role || ""),
+    );
+    const hrManagers = people.filter((person) =>
+      /hr manager/i.test(person.role || ""),
+    );
+    const hrManager = hrManagers[0];
+    const sakshi =
+      hrManagers.find((person) => /^sakshi mishra$/i.test(person.name)) ||
+      hrManager;
+    const companyRoot = {
+      id: "organization:company",
+      name: "Mamily",
+      role: "Company",
+      isOrganization: true,
+    };
+    const root = founders.length
+      ? companyRoot
+      : hrManager ||
+        people.find((person) =>
+          /manager|director|head/i.test(person.role || ""),
+        ) ||
+        people[0];
+    const leadership = [...founders, ...hrManagers];
+    if (!founders.length && !leadership.includes(root)) {
+      leadership.unshift(root);
+    }
+    const getNodeId = (person) => person.id || getPersonId(person);
+    const teamMembers = people.filter((person) => !leadership.includes(person));
     const teamGroups = new Map();
-    people
-      .filter((person) => person !== root)
-      .forEach((person) => {
-        const team = person.team || "Other Teams";
-        if (!teamGroups.has(team)) {
-          teamGroups.set(team, []);
-        }
-        teamGroups.get(team).push(person);
-      });
+    teamMembers.forEach((person) => {
+      const team = person.team || "Other Teams";
+      if (!teamGroups.has(team)) {
+        teamGroups.set(team, []);
+      }
+      teamGroups.get(team).push(person);
+    });
 
     const teamIdByName = new Map(
       [...teamGroups.keys()].map((team) => [team, `team:${team}`]),
@@ -2533,8 +2585,18 @@ if (orgChartView) {
             .map(getPersonId)
         : people.map(getPersonId),
     );
-    const included = new Set([getPersonId(root)]);
+    const included = new Set([getNodeId(root)]);
     const includeAncestors = (person) => {
+      const leadershipIndex = leadership.indexOf(person);
+      if (leadershipIndex >= 0) {
+        included.add(getNodeId(root));
+        leadership
+          .slice(0, leadershipIndex + 1)
+          .forEach((leader) => included.add(getPersonId(leader)));
+        return;
+      }
+      included.add(getNodeId(root));
+      leadership.forEach((leader) => included.add(getPersonId(leader)));
       included.add(getPersonId(person));
       const team = person.team || "Other Teams";
       included.add(teamIdByName.get(team));
@@ -2551,11 +2613,11 @@ if (orgChartView) {
 
     const rows = [];
     const addRow = (person, parentId, isTeam = false) => {
-      const id = isTeam ? person.id : getPersonId(person);
-      if (id !== getPersonId(root) && !included.has(id)) {
+      const id = isTeam ? person.id : getNodeId(person);
+      if (id !== getNodeId(root) && !included.has(id)) {
         return;
       }
-      if (!isTeam) {
+      if (!isTeam && !person.isOrganization) {
         chartPeople.set(id, person);
       }
       rows.push([
@@ -2568,11 +2630,31 @@ if (orgChartView) {
     };
 
     addRow(root, "");
+    if (founders.length) {
+      founders.forEach((person) => addRow(person, getNodeId(root)));
+      hrManagers.forEach((manager) => {
+        const parentFounder =
+          manager === sakshi
+            ? founders.find((person) => /ujjwal sharma/i.test(person.name)) ||
+              founders[0]
+            : founders[0];
+        addRow(manager, getPersonId(parentFounder));
+      });
+    } else {
+      leadership.slice(1).forEach((person, index) => {
+        addRow(person, getPersonId(leadership[index]));
+      });
+    }
     teamGroups.forEach((members, team) => {
       const teamId = teamIdByName.get(team);
       const teamPerson = { id: teamId, name: team };
+      const teamParent = ["finance", "people operations"].includes(
+        team.toLowerCase(),
+      )
+        ? sakshi || hrManager || root
+        : hrManager || root;
       if (included.has(teamId)) {
-        addRow(teamPerson, getPersonId(root), true);
+        addRow(teamPerson, getNodeId(teamParent), true);
       }
       const lead = leadByTeam.get(team);
       members.forEach((person) => {
@@ -2610,6 +2692,7 @@ if (orgChartView) {
     organizationChart.draw(data, {
       allowHtml: true,
       allowCollapse: true,
+      size: "small",
       nodeClass: "org-chart-google-node",
     });
   }

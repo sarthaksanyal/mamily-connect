@@ -899,6 +899,7 @@ if (addEmployeeForm && showAddEmployeeButton && employeeDirectory) {
     employeeDirectory.append(employeeRow);
     window.refreshAttendanceEmployeeList?.();
     window.refreshMeetingEmployeeList?.();
+    window.refreshOrgChart?.();
 
     updateEmployeeCount();
     addEmployeeForm.reset();

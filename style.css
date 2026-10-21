@@ -4006,8 +4006,10 @@ img {
 }
 
 .org-chart-scroll {
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   min-height: 300px;
+  max-height: min(72vh, 720px);
   padding: 14px 8px 24px;
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -4015,12 +4017,21 @@ img {
 }
 
 .org-chart-canvas {
-  width: max-content;
-  min-width: 100%;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.org-chart-canvas > table {
+  width: 100% !important;
+  table-layout: fixed;
 }
 
 .org-chart-google-node {
-  min-width: 185px;
+  width: 138px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   border: 1px solid var(--line) !important;
   border-radius: 8px;
   background: var(--white);
@@ -4030,18 +4041,22 @@ img {
 .org-chart-node {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 66px;
-  padding: 9px 12px;
+  gap: 7px;
+  min-height: 56px;
+  padding: 7px 8px;
   text-align: left;
+}
+
+.org-chart-node > div {
+  min-width: 0;
 }
 
 .org-chart-node > img,
 .org-chart-node > span {
   display: grid;
-  flex: 0 0 42px;
-  width: 42px;
-  height: 42px;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
   place-items: center;
   border-radius: 50%;
   background: var(--blue-soft);
@@ -4057,13 +4072,17 @@ img {
 
 .org-chart-node strong {
   color: var(--text-dark);
-  font-size: 0.86rem;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .org-chart-node small {
   margin-top: 4px;
   color: var(--text-light);
   font-size: 0.74rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .org-chart-team-node {
