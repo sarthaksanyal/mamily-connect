@@ -91,6 +91,8 @@
     const projectRoot = new URL("../", window.location.href);
     const router = isManager ? "hr-managerrouter.js" : "employeerouter.js";
     try {
+      await loadScript(new URL("script.js/api-config.js", projectRoot).href);
+      await loadScript(new URL("script.js/api-client.js", projectRoot).href);
       await loadScript(new URL("script.js/finalscript.js", projectRoot).href);
       await loadScript(
         new URL("script.js/organization-data.js", projectRoot).href,
