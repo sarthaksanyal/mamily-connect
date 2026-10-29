@@ -1,8 +1,8 @@
 # Mamily Connect API
 
-Initial backend foundation: Django REST Framework, PostgreSQL, and JWT email
-authentication. The existing frontend login still uses demo behavior; it will be
-connected after the API and employee directory are in place.
+Backend foundation: Django REST Framework, PostgreSQL, JWT email authentication,
+and an employee directory API. The existing frontend login and directory still
+use demo/browser data and are not connected to this API yet.
 
 ## Local setup
 
@@ -39,7 +39,6 @@ you just set. Keep `.env` private and do not commit it.
 
 ```cmd
 python manage.py check
-python manage.py makemigrations accounts
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
@@ -54,3 +53,21 @@ python manage.py runserver
   user's profile.
 
 New accounts are created by an administrator; public registration is not enabled.
+
+## Employee directory
+
+All employee endpoints require `Authorization: Bearer <access>`. Authenticated
+users can list and retrieve directory entries. Only HR/manager and admin users
+can create, update, or delete entries.
+
+- `GET /api/employees/` lists employees.
+- `GET /api/employees/?search=engineering` searches employee ID, name, email,
+  job title, and team.
+- `GET /api/employees/?ordering=name` sorts results; prefix a field with `-` for
+  descending order.
+- `POST /api/employees/` creates an entry with `employee_id`, `name`, `email`,
+  `job_title`, and `team`; `contact`, `location`, `joining_date`, and `is_active`
+  are optional.
+
+The initial model intentionally excludes government ID numbers, bank details,
+and home addresses. Those need a separate access and data-retention design.
